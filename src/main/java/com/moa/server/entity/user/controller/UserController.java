@@ -3,6 +3,7 @@ package com.moa.server.entity.user.controller;
 import com.moa.server.entity.user.UserEntity;
 import com.moa.server.entity.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserEntity request) {
+    public ResponseEntity<?> login(@RequestBody @NonNull UserEntity request) {
 
         boolean isSuccess = userService.login(request.getEmployeeId(), request.getPassword());
 

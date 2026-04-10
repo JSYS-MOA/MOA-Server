@@ -28,4 +28,7 @@ public class OrdererEntity extends BaseEntity {
 
     @Column(name = "unit_price")
     private Integer unitPrice;
+
+    @Column(name = "oder_status")
+    private Integer oderStatus;
 }
