@@ -33,4 +33,7 @@ public class InventoryEntity extends BaseEntity {
 
     @Column(name = "inventory_memo")
     private String inventoryMemo;
+
+    @Column(name = "logistics_id")
+    private Integer logisticsId;
 }
