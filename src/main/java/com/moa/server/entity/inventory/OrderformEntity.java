@@ -27,4 +27,7 @@ public class OrderformEntity extends BaseEntity {
 
     @Column(name = "stock_in_date")
     private LocalDate stockInDate;
+
+    @Column(name = "oder_status")
+    private Integer oderStatus;
 }
