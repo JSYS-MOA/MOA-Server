@@ -1,0 +1,69 @@
+package com.moa.server.entity.user;
+
+import com.moa.server.common.BaseEntity;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "user")
+@Getter
+@Setter // DTO 역할을 위해 세터를 열어줍니다
+@NoArgsConstructor // JPA와 DTO 처리를 위한 기본 생성자
+@AllArgsConstructor
+@Builder
+public class UserEntity extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Integer userId;
+
+    @Column(name = "user_name")
+    private String userName;
+
+    @Column(name = "employee_id")
+    private String employeeId;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "role_id")
+    private Integer roleId;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "quit_date")
+    private LocalDate quitDate;
+
+    @Column(name = "department_id")
+    private Integer departmentId;
+
+    @Column(name = "grade_id")
+    private Integer gradeId;
+
+    @Column(name = "birth")
+    private LocalDate birth;
+
+    @Column(name = "performance")
+    private String performance;
+
+    @Column(name = "profile_url")
+    private String profileUrl;
+
+    @Column(name = "bank")
+    private String bank;
+
+    @Column(name = "account_num")
+    private String accountNum;
+}
