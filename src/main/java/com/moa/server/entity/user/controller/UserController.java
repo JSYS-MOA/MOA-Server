@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -53,4 +54,17 @@ public class UserController {
         }
     }
 
+    //인사 카드 리스트
+    @GetMapping("/hr/cards")
+    public ResponseEntity<?> getAllUsers() {
+        List<UserEntity> users = userService.getAllUsers();
+
+        if (!users.isEmpty()) {
+            return ResponseEntity.ok(users);
+        } else {
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "등록된 인사카드가 없습니다.");
+            return ResponseEntity.ok(response);
+        }
+    }
 }

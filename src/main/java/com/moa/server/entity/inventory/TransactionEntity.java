@@ -20,6 +20,12 @@ public class TransactionEntity extends BaseEntity {
     @Column(name = "vendor_id")
     private Integer vendorId;
 
+    @Column(name = "orderform_id")
+    private Integer orderformId;
+
+    @Column(name = "salary_ledger_id")
+    private Integer salaryLedgerId;
+
     @Column(name = "transaction_num")
     private Integer transactionNum;
 
