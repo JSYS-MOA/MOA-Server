@@ -3,6 +3,7 @@ package com.moa.server.entity.user.controller;
 import com.moa.server.entity.user.UserEntity;
 import com.moa.server.entity.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,10 +58,10 @@ public class UserController {
     //인사 카드 리스트
     @GetMapping("/hr/cards")
     public ResponseEntity<?> hrCardList() {
-        List<UserEntity> users = userService.hrCardList();
+        List<UserEntity> user = userService.hrCardList();
 
-        if (!users.isEmpty()) {
-            return ResponseEntity.ok(users);
+        if (!user.isEmpty()) {
+            return ResponseEntity.ok(user);
         } else {
             Map<String, Object> response = new HashMap<>();
             response.put("message", "등록된 인사카드가 없습니다.");
@@ -70,9 +71,8 @@ public class UserController {
 
     //인사 카드 상세
     @GetMapping("/hr/cards/{user_id}")
-    public ResponseEntity<?> hrCardInfo(@PathVariable String user_id){
-        UserEntity user = userService.loginInfo(user_id);
-
+    public ResponseEntity<?> hrCardInfo(@PathVariable Integer user_id){
+        UserEntity user = userService.hrCardInfo(user_id);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
@@ -83,19 +83,65 @@ public class UserController {
 
     }
 
-
-    @DeleteMapping("/hr/cards/{user_id}")
-    public ResponseEntity<?> hrCard(@PathVariable Integer user_id) {
+    //수정
+    @PutMapping("/hr/cards/{user_id}")
+    public ResponseEntity<?> hrCardUpdate(@PathVariable Integer user_id, @RequestBody UserEntity user) {
         try {
-            userService.loginInfo(user_id);
+            UserEntity users = userService.hrCardUpdate(user_id,user);
+
+            Map<String, Object> response = new HashMap<>();
+
+            if (users != null) {
+                response.put("result", true);
+                response.put("message", "인사카드 수정 완료");
+                response.put("user", users);
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("result", false);
+                response.put("message", "해당 사용자가 없습니다.");
+                return ResponseEntity.badRequest().body(response);
+            }
+        } catch(Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", false);
+            response.put("message", "인사카드 수정 실패: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    //추가
+    @PostMapping("/hr/cards")
+    public ResponseEntity<?> hrCardAdd(UserEntity user) {
+        try {
+            UserEntity users = userService.hrCardAdd(user);
+
             Map<String, Object> response = new HashMap<>();
             response.put("result", true);
-            response.put("message", "사용자 삭제 완료");
+            response.put("message", "인사카드 등록 완료");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", false);
+            response.put("message", "인사카드 등록 실패: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    //삭제
+    @DeleteMapping("/hr/cards/{user_id}")
+    public ResponseEntity<?> hrCardDelete(@PathVariable Integer user_id) {
+        try {
+            userService.hrCardDelete(user_id);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", true);
+            response.put("message", "인사카드 삭제 완료");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("result", false);
-            response.put("message", "삭제 실패: " + e.getMessage());
+            response.put("message", "인사카드 삭제 실패: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }

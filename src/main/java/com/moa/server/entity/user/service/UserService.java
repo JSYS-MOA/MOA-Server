@@ -78,7 +78,7 @@ public class UserService {
     }
 
    //인사 카드 삭제
-   public void hrCardDelte(Integer userId) {userRepository.deleteById(userId);}
+   public void hrCardDelete(Integer userId) {userRepository.deleteById(userId);}
 
 
 }
