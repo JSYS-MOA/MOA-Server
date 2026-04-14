@@ -29,5 +29,5 @@ public class OrderformEntity extends BaseEntity {
     private LocalDate stockInDate;
 
     @Column(name = "order_status")
-    private Integer orderStatus;
+    private String orderStatus;
 }
