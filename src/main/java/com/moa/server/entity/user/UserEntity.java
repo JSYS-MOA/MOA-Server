@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "user")
 @Getter
-@Setter // DTO 역할을 위해 세터를 열어줍니다
 @NoArgsConstructor // JPA와 DTO 처리를 위한 기본 생성자
 @AllArgsConstructor
 @Builder
@@ -66,4 +65,9 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "account_num")
     private String accountNum;
+
+    //AdminRoleEntity 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", insertable = false, updatable = false)
+    private AdminRoleEntity role;
 }

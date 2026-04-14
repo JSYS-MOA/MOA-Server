@@ -1,14 +1,21 @@
 package com.moa.server.entity.user.controller;
 
 import com.moa.server.entity.user.UserEntity;
+import com.moa.server.entity.user.dto.AdminUserDTO;
 import com.moa.server.entity.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.moa.server.entity.user.service.UserService.*;
 
 
 @RestController
@@ -52,5 +59,24 @@ public class UserController {
             return ResponseEntity.ok(response);
         }
     }
+
+    @GetMapping("/admin/levels")
+    public ResponseEntity<?> searchAdminUsers(
+            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(required = false, defaultValue = "") String searchParam) {
+
+
+        List<AdminUserDTO> result = userService.getAdminUserList( searchParam , pageable);
+        return ResponseEntity.ok(result);
+    }
+
+//    @GetMapping("/admin/levels")
+//    public ResponseEntity<?> searchAdminUsers(
+//            @RequestParam(required = false) String email,
+//            @RequestParam(required = false) String phone) {
+//
+//        List<AdminUserDTO> result = userService.getAdminUserList(email, phone);
+//        return ResponseEntity.ok(result);
+//    }
 
 }
