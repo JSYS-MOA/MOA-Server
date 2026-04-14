@@ -27,6 +27,12 @@ public class UserService {
     }
 
     //인사 카드 전체 조회
-    public List<UserEntity> getAllUsers() {return userRepository.findAll();}
+    public List<UserEntity> hrCardList() {return userRepository.findAll();}
+
+    //인사 카드 상세 조회
+    public UserEntity hrCardInfo(Integer userId) {
+        return userRepository.getUserByUserId(userId);
+    }
+
 
 }

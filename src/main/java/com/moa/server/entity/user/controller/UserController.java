@@ -56,8 +56,8 @@ public class UserController {
 
     //인사 카드 리스트
     @GetMapping("/hr/cards")
-    public ResponseEntity<?> getAllUsers() {
-        List<UserEntity> users = userService.getAllUsers();
+    public ResponseEntity<?> hrCardList() {
+        List<UserEntity> users = userService.hrCardList();
 
         if (!users.isEmpty()) {
             return ResponseEntity.ok(users);
@@ -65,6 +65,38 @@ public class UserController {
             Map<String, Object> response = new HashMap<>();
             response.put("message", "등록된 인사카드가 없습니다.");
             return ResponseEntity.ok(response);
+        }
+    }
+
+    //인사 카드 상세
+    @GetMapping("/hr/cards/{userId}")
+    public ResponseEntity<?> hrCardInfo(@PathVariable String userId){
+        UserEntity user = userService.loginInfo(userId);
+
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "해당하는 사번의 직원을 찾을 수 없습니다.");
+            return ResponseEntity.ok(response);
+        }
+
+    }
+
+
+    @DeleteMapping("/hr/cards/{user_id}")
+    public ResponseEntity<?> hrCard(@PathVariable Integer user_id) {
+        try {
+            userService.loginInfo(user_id);
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", true);
+            response.put("message", "사용자 삭제 완료");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", false);
+            response.put("message", "삭제 실패: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
     }
 }
