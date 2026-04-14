@@ -69,9 +69,9 @@ public class UserController {
     }
 
     //인사 카드 상세
-    @GetMapping("/hr/cards/{userId}")
-    public ResponseEntity<?> hrCardInfo(@PathVariable String userId){
-        UserEntity user = userService.loginInfo(userId);
+    @GetMapping("/hr/cards/{user_id}")
+    public ResponseEntity<?> hrCardInfo(@PathVariable String user_id){
+        UserEntity user = userService.loginInfo(user_id);
 
         if (user != null) {
             return ResponseEntity.ok(user);

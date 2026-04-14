@@ -22,14 +22,6 @@ public class UserVo {
     private String account_num;
 
 
-    public int getDepartment_id() {
-        return department_id;
-    }
-
-    public void setDepartment_id(int department_id) {
-        this.department_id = department_id;
-    }
-
     public int getUser_id() {
         return user_id;
     }
@@ -116,6 +108,14 @@ public class UserVo {
 
     public void setGrade_id(int grade_id) {
         this.grade_id = grade_id;
+    }
+
+    public int getDepartment_id() {
+        return department_id;
+    }
+
+    public void setDepartment_id(int department_id) {
+        this.department_id = department_id;
     }
 
     public Date getBirth() {
