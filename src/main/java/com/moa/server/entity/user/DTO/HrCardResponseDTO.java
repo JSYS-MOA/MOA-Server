@@ -6,7 +6,6 @@ public class HrCardResponseDTO {
 
     private int user_id;
     private String user_name;
-    private String employee;
     private int employee_id;
     private String phone;
     private String email;
@@ -20,7 +19,9 @@ public class HrCardResponseDTO {
     private String bank;
     private String account_num;
 
+    public void setUser_id(int user_id) {this.user_name = user_name; }
     public int getUser_id() { return  user_id; }
+
 
     public void setUser_name(int user_id) {this.user_name = user_name; }
 
@@ -30,14 +31,6 @@ public class HrCardResponseDTO {
 
     public void setUser_name(String user_name) {
         this.user_name = user_name;
-    }
-
-    public String getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(String employee) {
-        this.employee = employee;
     }
 
     public int getEmployee_id() {
