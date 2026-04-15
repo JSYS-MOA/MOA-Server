@@ -111,7 +111,7 @@ public class UserController {
 
     //인사 카드 추가
     @PostMapping("/hr/cards")
-    public ResponseEntity<?> hrCardAdd(UserEntity user) {
+    public ResponseEntity<?> hrCardAdd(@RequestBody UserEntity user) {
         try {
             UserEntity users = userService.hrCardAdd(user);
 
