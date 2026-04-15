@@ -44,7 +44,7 @@ public class UserController{
     }
 
     //로그아웃
-    @GetMapping("/check")
+    @GetMapping("/logout")
     public ResponseEntity<LoginResponseDTO> logout(HttpSession session){
         session.invalidate();
         LoginResponseDTO response = LoginResponseDTO.builder()
