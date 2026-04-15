@@ -4,22 +4,25 @@ import java.sql.Date;
 
 public class HrCardResponseDTO {
 
+    private int user_id;
     private String user_name;
     private String employee;
-    private  String password;
     private int employee_id;
     private String phone;
-    private  String email;
-    private  String address;
+    private String email;
+    private String address;
     private Date start_date;
     private Date quit_date;
     private int department_id;
     private int grade_id;
-    private  Date birth;
-    private  String performance;
+    private Date birth;
+    private String performance;
     private String bank;
     private String account_num;
 
+    public int getUser_id() { return  user_id; }
+
+    public void setUser_name(int user_id) {this.user_name = user_name; }
 
     public String getUser_name() {
         return user_name;
@@ -35,14 +38,6 @@ public class HrCardResponseDTO {
 
     public void setEmployee(String employee) {
         this.employee = employee;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public int getEmployee_id() {
