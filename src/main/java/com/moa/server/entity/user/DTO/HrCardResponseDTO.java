@@ -1,10 +1,9 @@
-package com.moa.server.entity.user;
+package com.moa.server.entity.user.DTO;
 
 import java.sql.Date;
 
-public class UserVo {
+public class HrCardResponseDTO {
 
-    private int user_id;
     private String user_name;
     private String employee;
     private  String password;
@@ -21,14 +20,6 @@ public class UserVo {
     private String bank;
     private String account_num;
 
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
 
     public String getUser_name() {
         return user_name;

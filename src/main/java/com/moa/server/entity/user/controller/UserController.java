@@ -83,7 +83,7 @@ public class UserController {
 
     }
 
-    //수정
+    //인사 카드 수정
     @PutMapping("/hr/cards/{user_id}")
     public ResponseEntity<?> hrCardUpdate(@PathVariable Integer user_id, @RequestBody UserEntity user) {
         try {
@@ -109,7 +109,7 @@ public class UserController {
         }
     }
 
-    //추가
+    //인사 카드 추가
     @PostMapping("/hr/cards")
     public ResponseEntity<?> hrCardAdd(UserEntity user) {
         try {
@@ -128,7 +128,7 @@ public class UserController {
         }
     }
 
-    //삭제
+    //인사 카드 삭제
     @DeleteMapping("/hr/cards/{user_id}")
     public ResponseEntity<?> hrCardDelete(@PathVariable Integer user_id) {
         try {
