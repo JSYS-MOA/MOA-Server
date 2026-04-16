@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-
-@RestController
-@RequestMapping("/api")
 @RestController // json을 반환하기 위함  @Controller + @ResponseBody
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

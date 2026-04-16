@@ -12,8 +12,7 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 
     Optional<UserEntity> findByEmployeeIdAndPassword(String employeeId, String password);
 
-}
-public interface UserRepository extends JpaRepository<UserEntity, Integer> {
+
     boolean existsByEmployeeIdAndPassword(String employeeId, String password);
 
     UserEntity getUserByEmployeeId(String employeeId);

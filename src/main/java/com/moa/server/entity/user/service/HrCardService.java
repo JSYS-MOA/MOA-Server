@@ -12,6 +12,7 @@ import java.util.Locale;
 @Service
 @Transactional
 @RequiredArgsConstructor
+
 public class HrCardService {
     private final UserRepository userRepository;
 
@@ -19,17 +20,10 @@ public class HrCardService {
     private final DepartmentRepository departmentRepository;
     private final GradeRepository gradeRepository;
 
-    public boolean login(String employeeId, String password) {
-        return userRepository.existsByEmployeeIdAndPassword(employeeId, password);
-    }
-
-    public UserEntity loginInfo(String employeeId) {
-        return userRepository.getUserByEmployeeId(employeeId);
-    }
-
     public List<UserEntity> hrCardList() {
         return userRepository.findAll();
     }
+
 
     public List<UserEntity> hrCardSearch(String searchCondition, String searchKeyword) {
         if (searchCondition == null || searchCondition.isBlank()) {

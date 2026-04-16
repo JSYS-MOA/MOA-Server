@@ -1,7 +1,7 @@
 package com.moa.server.entity.user.controller;
 
 import com.moa.server.entity.user.UserEntity;
-import com.moa.server.entity.user.service.UserService;
+import com.moa.server.entity.user.service.HrCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,11 +23,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class HrCardController {
 
-    private final UserService userService;
+    private final HrCardService hrCardService;
 
     @GetMapping("/hr/cards")
     public ResponseEntity<?> hrCardList() {
-        List<UserEntity> user = userService.hrCardList();
+        List<UserEntity> user = hrCardService.hrCardList();
 
         if (!user.isEmpty()) {
             return ResponseEntity.ok(user);
@@ -44,7 +44,7 @@ public class HrCardController {
             @RequestParam(required = false) String searchKeyword
     ) {
         try {
-            List<UserEntity> user = userService.hrCardSearch(searchCondition, searchKeyword);
+            List<UserEntity> user = hrCardService.hrCardSearch(searchCondition, searchKeyword);
 
             if (!user.isEmpty()) {
                 return ResponseEntity.ok(user);
@@ -63,7 +63,7 @@ public class HrCardController {
 
     @GetMapping("/hr/cards/{user_id}")
     public ResponseEntity<?> hrCardInfo(@PathVariable Integer user_id) {
-        UserEntity user = userService.hrCardInfo(user_id);
+        UserEntity user = hrCardService.hrCardInfo(user_id);
         if (user != null) {
             return ResponseEntity.ok(user);
         }
@@ -76,7 +76,7 @@ public class HrCardController {
     @PutMapping("/hr/cards/{user_id}")
     public ResponseEntity<?> hrCardUpdate(@PathVariable Integer user_id, @RequestBody UserEntity user) {
         try {
-            UserEntity users = userService.hrCardUpdate(user_id, user);
+            UserEntity users = hrCardService.hrCardUpdate(user_id, user);
 
             Map<String, Object> response = new HashMap<>();
 
@@ -101,7 +101,7 @@ public class HrCardController {
     @PostMapping("/hr/cards/add")
     public ResponseEntity<?> hrCardAdd(@RequestBody UserEntity user) {
         try {
-            userService.hrCardAdd(user);
+            hrCardService.hrCardAdd(user);
 
             Map<String, Object> response = new HashMap<>();
             response.put("result", true);
@@ -119,7 +119,7 @@ public class HrCardController {
     @DeleteMapping("/hr/cards/{user_id}")
     public ResponseEntity<?> hrCardDelete(@PathVariable Integer user_id) {
         try {
-            userService.hrCardDelete(user_id);
+            hrCardService.hrCardDelete(user_id);
 
             Map<String, Object> response = new HashMap<>();
             response.put("result", true);
