@@ -42,7 +42,8 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Inte
             "LEFT JOIN i.logistics l "+
             "WHERE i.inventoryId = :info " +
             "ORDER BY l.logisticDate ASC "
-            , countQuery = "SELECT count(i) FROM InventoryEntity i WHERE i.inventoryId = :info")
+            )
+    //, countQuery = "SELECT count(i) FROM InventoryEntity i WHERE i.inventoryId = :info"
     Page<InventoryInfoDTO> findInventoryDtoPage(@Param("info") Integer info, Pageable pageable);
 
 }

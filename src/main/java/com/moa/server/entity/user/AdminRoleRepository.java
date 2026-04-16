@@ -6,11 +6,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AdminRoleRepository extends JpaRepository<AdminRoleEntity, Integer> {
 
-<<<<<<< Updated upstream
     //예시
     //List<BoardVOEntity> findByTitleContaining  (String title);
-=======
->>>>>>> Stashed changes
+
 
 }
 
