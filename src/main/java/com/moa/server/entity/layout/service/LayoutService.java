@@ -1,9 +1,8 @@
-package com.moa.server.entity.common.service;
+package com.moa.server.entity.layout.service;
 
-import com.moa.server.dao.layout.LayoutDAO;
-import com.moa.server.dto.mainLayout.LayoutDTO;
-import com.moa.server.dto.mainLayout.MenuDTO;
-import com.moa.server.entity.menu.MenuEntity;
+import com.moa.server.entity.layout.dao.LayoutDAO;
+import com.moa.server.entity.layout.dto.LayoutDTO;
+import com.moa.server.entity.layout.dto.MenuDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,8 @@ public class LayoutService {
         }
 
         // 2. 메뉴 리스트 조회 + DTO 변환
-        List<MenuDTO> menuList = layoutDAO.findAllMenus().stream()
+        List<MenuDTO> ml = null;
+        ml = layoutDAO.findAllMenus().stream()
                 .map(m -> MenuDTO.builder()
                         .menuId(m.getMenuId())
                         .menuTitle(m.getMenuTitle())
@@ -41,7 +41,7 @@ public class LayoutService {
                 .employeeId((String) user[4])
                 .departmentName((String) user[2])
                 .gradeName((String) user[3])
-                .menuList(menuList)
+                .menuList(ml)
                 .build();
     }
 }

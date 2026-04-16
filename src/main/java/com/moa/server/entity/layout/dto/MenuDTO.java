@@ -1,4 +1,4 @@
-package com.moa.server.dto.mainLayout;
+package com.moa.server.entity.layout.dto;
 
 import jakarta.persistence.Column;
 import lombok.*;

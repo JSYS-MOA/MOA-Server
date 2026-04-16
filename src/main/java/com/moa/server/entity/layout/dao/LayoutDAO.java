@@ -1,4 +1,4 @@
-package com.moa.server.dao.layout;
+package com.moa.server.entity.layout.dao;
 
 import com.moa.server.entity.menu.MenuEntity;
 import jakarta.persistence.EntityManager;

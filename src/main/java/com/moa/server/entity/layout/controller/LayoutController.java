@@ -1,7 +1,7 @@
-package com.moa.server.entity.common.controller;
+package com.moa.server.entity.layout.controller;
 
-import com.moa.server.dto.mainLayout.LayoutDTO;
-import com.moa.server.entity.common.service.LayoutService;
+import com.moa.server.entity.layout.dto.LayoutDTO;
+import com.moa.server.entity.layout.service.LayoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
