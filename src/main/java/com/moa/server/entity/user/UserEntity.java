@@ -4,6 +4,7 @@ import com.moa.server.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
@@ -13,7 +14,8 @@ import java.time.LocalDate;
 @NoArgsConstructor // JPA와 DTO 처리를 위한 기본 생성자
 @AllArgsConstructor
 @Builder
-public class UserEntity extends BaseEntity {
+//세선에 객체를 저장할 때 변환해서 사용해야함  -> Serializable
+public class UserEntity extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
