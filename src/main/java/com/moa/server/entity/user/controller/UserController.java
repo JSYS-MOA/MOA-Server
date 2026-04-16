@@ -31,6 +31,7 @@ public class UserController{
                     .employeeId(user.getEmployeeId())
                     .departmentId(user.getDepartmentId())
                     .roleId(user.getRoleId())
+                    .userName(user.getUserName())
                     .build();
             return ResponseEntity.ok(response);
 
