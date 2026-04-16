@@ -6,6 +6,7 @@ import com.moa.server.entity.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController{
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     //로그인
     //ResponseEntity란 Http 응답(상태코드, 헤더, 데이터)을 담는 객체
