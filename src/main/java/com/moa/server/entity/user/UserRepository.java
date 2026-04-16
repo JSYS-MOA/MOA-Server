@@ -15,6 +15,8 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 
     Optional<UserEntity> findByEmployeeIdAndPassword(String employeeId, String password);
 
+    Optional<UserEntity> findByEmployeeIdAndPassword(String employeeId, String password);
+
     UserEntity getUserByEmployeeId(String employeeId);
 
     // 권한 조회
