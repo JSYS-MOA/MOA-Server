@@ -1,5 +1,6 @@
 package com.moa.server.entity.user.controller;
 import com.moa.server.entity.user.UserEntity;
+import com.moa.server.entity.user.dto.AdminUserDTO;
 import com.moa.server.entity.user.dto.LoginRequestDTO;
 import com.moa.server.entity.user.dto.LoginResponseDTO;
 import com.moa.server.entity.user.service.UserService;
