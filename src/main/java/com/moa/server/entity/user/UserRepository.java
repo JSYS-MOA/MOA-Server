@@ -1,5 +1,8 @@
 package com.moa.server.entity.user;
 
+import com.moa.server.entity.user.dto.AdminUserDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +18,6 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 
     Optional<UserEntity> findByEmployeeIdAndPassword(String employeeId, String password);
 
-    Optional<UserEntity> findByEmployeeIdAndPassword(String employeeId, String password);
 
     UserEntity getUserByEmployeeId(String employeeId);
 
@@ -31,8 +33,7 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
             "WHERE u.userName LIKE %:search% " + // UserEntity의 'private AdminRoleEntity role' 필드로 조인
             "ORDER BY u.userId ASC "
             , countQuery = "SELECT count(u) FROM UserEntity u WHERE u.userName LIKE %:search%")
-
-    Page<AdminUserDTO> findAdminUserList( String search , Pageable pageable);
+    Page<AdminUserDTO> findAdminUserList(String search , Pageable pageable);
 
     @Modifying
     @Transactional

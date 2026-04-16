@@ -68,8 +68,6 @@ public class UserEntity extends BaseEntity implements Serializable {
 
     @Column(name = "account_num")
     private String accountNum;
-<<<<<<< Updated upstream
-=======
 
     //AdminRoleEntity 와 join
     @ManyToOne(fetch = FetchType.LAZY)
@@ -85,5 +83,5 @@ public class UserEntity extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", insertable = false, updatable = false)
     private DepartmentEntity department;
->>>>>>> Stashed changes
+
 }

@@ -1,7 +1,10 @@
 package com.moa.server.entity.user.service;
 
 import com.moa.server.entity.user.*;
+import com.moa.server.entity.user.dto.AdminUserDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +20,7 @@ public class UserService {
         return userRepository.findByEmployeeIdAndPassword(employeeId,password)
                 .orElseThrow(() -> new RuntimeException("사원코드 또는 비밀번호를 확인하세요"));
     }
-<<<<<<< Updated upstream
-}
-=======
+
 
     public UserEntity loginInfo(String employeeId) {
         return userRepository.getUserByEmployeeId(employeeId);
@@ -42,4 +43,3 @@ public class UserService {
 
 
 }
->>>>>>> Stashed changes
