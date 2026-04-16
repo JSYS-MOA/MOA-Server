@@ -1,8 +1,12 @@
 package com.moa.server.entity.inventory.service;
 
 import com.moa.server.entity.inventory.*;
+import com.moa.server.entity.inventory.dto.InventoryDTO;
+import com.moa.server.entity.inventory.dto.InventoryInfoDTO;
 import com.moa.server.entity.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,5 +27,12 @@ public class InventoryService {
     private final StorageRepository storageRepository;
     private final LogisticsRepository logisticsRepository;
 
+    public Page<InventoryDTO>  findInventoryBySearch(String search, Pageable pageable) {
+        return inventoryRepository.findInventoryBySearch(search, pageable);
+    }
+
+    public Page<InventoryInfoDTO> findInventoryDtoBySearch(Integer info, Pageable pageable) {
+        return inventoryRepository.findInventoryDtoPage(info, pageable);
+    }
 
 }

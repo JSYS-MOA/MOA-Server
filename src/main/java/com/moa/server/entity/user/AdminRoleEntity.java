@@ -4,9 +4,6 @@ import com.moa.server.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table(name = "admin_role")
 @Getter
@@ -29,9 +26,5 @@ public class AdminRoleEntity extends BaseEntity {
 
     @Column(name = "admin_role_is_use")
     private Integer isUse;
-
-    // 조인
-    @OneToMany(mappedBy = "role") // AdminUser의 'role' 필드에 의해 매핑됨을 명시
-    private List<UserEntity> users = new ArrayList<>();
 
 }

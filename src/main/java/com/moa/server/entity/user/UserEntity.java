@@ -4,15 +4,18 @@ import com.moa.server.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "user")
 @Getter
+@Setter // DTO 역할을 위해 세터를 열어줍니다
 @NoArgsConstructor // JPA와 DTO 처리를 위한 기본 생성자
 @AllArgsConstructor
 @Builder
-public class UserEntity extends BaseEntity {
+//세선에 객체를 저장할 때 변환해서 사용해야함  -> Serializable
+public class UserEntity extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -65,9 +68,22 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "account_num")
     private String accountNum;
+<<<<<<< Updated upstream
+=======
 
     //AdminRoleEntity 와 join
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", insertable = false, updatable = false)
     private AdminRoleEntity role;
+
+    //GradeEntity 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grade_id", insertable = false, updatable = false)
+    private GradeEntity grade;
+
+    //DepartmentEntity 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", insertable = false, updatable = false)
+    private DepartmentEntity department;
+>>>>>>> Stashed changes
 }

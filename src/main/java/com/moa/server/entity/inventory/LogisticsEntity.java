@@ -39,4 +39,14 @@ public class LogisticsEntity extends BaseEntity {
 
     @Column(name = "logistics_price")
     private Integer logisticsPrice;
+
+    //productEntity 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private ProductEntity product;
+
+    //storageEntity 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "storage_id", insertable = false, updatable = false)
+    private StorageEntity storage;
 }

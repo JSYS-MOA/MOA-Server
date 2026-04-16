@@ -1,6 +1,7 @@
 package com.moa.server.entity.inventory;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.user.DepartmentEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,4 +37,20 @@ public class InventoryEntity extends BaseEntity {
 
     @Column(name = "logistics_id")
     private Integer logisticsId;
+
+
+    //productEntity 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private ProductEntity product;
+
+    //storageEntity 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "storage_id", insertable = false, updatable = false)
+    private StorageEntity storage;
+
+    //logisticsEntity 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "logistics_id", insertable = false, updatable = false)
+    private LogisticsEntity logistics;
 }
