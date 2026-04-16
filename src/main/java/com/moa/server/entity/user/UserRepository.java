@@ -1,12 +1,9 @@
 package com.moa.server.entity.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-<<<<<<< Updated upstream
-=======
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
->>>>>>> Stashed changes
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +15,7 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 
     Optional<UserEntity> findByEmployeeIdAndPassword(String employeeId, String password);
 
-<<<<<<< Updated upstream
-=======
     UserEntity getUserByEmployeeId(String employeeId);
-
 
     // 권한 조회
     @Query(value = "SELECT new com.moa.server.entity.user.dto.AdminUserDTO(" +
@@ -51,6 +45,7 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 //            "WHERE (:email IS NULL OR u.email LIKE %:email%) " +
 //            "AND (:phone IS NULL OR u.phone LIKE %:phone%)")
 //    List<AdminUserDTO> findAdminUserList(@Param("email") String email, @Param("phone") String phone);
->>>>>>> Stashed changes
+
+
 }
 
