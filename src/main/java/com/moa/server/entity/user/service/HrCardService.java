@@ -1,10 +1,6 @@
 package com.moa.server.entity.user.service;
 
-import com.moa.server.entity.user.AdminRoleRepository;
-import com.moa.server.entity.user.DepartmentRepository;
-import com.moa.server.entity.user.GradeRepository;
-import com.moa.server.entity.user.UserEntity;
-import com.moa.server.entity.user.UserRepository;
+import com.moa.server.entity.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +12,7 @@ import java.util.Locale;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class UserService {
+public class HrCardService {
     private final UserRepository userRepository;
 
     private final AdminRoleRepository adminRoleRepository;
