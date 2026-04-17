@@ -7,11 +7,9 @@ import lombok.Getter;
 @Builder
 public class LoginResponseDTO {
 
-    private boolean result;
     private String userName;
     private String employeeId;
     private  Integer departmentId;
     private Integer roleId;
-    private String message;
 
 }
