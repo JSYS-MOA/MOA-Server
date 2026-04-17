@@ -16,13 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController // json을 반환하기 위함  @Controller + @ResponseBody
-@RequestMapping("/api")
+@RequestMapping("/api/admin")
 @RequiredArgsConstructor
 public class AdminController {
 
     private final AdminService adminService;
 
-    @GetMapping("/admin/levels")
+    @GetMapping("/levels")
     public ResponseEntity<?> searchAdminUsers(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(defaultValue = "") String search) {
@@ -31,7 +31,7 @@ public class AdminController {
         return ResponseEntity.ok(result);
     }
 
-    @PatchMapping("/admin/levels/{userId}")
+    @PatchMapping("/levels/{userId}")
     public ResponseEntity<?> updateUserRole (
          @PathVariable("userId") Integer userId,
          @RequestParam("roleId") Integer roleId ) {

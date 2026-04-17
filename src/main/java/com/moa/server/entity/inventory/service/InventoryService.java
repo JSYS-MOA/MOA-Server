@@ -2,7 +2,7 @@ package com.moa.server.entity.inventory.service;
 
 import com.moa.server.entity.inventory.*;
 import com.moa.server.entity.inventory.dto.InventoryDTO;
-import com.moa.server.entity.inventory.dto.InventoryInfoDTO;
+import com.moa.server.entity.inventory.dto.LogisticsInfoDTO;
 import com.moa.server.entity.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,8 +31,8 @@ public class InventoryService {
         return inventoryRepository.findInventoryBySearch(search, pageable);
     }
 
-//    public Page<InventoryInfoDTO> findInventoryDtoBySearch(Integer info, Pageable pageable) {
-//        return inventoryRepository.findInventoryDtoPage(info, pageable);
-//    }
+    public Page<LogisticsInfoDTO> findInventoryDtoBySearch(Integer info, Pageable pageable) {
+        return logisticsRepository.findInventoryDtoPage(info, pageable);
+    }
 
 }

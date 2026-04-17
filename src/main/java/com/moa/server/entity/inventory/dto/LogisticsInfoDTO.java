@@ -23,7 +23,6 @@ public class LogisticsInfoDTO {
     private String logisticsType;
     private LocalDate logisticDate;
     private Integer logisticSno;
-    private Integer logisticsPrice;
 
     // productEntity에서 가져올 필드
     // 물품코드
@@ -37,7 +36,6 @@ public class LogisticsInfoDTO {
     private String storageCord;
     //창고명
     private String storageName;
-
 
 
 }

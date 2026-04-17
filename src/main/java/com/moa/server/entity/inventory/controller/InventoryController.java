@@ -1,9 +1,6 @@
 package com.moa.server.entity.inventory.controller;
 
 
-import com.moa.server.entity.calendar.service.CalendarService;
-import com.moa.server.entity.inventory.dto.InventoryDTO;
-import com.moa.server.entity.inventory.dto.InventoryInfoDTO;
 import com.moa.server.entity.inventory.service.InventoryService;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,9 +26,10 @@ public class InventoryController {
         return inventoryService.findInventoryBySearch(search, pageable);
     }
 
-//    @GetMapping("/status/{info}")
-//    public Page<?> findInventoryDtoBySearch(@PathParam("info") Integer info, Pageable pageable) {
-//        return inventoryService.findInventoryDtoBySearch(info, pageable);
-//    }
+    @GetMapping("/status/{info}")
+    public Page<?> findInventoryDtoBySearch(@PathVariable("info") Integer info, Pageable pageable) {
+        System.out.println("보낸 info 값: " + info);
+        return inventoryService.findInventoryDtoBySearch(info, pageable);
+    }
 
 }
