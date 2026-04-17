@@ -31,20 +31,19 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Inte
     Page<InventoryDTO> findInventoryBySearch(@Param("search") String search, Pageable pageable);
 
 
-    @Query(value = "SELECT new com.moa.server.entity.inventory.dto.InventoryInfoDTO(" +
-            "i.inventoryId, i.productId, i.storageId, i.inventorySno, i.expirationDate, i.inventoryMemo, i.logisticsId," +
-            "p.productCord, p.productName , p.productPrice , " +
-            "s.storageCord , s.storageName , " +
-            "l.logisticsOrderNum , l.logisticsType , l.logisticDate, l.logisticSno , l.logisticsPrice) " +
-            "FROM InventoryEntity i " +
-            "LEFT JOIN i.storage s "+
-            "LEFT JOIN i.product p "+
-            "LEFT JOIN i.logistics l "+
-            "WHERE i.inventoryId = :info " +
-            "ORDER BY l.logisticDate ASC "
-            )
-    //, countQuery = "SELECT count(i) FROM InventoryEntity i WHERE i.inventoryId = :info"
-    Page<InventoryInfoDTO> findInventoryDtoPage(@Param("info") Integer info, Pageable pageable);
+//    @Query(value = "SELECT new com.moa.server.entity.inventory.dto.InventoryInfoDTO(" +
+//            "i.inventoryId, i.productId, i.storageId, i.inventorySno, i.expirationDate, i.inventoryMemo, i.logisticsId," +
+//            "p.productCord, p.productName , p.productPrice , " +
+//            "s.storageCord , s.storageName , " +
+//            "l.logisticsOrderNum , l.logisticsType , l.logisticDate, l.logisticSno , l.logisticsPrice) " +
+//            "FROM InventoryEntity i " +
+//            "LEFT JOIN i.storage s "+
+//            "LEFT JOIN i.product p "+
+//            "LEFT JOIN i.logistics l "+
+//            "WHERE i.inventoryId = :info " +
+//            "ORDER BY l.logisticDate ASC "
+//    , countQuery = "SELECT count(i) FROM InventoryEntity i WHERE i.inventoryId = :info")
+//    Page<InventoryInfoDTO> findInventoryDtoPage(@Param("info") Integer info, Pageable pageable);
 
 }
 

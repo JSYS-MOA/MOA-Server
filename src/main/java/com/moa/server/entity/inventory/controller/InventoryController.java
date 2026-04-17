@@ -29,9 +29,9 @@ public class InventoryController {
         return inventoryService.findInventoryBySearch(search, pageable);
     }
 
-    @GetMapping("/status/{info}")
-    public Page<?> findInventoryDtoBySearch(@PathParam("info") Integer info, Pageable pageable) {
-        return inventoryService.findInventoryDtoBySearch(info, pageable);
-    }
+//    @GetMapping("/status/{info}")
+//    public Page<?> findInventoryDtoBySearch(@PathParam("info") Integer info, Pageable pageable) {
+//        return inventoryService.findInventoryDtoBySearch(info, pageable);
+//    }
 
 }

@@ -83,22 +83,6 @@ public class UserController{
         }
     }
 
-    @GetMapping("/admin/levels")
-    public ResponseEntity<?> searchAdminUsers(
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-            @RequestParam(defaultValue = "") String search) {
-
-        Page<AdminUserDTO> result = userService.getAdminUserList( search , pageable);
-        return ResponseEntity.ok(result);
-    }
-
-    @PatchMapping("/admin/levels/{userId}")
-    public ResponseEntity<?> updateUserRole (
-         @PathVariable("userId") Integer userId,
-         @RequestParam("roleId") Integer roleId ) {
-        int result =userService.updateUserRole(userId , roleId);
-        return ResponseEntity.ok(result);
-    }
 
 //    @GetMapping("/admin/levels")
 //    public ResponseEntity<?> searchAdminUsers(

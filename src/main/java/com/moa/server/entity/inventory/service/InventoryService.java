@@ -31,8 +31,8 @@ public class InventoryService {
         return inventoryRepository.findInventoryBySearch(search, pageable);
     }
 
-    public Page<InventoryInfoDTO> findInventoryDtoBySearch(Integer info, Pageable pageable) {
-        return inventoryRepository.findInventoryDtoPage(info, pageable);
-    }
+//    public Page<InventoryInfoDTO> findInventoryDtoBySearch(Integer info, Pageable pageable) {
+//        return inventoryRepository.findInventoryDtoPage(info, pageable);
+//    }
 
 }

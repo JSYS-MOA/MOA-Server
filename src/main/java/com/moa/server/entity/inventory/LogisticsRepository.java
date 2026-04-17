@@ -16,16 +16,16 @@ import java.time.LocalDate;
 @Repository
 public interface LogisticsRepository extends JpaRepository<LogisticsEntity, Integer> {
 
-    @Query(value = "SELECT new com.moa.server.entity.inventory.dto.LogisticsInfoDTO(" +
-            "l.logisticsId , l.productId , l.storageId , l.logisticsOrderNum , l.logisticsType , l.logisticDate, l.logisticSno , l.logisticsPrice," +
-            "p.productCord, p.productName , p.productPrice , " +
-            "s.storageCord , s.storageName )" +
-            "FROM Logistics l " +
-            "LEFT JOIN l.storage s "+
-            "LEFT JOIN l.product p "+
-            "WHERE l.productId = :info " +
-            "ORDER BY l.logisticDate ASC "
-            , countQuery = "SELECT count(i) FROM InventoryEntity i WHERE i.inventoryId = :info")
-    Page<LogisticsInfoDTO> findInventoryDtoPage(@Param("info") Integer info, Pageable pageable);
+//    @Query(value = "SELECT new com.moa.server.entity.inventory.dto.LogisticsInfoDTO(" +
+//            "l.logisticsId , l.productId , l.storageId , l.logisticsOrderNum , l.logisticsType , l.logisticDate, l.logisticSno , l.logisticsPrice," +
+//            "p.productCord, p.productName , p.productPrice , " +
+//            "s.storageCord , s.storageName )" +
+//            "FROM Logistics l " +
+//            "LEFT JOIN l.storage s "+
+//            "LEFT JOIN l.product p "+
+//            "WHERE l.productId = :info " +
+//            "ORDER BY l.logisticDate ASC "
+//            , countQuery = "SELECT count(i) FROM InventoryEntity i WHERE i.inventoryId = :info")
+//    Page<LogisticsInfoDTO> findInventoryDtoPage(@Param("info") Integer info, Pageable pageable);
 }
 

@@ -27,19 +27,6 @@ public class UserService {
     }
 
 
-    public Page<AdminUserDTO> getAdminUserList(String search , Pageable pageable) {
-
-        return userRepository.findAdminUserList( search , pageable);
-    }
-
-    public int updateUserRole ( Integer userId, Integer roleId ) {
-        return userRepository.updateUserIdRoleId( userId , roleId);
-    }
-
-//    public List<AdminUserDTO> getAdminUserList(String email, String phone) {
-//        // Repository의 @Query 호출
-//        return userRepository.findAdminUserList(email, phone);
-//    }
 
 
 }
