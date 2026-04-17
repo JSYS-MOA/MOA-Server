@@ -1,6 +1,5 @@
-package com.moa.server.entity.layout.dto;
+package com.moa.server.entity.menu.dto;
 
-import jakarta.persistence.Column;
 import lombok.*;
 
 @AllArgsConstructor
@@ -10,9 +9,9 @@ import lombok.*;
 @Builder
 public class MenuDTO {
 
-    private int menuId;
+    private Integer menuId;
     private String menuTitle;
-    private int menuNum;
+    private Integer menuNum;
     private String pagePath;
 
 }

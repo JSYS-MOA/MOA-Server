@@ -2,11 +2,9 @@ package com.moa.server.entity.layout.controller;
 
 import com.moa.server.entity.layout.dto.LayoutDTO;
 import com.moa.server.entity.layout.service.LayoutService;
+import com.moa.server.entity.user.UserEntity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,8 +14,8 @@ public class LayoutController {
     private final LayoutService layoutService;
 
     @GetMapping
-    public LayoutDTO getLayout(@RequestParam String employeeId) {
-        return layoutService.getLayout(employeeId);
+    public LayoutDTO getLayout(@SessionAttribute(name = "user") UserEntity user) {
+        return layoutService.getLayout(user.getEmployeeId());
     }
 
 }

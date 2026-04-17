@@ -28,13 +28,6 @@ public class LayoutDAO {
         return result.isEmpty() ? null : result.get(0);
     }
 
-    // 사이드바 메뉴들
-    public List<MenuEntity> findAllMenus() {
-
-        List<MenuEntity> result = em.createQuery("SELECT m FROM MenuEntity m ORDER BY m.menuNum ASC", MenuEntity.class)
-                .getResultList();
-        return result.isEmpty() ? null : result;
-    }
 }
 
 

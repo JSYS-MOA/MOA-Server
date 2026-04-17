@@ -1,6 +1,6 @@
 package com.moa.server.entity.layout.dto;
 
-import com.moa.server.entity.layout.dto.MenuDTO;
+import com.moa.server.entity.menu.dto.MenuDTO;
 import lombok.*;
 
 import java.util.List;
