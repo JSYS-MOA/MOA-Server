@@ -1,6 +1,4 @@
 package com.moa.server.entity.user.controller;
-
-import com.moa.server.entity.user.UserEntity;
 import com.moa.server.entity.user.dto.LoginRequestDTO;
 import com.moa.server.entity.user.dto.LoginResponseDTO;
 import com.moa.server.entity.user.service.UserService;
@@ -20,8 +18,6 @@ public class UserController{
     private final UserService userService;
 
     //로그인
-    //ResponseEntity란 Http 응답(상태코드, 헤더, 데이터)을 담는 객체
-    //RequestBody란 프론트 쪽에서 보내는 json 데이터를 받는 어노테이션
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request, HttpSession session){
         try{
@@ -61,20 +57,15 @@ public class UserController{
         UserEntity user = userService.loginInfo(employeeId);
     //로그아웃
     @GetMapping("/logout")
-    public ResponseEntity<LoginResponseDTO> logout(HttpSession session){
-        session.invalidate();
-        LoginResponseDTO response = LoginResponseDTO.builder()
-                .result(true)
-                .message("로그아웃 되었습니다")
-                .build();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Void> logout(HttpSession session){
+        userService.logout(session);
+        return ResponseEntity.ok().build();
     }
 
     //로그인 확인 -> 왜 하냐 -> 새로고침하면 zustand가 날아감
     //그래서 세션에서 확인하고 다시 유저 정보를 반환해서 zustand 다시 채움
     @GetMapping("/check")
     public ResponseEntity<LoginResponseDTO> check(HttpSession session){
-        UserEntity loginUser = (UserEntity) session.getAttribute("user");
 
         if (user != null) {
             return ResponseEntity.ok(user);
