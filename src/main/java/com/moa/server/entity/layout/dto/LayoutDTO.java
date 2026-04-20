@@ -1,6 +1,6 @@
 package com.moa.server.entity.layout.dto;
 
-import com.moa.server.entity.menu.dto.MenuDTO;
+import com.moa.server.entity.menu.MenuEntity;
 import lombok.*;
 
 import java.util.List;
@@ -17,6 +17,6 @@ public class LayoutDTO {
     private String departmentName;
     private String gradeName;
 
-    private List<MenuDTO> menuList;
+    private List<MenuEntity> menuList;
 
 }
