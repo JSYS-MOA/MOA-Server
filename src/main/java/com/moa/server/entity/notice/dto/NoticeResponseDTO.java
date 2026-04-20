@@ -13,6 +13,6 @@ public class NoticeResponseDTO {
     private String noticeTitle;
     private String noticeType;
     private String file;
-    private LocalDateTime postDate;
+    private String postDate;
     private Integer writer;
 }

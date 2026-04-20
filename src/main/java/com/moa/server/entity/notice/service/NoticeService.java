@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public class NoticeService {
                         .noticeId(notice.getNoticeId())
                         .noticeTitle(notice.getNoticeTitle())
                         .file(notice.getFile())
-                        .postDate(notice.getPostDate())
+                        .postDate(notice.getPostDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
                         .writer(notice.getWriter())
                         .build())
                 .collect(Collectors.toList());
