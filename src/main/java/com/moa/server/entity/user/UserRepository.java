@@ -83,5 +83,7 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
     List<UserEntity> findByBank(String bank);
 
     @EntityGraph(attributePaths = {"department", "grade"})
-    Page<UserEntity> findByBank(String bank, Pageable pageable);
+    Page<UserEntity> findByBank(String bank, Pageable pageable)
+            ;
+    Optional<UserEntity> findByEmployeeId(String employeeId);
 }
