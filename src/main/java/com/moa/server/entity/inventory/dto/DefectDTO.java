@@ -27,7 +27,11 @@ public class DefectDTO extends BaseEntity {
 
     private String defectMemo;
 
-    // 물품코드
+
+    private Integer inventorySno;
+
+    //인벤토리 안 물품
+    //  물품코드
     private String productCord;
     // 품목명
     private String productName;
@@ -37,4 +41,7 @@ public class DefectDTO extends BaseEntity {
     //user
     private String userName;
     private String employeeId;
+
+    // 인벤토리 안 창고명
+    private String storageName;
 }

@@ -66,9 +66,11 @@ public class DefectEntity extends BaseEntity {
                 .reqDate(this.reqDate)
                 .disposalDate(this.disposalDate)
                 .defectMemo(this.defectMemo)
+                .inventorySno(this.inventory != null ? this.inventory.getInventorySno() : null)
                 .productCord(this.inventory.getProduct() != null ? this.inventory.getProduct().getProductCord() : null)
                 .productName(this.inventory.getProduct() != null ? this.inventory.getProduct().getProductName() : null)
                 .productPrice(this.inventory.getProduct() != null ? this.inventory.getProduct().getProductPrice() : null)
+                .storageName(this.inventory.getStorage() != null ? this.inventory.getStorage().getStorageName() : null)
                 .userName(this.user != null ? this.user.getUserName() : null)
                 .employeeId(this.user != null ? this.user.getEmployeeId() : null)
                 .build();
