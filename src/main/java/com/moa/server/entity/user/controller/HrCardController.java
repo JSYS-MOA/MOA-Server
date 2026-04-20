@@ -1,6 +1,8 @@
 package com.moa.server.entity.user.controller;
 
 import com.moa.server.entity.user.UserEntity;
+import com.moa.server.entity.user.dto.HrCardRequestPageDTO;
+import com.moa.server.entity.user.dto.HrCardResponseDTO;
 import com.moa.server.entity.user.service.HrCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +21,15 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/hr")
 @RequiredArgsConstructor
 public class HrCardController {
 
     private final HrCardService hrCardService;
 
-    @GetMapping("/hr/cards")
+    @GetMapping("/cards")
     public ResponseEntity<?> hrCardList() {
-        List<UserEntity> user = hrCardService.hrCardList();
+        List<HrCardResponseDTO> user = hrCardService.hrCardResponseList();
 
         if (!user.isEmpty()) {
             return ResponseEntity.ok(user);
@@ -38,13 +40,21 @@ public class HrCardController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/hr/cards/search")
+    @GetMapping("/cards/page")
+    public ResponseEntity<HrCardRequestPageDTO<HrCardResponseDTO>> hrCardPageList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(hrCardService.hrCardPageList(page, size));
+    }
+
+    @GetMapping("/cards/search")
     public ResponseEntity<?> hrCardSearch(
             @RequestParam(required = false) String searchCondition,
             @RequestParam(required = false) String searchKeyword
     ) {
         try {
-            List<UserEntity> user = hrCardService.hrCardSearch(searchCondition, searchKeyword);
+            List<HrCardResponseDTO> user = hrCardService.hrCardResponseSearch(searchCondition, searchKeyword);
 
             if (!user.isEmpty()) {
                 return ResponseEntity.ok(user);
@@ -61,19 +71,36 @@ public class HrCardController {
         }
     }
 
-    @GetMapping("/hr/cards/{user_id}")
+    @GetMapping("/cards/search/page")
+    public ResponseEntity<?> hrCardPageSearch(
+            @RequestParam(required = false) String searchCondition,
+            @RequestParam(required = false) String searchKeyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        try {
+            return ResponseEntity.ok(hrCardService.hrCardPageSearch(searchCondition, searchKeyword, page, size));
+        } catch (IllegalArgumentException e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @GetMapping("/cards/{user_id}")
     public ResponseEntity<?> hrCardInfo(@PathVariable Integer user_id) {
-        UserEntity user = hrCardService.hrCardInfo(user_id);
+        HrCardResponseDTO user = hrCardService.hrCardInfo(user_id);
         if (user != null) {
             return ResponseEntity.ok(user);
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "해당하는 사번의 직원을 찾을 수 없습니다.");
+        response.put("message", "해당 사번의 직원을 찾을 수 없습니다.");
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/hr/cards/{user_id}")
+    @PutMapping("/cards/{user_id}")
     public ResponseEntity<?> hrCardUpdate(@PathVariable Integer user_id, @RequestBody UserEntity user) {
         try {
             UserEntity users = hrCardService.hrCardUpdate(user_id, user);
@@ -98,7 +125,7 @@ public class HrCardController {
         }
     }
 
-    @PostMapping("/hr/cards/add")
+    @PostMapping("/cards/add")
     public ResponseEntity<?> hrCardAdd(@RequestBody UserEntity user) {
         try {
             hrCardService.hrCardAdd(user);
@@ -116,7 +143,7 @@ public class HrCardController {
         }
     }
 
-    @DeleteMapping("/hr/cards/{user_id}")
+    @DeleteMapping("/cards/{user_id}")
     public ResponseEntity<?> hrCardDelete(@PathVariable Integer user_id) {
         try {
             hrCardService.hrCardDelete(user_id);
