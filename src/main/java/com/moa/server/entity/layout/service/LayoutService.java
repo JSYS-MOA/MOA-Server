@@ -3,7 +3,7 @@ package com.moa.server.entity.layout.service;
 import com.moa.server.entity.layout.LayoutRepository;
 import com.moa.server.entity.layout.dao.LayoutDAO;
 import com.moa.server.entity.layout.dto.LayoutDTO;
-import com.moa.server.entity.menu.dto.MenuDTO;
+import com.moa.server.entity.menu.MenuEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +26,8 @@ public class LayoutService {
         }
 
         // 2. 메뉴 리스트 조회 + DTO 변환
-        List<MenuDTO> menuList = repository.findAll().stream()
-                .map(m -> MenuDTO.builder()
+        List<MenuEntity> menuList = repository.findAll().stream()
+                .map(m -> MenuEntity.builder()
                         .menuId(m.getMenuId())
                         .menuTitle(m.getMenuTitle())
                         .menuNum(m.getMenuNum())
