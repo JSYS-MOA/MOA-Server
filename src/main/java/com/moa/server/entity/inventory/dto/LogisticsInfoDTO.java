@@ -1,5 +1,11 @@
 package com.moa.server.entity.inventory.dto;
 
+import com.moa.server.entity.inventory.ProductEntity;
+import com.moa.server.entity.inventory.StorageEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +29,7 @@ public class LogisticsInfoDTO {
     private String logisticsType;
     private LocalDate logisticDate;
     private Integer logisticSno;
+    private Integer logisticsPrice;
 
     // productEntity에서 가져올 필드
     // 물품코드
