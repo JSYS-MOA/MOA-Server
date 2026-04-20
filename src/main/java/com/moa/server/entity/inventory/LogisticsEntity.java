@@ -1,6 +1,8 @@
 package com.moa.server.entity.inventory;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.inventory.dto.InventoryDTO;
+import com.moa.server.entity.inventory.dto.LogisticsInfoDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -49,4 +51,24 @@ public class LogisticsEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "storage_id", insertable = false, updatable = false)
     private StorageEntity storage;
+
+    public LogisticsInfoDTO toDTO() {
+        return LogisticsInfoDTO.builder()
+                .logisticsId(this.logisticsId)
+                .productId(this.productId)
+                .storageId(this.storageId)
+                .logisticsOrderNum(this.logisticsOrderNum)
+                .logisticsType(this.logisticsType)
+                .logisticDate(this.logisticDate)
+                .logisticSno(this.logisticSno)
+                .logisticsPrice(this.logisticsPrice)
+                .productCord(this.product != null ? this.product.getProductCord() : null)
+                .productName(this.product != null ? this.product.getProductName() : null)
+                .productPrice(this.product != null ? this.product.getProductPrice() : null)
+                .storageCord(this.storage != null ? this.storage.getStorageCord() : null)
+                .storageName(this.storage != null ? this.storage.getStorageName() : null)
+                .build();
+    }
+
+
 }

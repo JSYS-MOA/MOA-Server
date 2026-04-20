@@ -1,6 +1,8 @@
 package com.moa.server.entity.user;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.inventory.dto.DefectDTO;
+import com.moa.server.entity.user.dto.AdminUserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -83,5 +85,26 @@ public class UserEntity extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", insertable = false, updatable = false)
     private DepartmentEntity department;
+
+    // InventoryEntity.java 내부 혹은 별도 Mapper
+    public AdminUserDTO toDTO() {
+        return AdminUserDTO.builder()
+                .roleId(this.roleId)
+                .userId(this.userId)
+                .userName(this.userName)
+                .employeeId(this.employeeId)
+                .phone(this.phone)
+                .email(this.email)
+                .roleName(this.role != null ? this.role.getName() : null)
+                .roleCode(this.role != null ? this.role.getCode() : null)
+                .gradeId(this.gradeId)
+                .gradeCord(this.grade != null ? this.grade.getGradeCord(): null)
+                .gradeName(this.grade != null ? this.grade.getGradeName() : null)
+                .departmentId(this.departmentId)
+                .departmentCord(this.department != null ? this.department.getDepartmentCord() : null)
+                .departmentName(this.department != null ? this.department.getDepartmentName() : null)
+                .build();
+
+    }
 
 }

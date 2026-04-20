@@ -24,10 +24,10 @@ public class AdminController {
 
     @GetMapping("/levels")
     public ResponseEntity<?> searchAdminUsers(
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(page = 0, size = 10, sort = "UserId", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam(defaultValue = "") String search) {
 
-        Page<AdminUserDTO> result = adminService.getAdminUserList( search , pageable);
+        Page<AdminUserDTO> result = adminService.getRoleList(search, pageable);
         return ResponseEntity.ok(result);
     }
 
@@ -39,13 +39,5 @@ public class AdminController {
         return ResponseEntity.ok(result);
     }
 
-//    @GetMapping("/admin/levels")
-//    public ResponseEntity<?> searchAdminUsers(
-//            @RequestParam(required = false) String email,
-//            @RequestParam(required = false) String phone) {
-//
-//        List<AdminUserDTO> result = userService.getAdminUserList(email, phone);
-//        return ResponseEntity.ok(result);
-//    }
 
 }

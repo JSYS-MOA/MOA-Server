@@ -9,7 +9,7 @@ public class LoginResponseDTO {
 
     private String userName;
     private String employeeId;
-    private  Integer departmentId;
+    private Integer departmentId;
     private Integer roleId;
 
 }

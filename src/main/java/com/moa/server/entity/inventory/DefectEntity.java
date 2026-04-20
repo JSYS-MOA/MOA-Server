@@ -1,6 +1,10 @@
 package com.moa.server.entity.inventory;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.inventory.dto.DefectDTO;
+import com.moa.server.entity.inventory.dto.InventoryDTO;
+import com.moa.server.entity.user.UserEntity;
+import com.moa.server.entity.user.dto.LoginResponseDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,4 +43,37 @@ public class DefectEntity extends BaseEntity {
 
     @Column(name = "defect_memo")
     private String defectMemo;
+
+    //user 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private UserEntity user;
+
+
+    //inventory 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "inventory_id", insertable = false, updatable = false)
+    private InventoryEntity inventory;
+
+    // InventoryEntity.java 내부 혹은 별도 Mapper
+    public DefectDTO toDTO() {
+        return DefectDTO.builder()
+                .defectId(this.defectId)
+                .userId(this.userId)
+                .inventoryId(this.inventoryId)
+                .defectSno(this.defectSno)
+                .defectStatus(this.defectStatus)
+                .reqDate(this.reqDate)
+                .disposalDate(this.disposalDate)
+                .defectMemo(this.defectMemo)
+                .productCord(this.inventory.getProduct() != null ? this.inventory.getProduct().getProductCord() : null)
+                .productName(this.inventory.getProduct() != null ? this.inventory.getProduct().getProductName() : null)
+                .productPrice(this.inventory.getProduct() != null ? this.inventory.getProduct().getProductPrice() : null)
+                .userName(this.user != null ? this.user.getUserName() : null)
+                .employeeId(this.user != null ? this.user.getEmployeeId() : null)
+                .build();
+    }
+
+
+
 }

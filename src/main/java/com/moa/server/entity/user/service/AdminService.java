@@ -1,11 +1,15 @@
 package com.moa.server.entity.user.service;
 
+import com.moa.server.entity.inventory.InventoryEntity;
+import com.moa.server.entity.inventory.dto.InventoryDTO;
 import com.moa.server.entity.user.UserEntity;
 import com.moa.server.entity.user.UserRepository;
 import com.moa.server.entity.user.dto.AdminUserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,19 +21,19 @@ public class AdminService {
 
     private final UserRepository userRepository;
 
-    public Page<AdminUserDTO> getAdminUserList(String search , Pageable pageable) {
+    // 권한 조회
+    public Page<AdminUserDTO> getRoleList(String userName, Pageable pageable) {
 
-        return userRepository.findAdminUserList( search , pageable);
+        Page<UserEntity> entityPage = userRepository.findByUserNameContaining( userName,  pageable);
+
+        // .map()을 통해 간단하게 DTO로 변환
+        return entityPage.map(UserEntity::toDTO);
     }
+
 
     public int updateUserRole ( Integer userId, Integer roleId ) {
         return userRepository.updateUserIdRoleId( userId , roleId);
     }
-
-//    public List<AdminUserDTO> getAdminUserList(String email, String phone) {
-//        // Repository의 @Query 호출
-//        return userRepository.findAdminUserList(email, phone);
-//    }
 
 
 }

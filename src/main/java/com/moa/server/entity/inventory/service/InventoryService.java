@@ -1,6 +1,7 @@
 package com.moa.server.entity.inventory.service;
 
 import com.moa.server.entity.inventory.*;
+import com.moa.server.entity.inventory.dto.DefectDTO;
 import com.moa.server.entity.inventory.dto.InventoryDTO;
 import com.moa.server.entity.inventory.dto.LogisticsInfoDTO;
 import com.moa.server.entity.user.UserRepository;
@@ -27,12 +28,28 @@ public class InventoryService {
     private final StorageRepository storageRepository;
     private final LogisticsRepository logisticsRepository;
 
-    public Page<InventoryDTO>  findInventoryBySearch(String search, Pageable pageable) {
-        return inventoryRepository.findInventoryBySearch(search, pageable);
+    //재고조회
+    public Page<InventoryDTO> getInventoryList(String search, Pageable pageable) {
+        Page<InventoryEntity> entityPage = inventoryRepository.findByProduct_ProductNameContaining(search, pageable);
+
+        // .map()을 통해 간단하게 DTO로 변환
+        return entityPage.map(InventoryEntity::toDTO);
     }
 
-    public Page<LogisticsInfoDTO> findInventoryDtoBySearch(Integer info, Pageable pageable) {
-        return logisticsRepository.findInventoryDtoPage(info, pageable);
+    // 재고 상세조회
+    public Page<LogisticsInfoDTO> getInventoryListInfo(Integer productId, Pageable pageable) {
+        Page<LogisticsEntity> entityPage = logisticsRepository.findByProduct_ProductId(productId, pageable);
+
+        // .map()을 통해 간단하게 DTO로 변환
+        return entityPage.map(LogisticsEntity::toDTO);
     }
+
+    public Page<DefectDTO> getDefectList (String productName, Pageable pageable) {
+        Page<DefectEntity> entityPage = defectRepository.findByProduct_ProductNameContaining( productName,  pageable);
+
+        // .map()을 통해 간단하게 DTO로 변환
+        return entityPage.map(DefectEntity::toDTO);
+    }
+
 
 }

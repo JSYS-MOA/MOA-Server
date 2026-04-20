@@ -37,17 +37,6 @@ public class InventoryDTO {
     //창고명
     private String storageName;
 
-//    private Integer logisticsOrderNum;
-//    private String logisticsType;
-//    private LocalDate logisticDate;
-//    private Integer logisticSno;
-//    private Integer logisticsPrice;
-
-
-    // DepartmentEntity에서 가져올 필드
-
-
-
-
+    
 
 }
