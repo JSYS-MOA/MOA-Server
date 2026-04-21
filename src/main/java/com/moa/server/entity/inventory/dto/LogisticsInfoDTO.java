@@ -1,19 +1,13 @@
 package com.moa.server.entity.inventory.dto;
 
-import com.moa.server.entity.inventory.ProductEntity;
-import com.moa.server.entity.inventory.StorageEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
+// 재고상세조회
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

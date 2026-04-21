@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-
+// 불량퍠기
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
