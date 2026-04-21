@@ -11,8 +11,9 @@ public class NoticeResponseDTO {
 
     private Integer noticeId;
     private String noticeTitle;
+    private String noticeContent;
     private String noticeType;
     private String file;
     private String postDate;
-    private Integer writer;
+    private String writerName;
 }

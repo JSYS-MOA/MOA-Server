@@ -34,7 +34,8 @@ public class UserService {
                 user.getEmployeeId(),
                 user.getDepartmentId(),
                 user.getRoleId(),
-                user.getUserName()
+                user.getUserName(),
+                user.getUserId()
         ));
 
         return LoginResponseDTO.builder()
