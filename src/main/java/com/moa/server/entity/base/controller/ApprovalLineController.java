@@ -19,20 +19,20 @@ public class ApprovalLineController {
     public List<ApprovalLineEntity> list() {
         return service.getList();
     }
-    @GetMapping("/{approval_line_id}")
-    public ApprovalLineEntity detail(@PathVariable Integer id) {
-        return service.getDetail(id);
+    @GetMapping("/{approvalLineId}")
+    public ApprovalLineEntity detail(@PathVariable Integer approvalLineId) {
+        return service.getDetail(approvalLineId);
     }
     @PostMapping
     public void add(@RequestBody ApprovalLineEntity data) {
         service.register(data);
     }
-    @PutMapping("/{approval_line_id}")
+    @PutMapping("/{approvalLineId}")
     public void update(@RequestBody ApprovalLineEntity data) {
         service.modify(data);
     }
-    @DeleteMapping("/{approval_line_id}")
-    public void delete(@PathVariable Integer id) {
-        service.remove(id);
+    @DeleteMapping("/{approvalLineId}")
+    public void delete(@PathVariable Integer approvalLineId) {
+        service.remove(approvalLineId);
     }
 }

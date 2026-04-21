@@ -19,20 +19,20 @@ public class ProductController {
     public List<ProductEntity> list() {
         return service.getList();
     }
-    @GetMapping("/{product_id}")
-    public ProductEntity detail(@PathVariable Integer id) {
-        return service.getDetail(id);
+    @GetMapping("/{productId}")
+    public ProductEntity detail(@PathVariable Integer productId) {
+        return service.getDetail(productId);
     }
     @PostMapping
     public void add(@RequestBody ProductEntity data) {
         service.register(data);
     }
-    @PutMapping("/{product_id}")
+    @PutMapping("/{productId}")
     public void update(@RequestBody ProductEntity data) {
         service.modify(data);
     }
-    @DeleteMapping("/{product_id}")
-    public void delete(@PathVariable Integer id) {
-        service.remove(id);
+    @DeleteMapping("/{productId}")
+    public void delete(@PathVariable Integer productId) {
+        service.remove(productId);
     }
 }

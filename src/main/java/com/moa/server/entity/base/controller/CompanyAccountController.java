@@ -19,20 +19,20 @@ public class CompanyAccountController {
     public List<CompanyAccountEntity> list() {
         return service.getList();
     }
-    @GetMapping("/{company_account_id}")
-    public CompanyAccountEntity detail(@PathVariable Integer id) {
-        return service.getDetail(id);
+    @GetMapping("/{companyAccountId}")
+    public CompanyAccountEntity detail(@PathVariable Integer companyAccountId) {
+        return service.getDetail(companyAccountId);
     }
     @PostMapping
     public void add(@RequestBody CompanyAccountEntity data) {
         service.register(data);
     }
-    @PutMapping("/{company_account_id}")
+    @PutMapping("/{companyAccountId}")
     public void update(@RequestBody CompanyAccountEntity data) {
         service.modify(data);
     }
-    @DeleteMapping("/{company_account_id}")
-    public void delete(@PathVariable Integer id) {
-        service.remove(id);
+    @DeleteMapping("/{companyAccountId}")
+    public void delete(@PathVariable Integer companyAccountId) {
+        service.remove(companyAccountId);
     }
 }

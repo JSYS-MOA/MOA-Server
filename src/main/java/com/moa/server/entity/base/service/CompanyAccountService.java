@@ -13,10 +13,10 @@ public class CompanyAccountService {
     private final CompanyAccountRepository repository;
 
     public List<CompanyAccountEntity> getList() { return repository.findAll(); }
-    public CompanyAccountEntity getDetail(Integer id) {
-        return repository.findById(id).orElse(null);
+    public CompanyAccountEntity getDetail(Integer companyAccountId) {
+        return repository.findById(companyAccountId).orElse(null);
     }
     public void register(CompanyAccountEntity data) { repository.save(data); }
     public void modify(CompanyAccountEntity data) { repository.save(data); } // JPA는 save가 수정도 함
-    public void remove(Integer id) { repository.deleteById(id); }
+    public void remove(Integer companyAccountId) { repository.deleteById(companyAccountId); }
 }

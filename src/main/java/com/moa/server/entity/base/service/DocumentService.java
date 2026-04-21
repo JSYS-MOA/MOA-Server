@@ -13,10 +13,10 @@ public class DocumentService {
     private final DocumentRepository repository;
 
     public List<DocumentEntity> getList() { return repository.findAll(); }
-    public DocumentEntity getDetail(Integer id) {
-        return repository.findById(id).orElse(null);
+    public DocumentEntity getDetail(Integer documentId) {
+        return repository.findById(documentId).orElse(null);
     }
     public void register(DocumentEntity data) { repository.save(data); }
     public void modify(DocumentEntity data) { repository.save(data); } // JPA는 save가 수정도 함
-    public void remove(Integer id) { repository.deleteById(id); }
+    public void remove(Integer documentId) { repository.deleteById(documentId); }
 }
