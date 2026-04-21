@@ -1,16 +1,16 @@
 package com.moa.server.entity.inventory.controller;
 
 
+import com.moa.server.entity.inventory.dto.OrderPutDTO;
 import com.moa.server.entity.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // 결재관련
 
@@ -61,6 +61,19 @@ public class InventoryController {
             @PathVariable("info") Integer info,
             @PageableDefault(page = 0, size = 10 )Pageable pageable) {
         return inventoryService.getOrdererListInfo(info, pageable);
+    }
+
+    @PutMapping("/orders/{orderFormId}")
+    public void updateSnoList(
+            @PathVariable("orderFormId") Integer orderFormId,
+            @RequestBody List<OrderPutDTO> dtoList) {
+        inventoryService.putOrdererSno(orderFormId, dtoList);
+    }
+
+    @GetMapping("/orders/select/product")
+    public Page<?> getProductList (
+            @PageableDefault(page = 0, size = 10 )Pageable pageable) {
+        return inventoryService.getProductCord( pageable);
     }
 
 }

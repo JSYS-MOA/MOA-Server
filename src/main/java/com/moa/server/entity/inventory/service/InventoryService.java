@@ -1,10 +1,7 @@
 package com.moa.server.entity.inventory.service;
 
 import com.moa.server.entity.inventory.*;
-import com.moa.server.entity.inventory.dto.DefectDTO;
-import com.moa.server.entity.inventory.dto.InventoryDTO;
-import com.moa.server.entity.inventory.dto.LogisticsInfoDTO;
-import com.moa.server.entity.inventory.dto.OrderDTO;
+import com.moa.server.entity.inventory.dto.*;
 import com.moa.server.entity.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -124,4 +121,32 @@ public class InventoryService {
         return entityPage.map(OrdererEntity::toinfoDTO);
     }
 
+    // 구매관리할 떄 물품 정보를 가져오기 위해서
+    public Page<ProductCordMapDTO> getProductCord(Pageable pageable) {
+        Page<ProductEntity> entityPage = productRepository.findAll(pageable);
+        return entityPage.map(ProductEntity::toDTO);
+    }
+
+    // 오더 수량 수정 및 추가
+    @Transactional
+    public void putOrdererSno(Integer orderFormId ,List<OrderPutDTO> dtoList) {
+        for (OrderPutDTO dto : dtoList) {
+            if (dto.getOrdererId() != null) {
+                // 1. 기존 데이터 수정 (UPDATE)
+                ordererRepository.findById(dto.getOrdererId()).ifPresent(orderer -> {
+                    orderer.setOrderSno(dto.getOrderSno());
+                });
+            } else {
+
+                OrdererEntity newOrderer = OrdererEntity.builder()
+                        .orderformId(orderFormId)
+                        .productId(dto.getProductId())
+                        .unitPrice(dto.getUnitPrice())
+                        .orderSno(dto.getOrderSno())
+                        // ... 기타 필요한 필드 세팅
+                        .build();
+                ordererRepository.save(newOrderer);
+            }
+        }
+    }
 }
