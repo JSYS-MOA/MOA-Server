@@ -30,10 +30,6 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 
     boolean existsByEmployeeIdAndPassword(String employeeId, String password);
 
-    UserEntity getUserByEmployeeId(String employeeId);
-
-    UserEntity getUserByUserId(Integer userId);
-
     @EntityGraph(attributePaths = {"department", "grade"})
     List<UserEntity> findByUserNameContaining(String userName);
 
@@ -45,10 +41,6 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 
     @EntityGraph(attributePaths = {"department", "grade"})
     Page<UserEntity> findByEmployeeIdContaining(String employeeId, Pageable pageable);
-
-    List<UserEntity> findByStartDateBetween(LocalDate start, LocalDate end);
-
-    List<UserEntity> findByQuitDateBetween(LocalDate start, LocalDate end);
 
 
     @EntityGraph(attributePaths = {"department", "grade"})
@@ -62,10 +54,6 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 
     @EntityGraph(attributePaths = {"department", "grade"})
     Page<UserEntity> findByQuitDateIsNull(Pageable pageable);
-
-    UserEntity findByEmail(String email);
-
-    List<UserEntity> findByEmailContaining(String email);
 
     @EntityGraph(attributePaths = {"department", "grade"})
     List<UserEntity> findByDepartmentId(Integer departmentId);
