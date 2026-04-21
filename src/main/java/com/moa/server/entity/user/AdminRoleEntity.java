@@ -18,8 +18,8 @@ public class AdminRoleEntity extends BaseEntity {
     @Column(name = "admin_role_id")
     private Integer id;
 
-    @Column(name = "admin_role_code")
-    private String code;
+    @Column(name = "admin_role_cord")
+    private String cord;
 
     @Column(name = "admin_role_name")
     private String name;
