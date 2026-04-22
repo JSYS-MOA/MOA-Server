@@ -16,4 +16,5 @@ public class NoticeResponseDTO {
     private String file;
     private String postDate;
     private String writerName;
+    private Integer writerId;
 }

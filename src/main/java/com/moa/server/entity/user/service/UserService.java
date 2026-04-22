@@ -43,6 +43,7 @@ public class UserService {
                 .departmentId(user.getDepartmentId())
                 .roleId(user.getRoleId())
                 .userName(user.getUserName())
+                .userId(user.getUserId())
                 .build();
     }
 
@@ -63,6 +64,7 @@ public class UserService {
                 .departmentId(loginUser.getDepartmentId())
                 .roleId(loginUser.getRoleId())
                 .userName(loginUser.getUserName())
+                .userId(loginUser.getUserId())
                 .build();
     }
 }

@@ -48,6 +48,7 @@ public enum ErrorCode {
     UNAUTHORIZED(401, "A002", "로그인이 필요합니다"),
 
     FILE_NOT_FOUND(404,"F001","파일을 찾을 수 없습니다"),
+    NOTICE_NOT_FOUND(404,"F001","공지사항을 찾을 수 없습니다"),
 
     //유저
     USER_NOT_FOUND(404, "U001", "사용자를 찾을 수 없습니다");
