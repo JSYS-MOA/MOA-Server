@@ -106,7 +106,7 @@ public class NoticeController {
                 .body(resource);
     }
 
-    @DeleteMapping("/notices/{noticeId")
+    @DeleteMapping("/notices/{noticeId}")
     public ResponseEntity<Void> deleteNotice(
             @PathVariable Integer noticeId,
             HttpSession session) {
