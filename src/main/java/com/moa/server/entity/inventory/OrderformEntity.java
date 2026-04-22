@@ -26,7 +26,7 @@ public class OrderformEntity extends BaseEntity {
     @Column(name = "orderform_date")
     private LocalDate orderformDate;
 
-    @Column(name = "stock_in_date")
+    @Column(name = "stock_in_date", nullable = true)
     private LocalDate stockInDate;
 
     @Column(name = "order_status")

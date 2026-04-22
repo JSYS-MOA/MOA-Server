@@ -21,5 +21,8 @@ public interface OrdererRepository extends JpaRepository<OrdererEntity, Integer>
     @EntityGraph(attributePaths = {"product", "orderform" , "orderform.vendor" })
     Page<OrdererEntity> findByOrderformId(Integer orderformId, Pageable pageable);
 
+    void deleteByOrderformId(Integer orderformId);
+
+    List<OrdererEntity> findByOrderformId(Integer orderFormId);
 }
 

@@ -1,6 +1,8 @@
 package com.moa.server.entity.inventory;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.inventory.dto.ProductCordMapDTO;
+import com.moa.server.entity.inventory.dto.VendorCordMapDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,4 +27,12 @@ public class VendorEntity extends BaseEntity {
 
     @Column(name = "vendor_is_use")
     private Integer vendorIsUse;
+
+    public VendorCordMapDTO toDTO() {
+        return VendorCordMapDTO.builder()
+                .vendorId(this.vendorId)
+                .vendorCord(this.vendorCord)
+                .vendorName(this.vendorName)
+                .build();
+    }
 }

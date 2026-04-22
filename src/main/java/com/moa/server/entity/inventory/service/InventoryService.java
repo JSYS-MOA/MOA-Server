@@ -10,9 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 //물품 재교 관련
@@ -127,9 +129,27 @@ public class InventoryService {
         return entityPage.map(ProductEntity::toDTO);
     }
 
-    // 오더 수량 수정 및 추가
+    // 구매관리할 떄 거래처 정보를 가져오기 위해서
+    public Page<VendorCordMapDTO> getVendorCord(Pageable pageable) {
+        Page<VendorEntity> entityPage = vendorRepository.findAll(pageable);
+        return entityPage.map(VendorEntity::toDTO);
+    }
+
+    // 오더 수량 수정 및 추가 및 삭제
     @Transactional
     public void putOrdererSno(Integer orderFormId ,List<OrderPutDTO> dtoList) {
+
+        List<OrdererEntity> existingEntities = ordererRepository.findByOrderformId(orderFormId);
+
+        List<Integer> incomingIds = dtoList.stream()
+                .map(OrderPutDTO::getOrdererId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        existingEntities.stream()
+                .filter(entity -> !incomingIds.contains(entity.getOrdererId()))
+                .forEach(ordererRepository::delete);
+
         for (OrderPutDTO dto : dtoList) {
             if (dto.getOrdererId() != null) {
                 // 1. 기존 데이터 수정 (UPDATE)
@@ -149,4 +169,150 @@ public class InventoryService {
             }
         }
     }
+
+    // 발주폼 추가
+    @Transactional
+    public void insertOrderForm(OrderFormPostDTO dto) {
+
+        OrderformEntity orderForm = OrderformEntity.builder()
+                .vendorId(dto.getVendorId())
+                .stockInDate(dto.getStockInDate())
+                .orderformDate(dto.getOrderformDate())
+                .orderStatus(dto.getOrderStatus())
+                .build();
+
+        OrderformEntity savedForm = orderformRepository.save(orderForm);
+
+        List<OrdererEntity> ordererDetails = dto.getItems().stream()
+                .map(itemDto -> OrdererEntity.builder()
+                        .orderformId(savedForm.getOrderformId()) // 마스터의 ID를 주입
+                        .productId(itemDto.getProductId())
+                        .orderSno(itemDto.getOrderSno())
+                        .unitPrice(itemDto.getUnitPrice())
+                        // ordererId(상세 PK)는 Auto Increment로 자동 생성됨
+                        .build())
+                .collect(Collectors.toList());
+
+        // 상세 내역 리스트를 orderer 테이블에 일괄 저장
+        ordererRepository.saveAll(ordererDetails);
+
+    }
+
+    // 발주폼 삭제
+    @Transactional
+    public void DeleteOrderForm(Integer orderFormId) {
+        ordererRepository.deleteByOrderformId(orderFormId);
+        orderformRepository.deleteById(orderFormId);
+    }
+
+    //입고 리스트
+    public Page<LogisticsInfoDTO> getLogisticsList ( Pageable pageable) {
+        List<LogisticsEntity> allEntities = logisticsRepository.findByLogisticsType();
+
+        Map<Integer, LogisticsInfoDTO> groupedMap = allEntities.stream()
+                .collect(Collectors.groupingBy(
+                        LogisticsEntity::getLogisticsOrderNum,
+                        Collectors.collectingAndThen(Collectors.toList(), list -> {
+
+                            int totalSno = list.stream().mapToInt(o -> o.getLogisticSno() != null ? o.getLogisticSno() : 0).sum();
+
+                            //  물품합치기용
+                            String firstProductName = list.get(0).getProduct() != null ? list.get(0).getProduct().getProductName() : "알 수 없음";
+                            String combinedProductName = (list.size() > 1)
+                                    ? firstProductName + " 외 " + (list.size() - 1) + "건"
+                                    : firstProductName;
+
+                            LogisticsEntity first = list.get(0);
+
+                            return LogisticsInfoDTO.builder()
+                                    .logisticsId(first.getLogisticsId())
+                                    .productName(combinedProductName)
+                                    .logisticSno(totalSno)
+                                    .storageId(first.getStorageId())
+                                    .productId(first.getProductId())
+                                    .logisticsOrderNum(first.getLogisticsOrderNum())
+                                    .logisticsType(first.getLogisticsType())
+                                    .logisticDate(first.getLogisticDate())
+                                    .logisticsPrice(first.getLogisticsPrice())
+                                    .productCord(first.getProduct() != null ? first.getProduct().getProductCord() : null)
+                                    .productPrice(first.getProduct() != null ? first.getProduct().getProductPrice() : null)
+                                    .storageCord(first.getStorage() != null ? first.getStorage().getStorageCord() : null)
+                                    .storageName(first.getStorage() != null ? first.getStorage().getStorageName() : null)
+                                    .build();
+                        })
+                ));
+
+        List<LogisticsInfoDTO> groupedList = new ArrayList<>(groupedMap.values());
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), groupedList.size());
+
+        if (start > end) return new PageImpl<>(new ArrayList<>(), pageable, groupedList.size());
+
+        return new PageImpl<>(groupedList.subList(start, end), pageable, groupedList.size());
+
+    }
+
+    //입고  상세리스트
+    public Page<LogisticsInfoDTO> getLogisticsListInfo(Integer logisticsOrderNum, Pageable pageable) {
+        Page<LogisticsEntity> entityPage = logisticsRepository.findByLogisticsTypeAndLogisticsOrderNum(logisticsOrderNum , pageable);
+
+        return entityPage.map(LogisticsEntity::toDTO);
+    }
+
+    //출고 리스트
+    public Page<LogisticsInfoDTO> getLogisticsOutList ( Pageable pageable) {
+        List<LogisticsEntity> allEntities = logisticsRepository.findByLogisticsTypeOut();
+
+        Map<Integer, LogisticsInfoDTO> groupedMap = allEntities.stream()
+                .collect(Collectors.groupingBy(
+                        LogisticsEntity::getLogisticsOrderNum,
+                        Collectors.collectingAndThen(Collectors.toList(), list -> {
+
+                            int totalSno = list.stream().mapToInt(o -> o.getLogisticSno() != null ? o.getLogisticSno() : 0).sum();
+
+                            //  물품합치기용
+                            String firstProductName = list.get(0).getProduct() != null ? list.get(0).getProduct().getProductName() : "알 수 없음";
+                            String combinedProductName = (list.size() > 1)
+                                    ? firstProductName + " 외 " + (list.size() - 1) + "건"
+                                    : firstProductName;
+
+                            LogisticsEntity first = list.get(0);
+
+                            return LogisticsInfoDTO.builder()
+                                    .logisticsId(first.getLogisticsId())
+                                    .productName(combinedProductName)
+                                    .logisticSno(totalSno)
+                                    .storageId(first.getStorageId())
+                                    .productId(first.getProductId())
+                                    .logisticsOrderNum(first.getLogisticsOrderNum())
+                                    .logisticsType(first.getLogisticsType())
+                                    .logisticDate(first.getLogisticDate())
+                                    .logisticsPrice(first.getLogisticsPrice())
+                                    .productCord(first.getProduct() != null ? first.getProduct().getProductCord() : null)
+                                    .productPrice(first.getProduct() != null ? first.getProduct().getProductPrice() : null)
+                                    .storageCord(first.getStorage() != null ? first.getStorage().getStorageCord() : null)
+                                    .storageName(first.getStorage() != null ? first.getStorage().getStorageName() : null)
+                                    .build();
+                        })
+                ));
+
+        List<LogisticsInfoDTO> groupedList = new ArrayList<>(groupedMap.values());
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), groupedList.size());
+
+        if (start > end) return new PageImpl<>(new ArrayList<>(), pageable, groupedList.size());
+
+        return new PageImpl<>(groupedList.subList(start, end), pageable, groupedList.size());
+
+    }
+
+    //출고  상세리스트
+    public Page<LogisticsInfoDTO> getLogisticsOutListInfo(Integer logisticsOrderNum, Pageable pageable) {
+        Page<LogisticsEntity> entityPage = logisticsRepository.findByLogisticsTypeOutAndLogisticsOrderNum(logisticsOrderNum , pageable);
+
+        return entityPage.map(LogisticsEntity::toDTO);
+    }
+
 }
