@@ -44,7 +44,10 @@ public class WorkEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "allowance_cord",
-            referencedColumnName = "allowance_cord"
+            referencedColumnName = "allowance_cord",
+            insertable = false,
+            updatable = false,
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT) // 물리적 FK 생성 안 함
     )
     private AllowanceEntity allowance;
 
