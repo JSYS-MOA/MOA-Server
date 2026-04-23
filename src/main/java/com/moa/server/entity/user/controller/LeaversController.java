@@ -15,11 +15,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/hr")
 @RequiredArgsConstructor
-public class SepCardController {
+public class LeaversController {
 
     private final HrCardService hrCardService;
 
-    @GetMapping("/sepcards")
+    @GetMapping("/leavers")
     public ResponseEntity<?> hrCardList() {
         List<HrCardResponseDTO> user = hrCardService.hrCardResponseList();
 
@@ -32,7 +32,7 @@ public class SepCardController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/sepcards/page")
+    @GetMapping("/leavers/page")
     public ResponseEntity<HrCardRequestPageDTO<HrCardResponseDTO>> hrCardPageList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -40,7 +40,7 @@ public class SepCardController {
         return ResponseEntity.ok(hrCardService.hrCardPageList(page, size));
     }
 
-    @GetMapping("/sepcards/search")
+    @GetMapping("/leavers/search")
     public ResponseEntity<?> hrCardSearch(
             @RequestParam(required = false) String searchCondition,
             @RequestParam(required = false) String searchKeyword
@@ -63,7 +63,7 @@ public class SepCardController {
         }
     }
 
-    @GetMapping("/sepcards/sep/page")
+    @GetMapping("/leavers/sep/page")
     public ResponseEntity<?> hrCardPageSearch(
             @RequestParam(required = false) String searchCondition,
             @RequestParam(required = false) String searchKeyword,
@@ -80,7 +80,7 @@ public class SepCardController {
         }
     }
 
-    @GetMapping("/sepcards/{user_id}")
+    @GetMapping("/leavers/{user_id}")
     public ResponseEntity<?> hrCardInfo(@PathVariable Integer user_id) {
         HrCardResponseDTO user = hrCardService.hrCardInfo(user_id);
         if (user != null) {
@@ -92,7 +92,7 @@ public class SepCardController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/sepcards/{user_id}")
+    @PutMapping("/leavers/{user_id}")
     public ResponseEntity<?> hrCardUpdate(@PathVariable Integer user_id, @RequestBody UserEntity user) {
         try {
             UserEntity users = hrCardService.hrCardUpdate(user_id, user);
@@ -117,7 +117,7 @@ public class SepCardController {
         }
     }
 
-    @PostMapping("/sepcards/add")
+    @PostMapping("/leavers/add")
     public ResponseEntity<?> hrCardAdd(@RequestBody UserEntity user) {
         try {
             hrCardService.hrCardAdd(user);
@@ -135,7 +135,7 @@ public class SepCardController {
         }
     }
 
-    @DeleteMapping("/sepcards/{user_id}")
+    @DeleteMapping("/leavers/{user_id}")
     public ResponseEntity<?> hrCardDelete(@PathVariable Integer user_id) {
         try {
             hrCardService.hrCardDelete(user_id);
