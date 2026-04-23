@@ -13,11 +13,11 @@ public class AllowanceService {
     private final AllowanceRepository repository;
 
     public List<AllowanceEntity> getList() { return repository.findAll(); }
-    public AllowanceEntity getDetail(Integer id) {
-        return repository.findById(id).orElse(null);
+    public AllowanceEntity getDetail(Integer allowanceId) {
+        return repository.findById(allowanceId).orElse(null);
     }
     public void register(AllowanceEntity data) { repository.save(data); }
     public void modify(AllowanceEntity data) { repository.save(data); } // JPA는 save가 수정도 함
-    public void remove(Integer id) { repository.deleteById(id); }
+    public void remove(Integer allowanceId) { repository.deleteById(allowanceId); }
 
 }

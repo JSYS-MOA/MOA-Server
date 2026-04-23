@@ -13,10 +13,10 @@ public class ApprovalLineService {
     private final ApprovalLineRepository repository;
 
     public List<ApprovalLineEntity> getList() { return repository.findAll(); }
-    public ApprovalLineEntity getDetail(Integer id) {
-        return repository.findById(id).orElse(null);
+    public ApprovalLineEntity getDetail(Integer approvalLineId) {
+        return repository.findById(approvalLineId).orElse(null);
     }
     public void register(ApprovalLineEntity data) { repository.save(data); }
     public void modify(ApprovalLineEntity data) { repository.save(data); } // JPA는 save가 수정도 함
-    public void remove(Integer id) { repository.deleteById(id); }
+    public void remove(Integer approvalLineId) { repository.deleteById(approvalLineId); }
 }

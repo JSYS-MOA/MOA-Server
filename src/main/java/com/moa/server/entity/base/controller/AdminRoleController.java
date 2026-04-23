@@ -20,7 +20,7 @@ public class AdminRoleController {
     public List<AdminRoleEntity> list() {
         return service.getList();
     }
-    @GetMapping("/{grade_id}")
+    @GetMapping("/{id}")
     public AdminRoleEntity detail(@PathVariable Integer id) {
         return service.getDetail(id);
     }
@@ -28,11 +28,11 @@ public class AdminRoleController {
     public void add(@RequestBody AdminRoleEntity data) {
         service.register(data);
     }
-    @PutMapping("/{grade_id}")
+    @PutMapping("/{id}")
     public void update(@RequestBody AdminRoleEntity data) {
         service.modify(data);
     }
-    @DeleteMapping("/{grade_id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         service.remove(id);
     }

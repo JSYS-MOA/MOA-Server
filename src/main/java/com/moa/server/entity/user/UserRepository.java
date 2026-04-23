@@ -74,4 +74,8 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
     Page<UserEntity> findByBank(String bank, Pageable pageable)
             ;
     Optional<UserEntity> findByEmployeeId(String employeeId);
+
+    boolean existsByGradeId(Integer gradeId);
+
 }
+

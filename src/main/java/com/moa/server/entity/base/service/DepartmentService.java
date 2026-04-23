@@ -13,10 +13,10 @@ public class DepartmentService {
     private final DepartmentRepository repository;
 
     public List<DepartmentEntity> getList() { return repository.findAll(); }
-    public DepartmentEntity getDetail(Integer id) {
-        return repository.findById(id).orElse(null);
+    public DepartmentEntity getDetail(Integer departmentId) {
+        return repository.findById(departmentId).orElse(null);
     }
     public void register(DepartmentEntity data) { repository.save(data); }
     public void modify(DepartmentEntity data) { repository.save(data); } // JPA는 save가 수정도 함
-    public void remove(Integer id) { repository.deleteById(id); }
+    public void remove(Integer departmentId) { repository.deleteById(departmentId); }
 }

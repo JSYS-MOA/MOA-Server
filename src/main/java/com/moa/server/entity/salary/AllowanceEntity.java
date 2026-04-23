@@ -17,10 +17,10 @@ public class AllowanceEntity extends BaseEntity {
     @Column(name = "allowance_id")
     private Integer allowanceId;
 
-    @Column(name = "allowance_cord")
+    @Column(name = "allowance_cord", unique = true)
     private String allowanceCord;
 
-    @Column(name = "allowance_name")
+    @Column(name = "allowance_name", unique = true)
     private String allowanceName;
 
     @Column(name = "allowance_is_use")

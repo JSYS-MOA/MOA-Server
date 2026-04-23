@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface GradeRepository extends JpaRepository<GradeEntity, Integer> {
+    Optional<GradeEntity> findByGradeCord(String gradeCord);
 
     //예시
     //List<BoardVOEntity> findByTitleContaining  (String title);
@@ -16,6 +17,6 @@ public interface GradeRepository extends JpaRepository<GradeEntity, Integer> {
 
     Optional<GradeEntity> findByGradeId(Integer gradeId);
 
-    
+
 }
 
