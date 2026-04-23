@@ -27,7 +27,4 @@ public class WorkDTO {
                 ? entity.getAllowance().getAllowanceName() : null;
     }
 
-    public Object getAllowance(AllowanceEntity allowance) {
-        this.allowanceName = allowance.getAllowanceName();
-    }
 }
