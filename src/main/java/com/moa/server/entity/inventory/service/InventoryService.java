@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -314,5 +315,41 @@ public class InventoryService {
 
         return entityPage.map(LogisticsEntity::toDTO);
     }
+
+    @Transactional // 이 어노테이션 하나로 아래 모든 로직이 한 묶음이 됩니다!
+    public void processLogistics(LogisticsRequestDTO dto) {
+
+        LogisticsEntity logistics = LogisticsEntity.builder()
+                .productId(dto.getProductId())
+                .storageId(dto.getStorageId())
+                .logisticsOrderNum(dto.getOrderNum())
+                .logisticsType(dto.getType())
+                .logisticDate(LocalDate.now())
+                .logisticSno(dto.getAmount())
+                .logisticsPrice(dto.getPrice())
+                .build();
+
+        LogisticsEntity savedLogistics = logisticsRepository.save(logistics);
+
+        if ("IN".equals(dto.getType())) {
+            saveInventory(dto, savedLogistics.getLogisticsId());
+        } else if ("OUT".equals(dto.getType())) {
+            saveDefect(dto);
+        }
+
+    }
+
+    private void saveDefect(LogisticsRequestDTO dto) {
+        DefectEntity defect = DefectEntity.builder()
+                .userId(dto.getUserId())
+                .inventoryId(dto.getInventoryId())
+                .defectSno(dto.getAmount())
+                .defectStatus("처리완료")
+                .reqDate(LocalDateTime.now())
+                .defectMemo(dto.getMemo())
+                .build();
+        defectRepository.save(defect);
+    }
+
 
 }

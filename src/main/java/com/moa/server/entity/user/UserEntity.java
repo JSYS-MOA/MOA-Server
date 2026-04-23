@@ -1,7 +1,6 @@
 package com.moa.server.entity.user;
 
 import com.moa.server.common.BaseEntity;
-import com.moa.server.entity.inventory.dto.DefectDTO;
 import com.moa.server.entity.user.dto.AdminUserDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -96,7 +95,7 @@ public class UserEntity extends BaseEntity implements Serializable {
                 .phone(this.phone)
                 .email(this.email)
                 .roleName(this.role != null ? this.role.getName() : null)
-                .roleCode(this.role != null ? this.role.getCode() : null)
+                .roleCode(this.role != null ? this.role.getCord() : null)
                 .gradeId(this.gradeId)
                 .gradeCord(this.grade != null ? this.grade.getGradeCord(): null)
                 .gradeName(this.grade != null ? this.grade.getGradeName() : null)
