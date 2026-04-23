@@ -9,8 +9,7 @@ import java.util.Optional;
 public interface GradeRepository extends JpaRepository<GradeEntity, Integer> {
     Optional<GradeEntity> findByGradeCord(String gradeCord);
 
-    //예시
-    //List<BoardVOEntity> findByTitleContaining  (String title);
+    //findById는 기본제공
     
 }
 

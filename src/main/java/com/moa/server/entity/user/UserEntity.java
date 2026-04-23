@@ -68,4 +68,12 @@ public class UserEntity extends BaseEntity implements Serializable {
 
     @Column(name = "account_num")
     private String accountNum;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id", insertable = false, updatable = false)
+    private DepartmentEntity department;
+
+    @ManyToOne
+    @JoinColumn(name = "grade_id", insertable = false, updatable = false)
+    private GradeEntity grade;
 }
