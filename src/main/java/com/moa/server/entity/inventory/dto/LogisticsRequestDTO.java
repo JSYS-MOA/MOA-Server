@@ -1,74 +1,61 @@
 package com.moa.server.entity.inventory.dto;
 
-import com.moa.server.common.BaseEntity;
-import com.moa.server.entity.inventory.ProductEntity;
-import com.moa.server.entity.inventory.StorageEntity;
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
-@Entity
-@Table(name = "logistics")
 @Getter
-@Setter // DTO 역할을 위해 세터를 열어줍니다
-@NoArgsConstructor // JPA와 DTO 처리를 위한 기본 생성자
-@AllArgsConstructor
-@Builder
-public class LogisticsRequestDTO extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "logistics_id")
-    private Integer logisticsId;
-
-    @Column(name = "product_id")
-    private Integer productId;
-
-    @Column(name = "storage_id")
-    private Integer storageId;
-
-    @Column(name = "logistics_order_num")
-    private Integer logisticsOrderNum;
-
-    @Column(name = "logistics_type")
+@Setter
+public class LogisticsRequestDTO {
+    @JsonProperty("logisticsType")
     private String logisticsType;
 
-    @Column(name = "logistic_date")
-    private LocalDate logisticDate;
+    @JsonProperty("orderformId")
+    private Integer orderformId;
 
-    @Column(name = "logistic_sno")
-    private Integer logisticSno;
+    @JsonProperty("stockInDate")
+    private LocalDate stockInDate;
 
-    @Column(name = "logistics_price")
-    private Integer logisticsPrice;
+    @JsonProperty("userId")
+    private Integer userId;
 
-    //productEntity 와 join
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private ProductEntity product;
+    private List<LogisticsItemDTO> items;
 
-    //storageEntity 와 join
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storage_id", insertable = false, updatable = false)
-    private StorageEntity storage;
+    @Getter
+    @Setter
+    public static class LogisticsItemDTO {
+        @JsonProperty("productId")
+        private Integer productId;
 
-    public LogisticsInfoDTO toDTO() {
-        return LogisticsInfoDTO.builder()
-                .logisticsId(this.logisticsId)
-                .productId(this.productId)
-                .storageId(this.storageId)
-                .logisticsOrderNum(this.logisticsOrderNum)
-                .logisticsType(this.logisticsType)
-                .logisticDate(this.logisticDate)
-                .logisticSno(this.logisticSno)
-                .logisticsPrice(this.logisticsPrice)
-                .productCord(this.product != null ? this.product.getProductCord() : null)
-                .productName(this.product != null ? this.product.getProductName() : null)
-                .productPrice(this.product != null ? this.product.getProductPrice() : null)
-                .storageCord(this.storage != null ? this.storage.getStorageCord() : null)
-                .storageName(this.storage != null ? this.storage.getStorageName() : null)
-                .build();
+        @JsonProperty("storageId")
+        private Integer storageId;
+
+        @JsonProperty("logisticSno")
+        private Integer logisticSno;
+
+        @JsonProperty("defectSno")
+        private Integer defectSno;
+
+        @JsonProperty("price")
+        private Integer price;
+
+        @JsonProperty("expirationDate")
+        private LocalDateTime expirationDate;
+
+        @JsonProperty("memo")
+        private String memo;
+
+        @JsonProperty("inventoryId")
+        private Integer inventoryId;
+
+        @JsonProperty("defectStatus")
+        private String defectStatus;
+
+        @JsonProperty("disposalDate")
+        private LocalDateTime disposalDate;
     }
-
-
 }
+

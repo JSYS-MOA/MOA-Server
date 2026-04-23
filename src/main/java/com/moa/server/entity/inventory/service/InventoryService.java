@@ -136,6 +136,12 @@ public class InventoryService {
         return entityPage.map(VendorEntity::toDTO);
     }
 
+    // 입고할 떄 창고 정보를 가져오기 위해서
+    public Page<StorageCordMapDTO> getStorageCord(Pageable pageable) {
+        Page<StorageEntity> entityPage = storageRepository.findAll(pageable);
+        return entityPage.map(StorageEntity::toDTO);
+    }
+
     // 오더 수량 수정 및 추가 및 삭제
     @Transactional
     public void putOrdererSno(Integer orderFormId ,List<OrderPutDTO> dtoList) {
@@ -316,40 +322,70 @@ public class InventoryService {
         return entityPage.map(LogisticsEntity::toDTO);
     }
 
-    @Transactional // 이 어노테이션 하나로 아래 모든 로직이 한 묶음이 됩니다!
-    public void processLogistics(LogisticsRequestDTO dto) {
+    // 입고 처리 ( 오더폼 발주일 수정 => 입고 , 출고 처리 => 재고 추가 => 불량 추가 )
+    @Transactional
+    public void processLogisticsAction( Integer orderformId ,List<LogisticsRequestDTO> dtoList) {
 
-        LogisticsEntity logistics = LogisticsEntity.builder()
-                .productId(dto.getProductId())
-                .storageId(dto.getStorageId())
-                .logisticsOrderNum(dto.getOrderNum())
-                .logisticsType(dto.getType())
-                .logisticDate(LocalDate.now())
-                .logisticSno(dto.getAmount())
-                .logisticsPrice(dto.getPrice())
-                .build();
+        OrderformEntity orderForm = orderformRepository.findById(orderformId)
+                .orElseThrow(() -> new RuntimeException("발주 정보를 찾을 수 없습니다."));
 
-        LogisticsEntity savedLogistics = logisticsRepository.save(logistics);
+        for (LogisticsRequestDTO dto : dtoList) {
+            if (dto.getStockInDate() != null) {
+                orderForm.setStockInDate(dto.getStockInDate());
+            }
 
-        if ("IN".equals(dto.getType())) {
-            saveInventory(dto, savedLogistics.getLogisticsId());
-        } else if ("OUT".equals(dto.getType())) {
-            saveDefect(dto);
+            orderForm.setOrderStatus("완료");
+
+            // 각 요청 뭉치 안의 아이템들 순회
+            for (LogisticsRequestDTO.LogisticsItemDTO item : dto.getItems()) {
+
+                Integer amount = "IN".equals(dto.getLogisticsType()) ? item.getLogisticSno() : item.getDefectSno();
+
+                if (amount == null || amount <= 0) {
+                    continue;
+                }
+
+                // 2 & 4. Logistics 공통 저장 (IN 또는 OUT 분기)
+                LogisticsEntity logistics = LogisticsEntity.builder()
+                        .productId(item.getProductId())
+                        .storageId(item.getStorageId())
+                        .logisticsOrderNum(orderformId)
+                        .logisticsType(dto.getLogisticsType())
+                        .logisticDate(LocalDate.now())
+                        .logisticSno(amount) // 결정된 수량 적용
+                        .logisticsPrice(item.getPrice())
+                        .build();
+
+                LogisticsEntity savedLogistics = logisticsRepository.save(logistics);
+
+                // 3. 입고(IN) 처리 시 Inventory 테이블 추가
+                if ("IN".equals(dto.getLogisticsType())) {
+                    InventoryEntity inventory = InventoryEntity.builder()
+                            .productId(item.getProductId())
+                            .storageId(item.getStorageId())
+                            .inventorySno(amount)
+                            .expirationDate(item.getExpirationDate())
+                            .inventoryMemo(item.getMemo())
+                            .logisticsId(savedLogistics.getLogisticsId())
+                            .build();
+                    inventoryRepository.save(inventory);
+                }
+
+                // 5. 출고(OUT) 처리 시 Defect 테이블 추가
+                else if ("OUT".equals(dto.getLogisticsType())) {
+                    DefectEntity defect = DefectEntity.builder()
+                            .userId(dto.getUserId())
+                            .inventoryId(item.getInventoryId())
+                            .defectSno(amount)
+                            .defectStatus(item.getDefectStatus()) // 폼 데이터
+                            .reqDate(LocalDateTime.now())
+                            .disposalDate(item.getDisposalDate()) // 폼 데이터
+                            .defectMemo(item.getMemo())
+                            .build();
+                    defectRepository.save(defect);
+                }
+            }
         }
-
     }
-
-    private void saveDefect(LogisticsRequestDTO dto) {
-        DefectEntity defect = DefectEntity.builder()
-                .userId(dto.getUserId())
-                .inventoryId(dto.getInventoryId())
-                .defectSno(dto.getAmount())
-                .defectStatus("처리완료")
-                .reqDate(LocalDateTime.now())
-                .defectMemo(dto.getMemo())
-                .build();
-        defectRepository.save(defect);
-    }
-
 
 }

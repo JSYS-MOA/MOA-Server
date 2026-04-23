@@ -1,6 +1,7 @@
 package com.moa.server.entity.inventory.controller;
 
 
+import com.moa.server.entity.inventory.dto.LogisticsRequestDTO;
 import com.moa.server.entity.inventory.dto.OrderFormPostDTO;
 import com.moa.server.entity.inventory.dto.OrderPutDTO;
 import com.moa.server.entity.inventory.service.InventoryService;
@@ -76,6 +77,12 @@ public class InventoryController {
         return inventoryService.getVendorCord( pageable);
     }
 
+    // 선택용 창고
+    @GetMapping("/orders/select/storage")
+    public Page<?> getStorageList ( @PageableDefault(page = 0, size = 10 )Pageable pageable) {
+        return inventoryService.getStorageCord( pageable);
+    }
+
     // 오더폼 , 오더 추가
     @PostMapping("/orders")
     public void postAddOrderForm( @RequestBody OrderFormPostDTO dtoList) {
@@ -110,6 +117,12 @@ public class InventoryController {
     @GetMapping("/outbounds/{logisticsOrderNum}")
     public Page<?> getLogisticsOutListInfo( @PathVariable("logisticsOrderNum") Integer logisticsOrderNum, Pageable pageable) {
         return inventoryService.getLogisticsListInfo(logisticsOrderNum, pageable);
+    }
+
+    // 입고 처리 ( 오더폼 발주일 수정 => 입고 , 출고 처리 => 재고 추가 => 불량 추가 )
+    @PostMapping("/inbounds/{orderformId}")
+    public void postBoundsProcess ( @PathVariable("orderformId") Integer orderformId ,  @RequestBody List<LogisticsRequestDTO> dtoList ) {
+        inventoryService.processLogisticsAction( orderformId ,  dtoList );
     }
 
 
