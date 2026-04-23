@@ -19,20 +19,20 @@ public class StorageController {
     public List<StorageEntity> list() {
         return service.getList();
     }
-    @GetMapping("/{storage_id}")
-    public StorageEntity detail(@PathVariable Integer id) {
-        return service.getDetail(id);
+    @GetMapping("/{storageId}")
+    public StorageEntity detail(@PathVariable Integer storageId) {
+        return service.getDetail(storageId);
     }
     @PostMapping
     public void add(@RequestBody StorageEntity data) {
         service.register(data);
     }
-    @PutMapping("/{storage_id}")
+    @PutMapping("/{storageId}")
     public void update(@RequestBody StorageEntity data) {
         service.modify(data);
     }
-    @DeleteMapping("/{storage_id}")
-    public void delete(@PathVariable Integer id) {
-        service.remove(id);
+    @DeleteMapping("/{storageId}")
+    public void delete(@PathVariable Integer storageId) {
+        service.remove(storageId);
     }
 }

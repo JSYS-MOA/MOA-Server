@@ -20,21 +20,21 @@ public class DocumentController {
     public List<DocumentEntity> list() {
         return service.getList();
     }
-    @GetMapping("/{document_id}")
-    public DocumentEntity detail(@PathVariable Integer id) {
-        return service.getDetail(id);
+    @GetMapping("/{documentId}")
+    public DocumentEntity detail(@PathVariable Integer documentId) {
+        return service.getDetail(documentId);
     }
     @PostMapping
     public void add(@RequestBody DocumentEntity data) {
         service.register(data);
     }
-    @PutMapping("/{document_id}")
+    @PutMapping("/{documentId}")
     public void update(@RequestBody DocumentEntity data) {
         service.modify(data);
     }
-    @DeleteMapping("/{document_id}")
-    public void delete(@PathVariable Integer id) {
-        service.remove(id);
+    @DeleteMapping("/{documentId}")
+    public void delete(@PathVariable Integer documentId) {
+        service.remove(documentId);
     }
 
 }

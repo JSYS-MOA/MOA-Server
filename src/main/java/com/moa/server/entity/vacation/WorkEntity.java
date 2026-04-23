@@ -1,6 +1,8 @@
 package com.moa.server.entity.vacation;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.salary.AllowanceEntity;
+import com.moa.server.entity.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,8 +22,9 @@ public class WorkEntity extends BaseEntity {
     @Column(name = "work_id")
     private Integer workId;
 
-    @Column(name = "user_id")
-    private Integer userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     @Column(name = "work_date")
     private LocalDate workDate;
@@ -37,4 +40,19 @@ public class WorkEntity extends BaseEntity {
 
     @Column(name = "work_memo")
     private String workMemo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "allowance_cord",
+            referencedColumnName = "allowance_cord"
+    )
+    private AllowanceEntity allowance;
+
+    public String getDisplayStatus() {
+        if (this.allowance != null) {
+            return this.allowance.getAllowanceName();
+        }
+        return (this.workStatus != null) ? this.workStatus : "정상근무";
+    }
+
 }

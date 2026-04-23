@@ -1,6 +1,7 @@
 package com.moa.server.entity.vacation;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.user.GradeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +21,7 @@ public class BasicVacationEntity extends BaseEntity {
     @Column(name = "basic_vacation_day")
     private Integer basicVacationDay;
 
-    @Column(name = "grade_id")
-    private Integer gradeId;
+    @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩 권장
+    @JoinColumn(name = "grade_id") // DB의 FK 컬럼명
+    private GradeEntity grade;
 }

@@ -20,20 +20,20 @@ public class DepartmentController {
     public List<DepartmentEntity> list() {
         return service.getList();
     }
-    @GetMapping("/{department_id}")
-    public DepartmentEntity detail(@PathVariable Integer id) {
-        return service.getDetail(id);
+    @GetMapping("/{departmentId}")
+    public DepartmentEntity detail(@PathVariable Integer departmentId) {
+        return service.getDetail(departmentId);
     }
     @PostMapping
     public void add(@RequestBody DepartmentEntity data) {
         service.register(data);
     }
-    @PutMapping("/{department_id}")
+    @PutMapping("/{departmentId}")
     public void update(@RequestBody DepartmentEntity data) {
         service.modify(data);
     }
-    @DeleteMapping("/{department_id}")
-    public void delete(@PathVariable Integer id) {
-        service.remove(id);
+    @DeleteMapping("/{departmentId}")
+    public void delete(@PathVariable Integer departmentId) {
+        service.remove(departmentId);
     }
 }
