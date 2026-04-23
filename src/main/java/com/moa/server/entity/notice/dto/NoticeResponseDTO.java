@@ -17,4 +17,5 @@ public class NoticeResponseDTO {
     private String postDate;
     private String writerName;
     private Integer writerId;
+    private Boolean isNotice;
 }

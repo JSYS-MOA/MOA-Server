@@ -49,16 +49,24 @@ public class NoticeService {
     }
 
     //공지사항 리스트
-    public List<NoticeResponseDTO> getNotices(){
+    public List<NoticeResponseDTO> getNotices(HttpSession session){
+        SessionUser loginUser = getLoginUser(session);
         return noticeRepository.findAllByOrderByPostDateDesc()
                 //stream -> list를 하나씩 꺼내서 NoticeEntity에서 NoticeResponseDTO로 변환
                 .stream()
+                .filter(notice -> {
+                    if("전체".equals(notice.getNoticeType())) return true;
+                    return userRepository.findById(notice.getWriter())
+                            .map(user -> user.getDepartmentId().equals(loginUser.getDepartmentId()))
+                            .orElse(false);
+                })
                 .map(notice -> NoticeResponseDTO.builder()
                         .noticeId(notice.getNoticeId())
                         .noticeTitle(notice.getNoticeTitle())
                         .file(notice.getFile())
                         .postDate(notice.getPostDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")))
                         .writerName(getWriterName(notice.getWriter()))
+                        .isNotice(notice.getIsNotice())
                         .build()
                 )
                 .collect(Collectors.toList());
@@ -82,7 +90,7 @@ public class NoticeService {
 
     //공지사항 등록
     public void saveNotice(String noticeTitle, String noticeContent,
-                           String noticeType, MultipartFile file,
+                           String noticeType,Boolean isNotice, MultipartFile file,
                            HttpSession session) throws IOException {
 
 
@@ -107,6 +115,7 @@ public class NoticeService {
                 .noticeTitle(noticeTitle)
                 .noticeContent(noticeContent)
                 .noticeType(noticeType)
+                .isNotice(isNotice)
                 .writer(loginUser.getUserId())
                 .file(fileName)
                 .postDate(LocalDateTime.now())

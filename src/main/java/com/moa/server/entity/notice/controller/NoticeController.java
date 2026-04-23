@@ -32,8 +32,8 @@ public class NoticeController {
     private String uploadDir;
 
     @GetMapping("/notices")
-    public ResponseEntity<List<NoticeResponseDTO>> getNotices(){
-        return ResponseEntity.ok(noticeService.getNotices());
+    public ResponseEntity<List<NoticeResponseDTO>> getNotices(HttpSession session){
+        return ResponseEntity.ok(noticeService.getNotices(session));
     }
 
     @GetMapping("/notices/{noticeId}")
@@ -47,10 +47,11 @@ public class NoticeController {
             @RequestParam String noticeTitle,
             @RequestParam String noticeContent,
             @RequestParam String noticeType,
+            @RequestParam Boolean isNotice,
             @RequestParam (required = false)MultipartFile file,
             HttpSession session) throws IOException{
 
-        noticeService.saveNotice(noticeTitle, noticeContent, noticeType, file, session);
+        noticeService.saveNotice(noticeTitle, noticeContent, noticeType, isNotice, file, session);
         return ResponseEntity.ok().build();
     }
 

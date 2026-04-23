@@ -39,4 +39,7 @@ public class NoticeEntity extends BaseEntity {
 
     @Column(name = "update_date")
     private LocalDateTime updateDate;
+
+    @Column(name = "is_notice")
+    private Boolean isNotice;
 }
