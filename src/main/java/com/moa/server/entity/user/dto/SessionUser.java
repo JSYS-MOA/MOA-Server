@@ -15,5 +15,6 @@ public class SessionUser implements Serializable {
     private Integer departmentId;
     private Integer roleId;
     private  String userName;
+    private  Integer userId;
 
 }
