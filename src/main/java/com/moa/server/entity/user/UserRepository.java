@@ -1,7 +1,6 @@
 package com.moa.server.entity.user;
 
 import com.moa.server.entity.inventory.InventoryEntity;
-import com.moa.server.entity.user.dto.AdminUserDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
