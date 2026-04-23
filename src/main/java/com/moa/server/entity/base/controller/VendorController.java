@@ -19,20 +19,20 @@ public class VendorController {
     public List<VendorEntity> list() {
         return service.getList();
     }
-    @GetMapping("/{vendor_id}")
-    public VendorEntity detail(@PathVariable Integer id) {
-        return service.getDetail(id);
+    @GetMapping("/{vendorId}")
+    public VendorEntity detail(@PathVariable Integer vendorId) {
+        return service.getDetail(vendorId);
     }
     @PostMapping
     public void add(@RequestBody VendorEntity data) {
         service.register(data);
     }
-    @PutMapping("/{vendor_id}")
+    @PutMapping("/{vendorId}")
     public void update(@RequestBody VendorEntity data) {
         service.modify(data);
     }
-    @DeleteMapping("/{vendor_id}")
-    public void delete(@PathVariable Integer id) {
-        service.remove(id);
+    @DeleteMapping("/{vendorId}")
+    public void delete(@PathVariable Integer vendorId) {
+        service.remove(vendorId);
     }
 }

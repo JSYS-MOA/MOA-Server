@@ -13,10 +13,10 @@ public class StorageService {
     private final StorageRepository repository;
 
     public List<StorageEntity> getList() { return repository.findAll(); }
-    public StorageEntity getDetail(Integer id) {
-        return repository.findById(id).orElse(null);
+    public StorageEntity getDetail(Integer storageId) {
+        return repository.findById(storageId).orElse(null);
     }
     public void register(StorageEntity data) { repository.save(data); }
     public void modify(StorageEntity data) { repository.save(data); } // JPA는 save가 수정도 함
-    public void remove(Integer id) { repository.deleteById(id); }
+    public void remove(Integer storageId) { repository.deleteById(storageId); }
 }

@@ -14,10 +14,10 @@ public class VendorService {
     private final VendorRepository repository;
 
     public List<VendorEntity> getList() { return repository.findAll(); }
-    public VendorEntity getDetail(Integer id) {
-        return repository.findById(id).orElse(null);
+    public VendorEntity getDetail(Integer vendorId) {
+        return repository.findById(vendorId).orElse(null);
     }
     public void register(VendorEntity data) { repository.save(data); }
     public void modify(VendorEntity data) { repository.save(data); } // JPA는 save가 수정도 함
-    public void remove(Integer id) { repository.deleteById(id); }
+    public void remove(Integer vendorId) { repository.deleteById(vendorId); }
 }

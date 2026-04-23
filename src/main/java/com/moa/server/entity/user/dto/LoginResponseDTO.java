@@ -11,5 +11,5 @@ public class LoginResponseDTO {
     private String employeeId;
     private Integer departmentId;
     private Integer roleId;
-
+    private Integer userId;
 }

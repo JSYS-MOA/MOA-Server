@@ -19,20 +19,20 @@ public class AllowanceController {
     public List<AllowanceEntity> list() {
         return service.getList();
     }
-    @GetMapping("/{allowance_id}")
-    public AllowanceEntity detail(@PathVariable Integer id) {
-        return service.getDetail(id);
+    @GetMapping("/{allowanceId}")
+    public AllowanceEntity detail(@PathVariable Integer allowanceId) {
+        return service.getDetail(allowanceId);
     }
     @PostMapping
     public void add(@RequestBody AllowanceEntity data) {
         service.register(data);
     }
-    @PutMapping("/{allowance_id}")
+    @PutMapping("/{allowanceId}")
     public void update(@RequestBody AllowanceEntity data) {
         service.modify(data);
     }
-    @DeleteMapping("/{allowance_id}")
-    public void delete(@PathVariable Integer id) {
-        service.remove(id);
+    @DeleteMapping("/{allowanceId}")
+    public void delete(@PathVariable Integer allowanceId) {
+        service.remove(allowanceId);
     }
 }
