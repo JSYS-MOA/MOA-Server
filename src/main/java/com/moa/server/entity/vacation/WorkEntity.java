@@ -37,4 +37,8 @@ public class WorkEntity extends BaseEntity {
 
     @Column(name = "work_memo")
     private String workMemo;
+
+    @Column(name = "allowance_cord")
+    private String allowanceCord;
+
 }
