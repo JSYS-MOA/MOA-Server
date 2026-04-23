@@ -5,7 +5,6 @@ import com.moa.server.entity.user.DepartmentRepository;
 import com.moa.server.entity.user.GradeRepository;
 import com.moa.server.entity.user.UserEntity;
 import com.moa.server.entity.user.UserRepository;
-import com.moa.server.entity.user.dto.HrCardAddRequestDTO;
 import com.moa.server.entity.user.dto.HrCardRequestPageDTO;
 import com.moa.server.entity.user.dto.HrCardResponseDTO;
 import lombok.RequiredArgsConstructor;
