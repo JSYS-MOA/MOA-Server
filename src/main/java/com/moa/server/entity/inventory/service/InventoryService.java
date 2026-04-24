@@ -142,6 +142,13 @@ public class InventoryService {
         return entityPage.map(StorageEntity::toDTO);
     }
 
+    // 출고할 떄 인벤토리 정보 가져오기 위해서
+    public Page<InventoryCordMapDTO> getInventoryCord(String search, Pageable pageable) {
+        Page<InventoryEntity> entityPage = inventoryRepository.findByProduct_ProductNameContaining(search, pageable);
+
+        return entityPage.map(InventoryEntity::MapDTO);
+    }
+
     // 오더 수량 수정 및 추가 및 삭제
     @Transactional
     public void putOrdererSno(Integer orderFormId ,List<OrderPutDTO> dtoList) {
@@ -334,16 +341,11 @@ public class InventoryService {
                 orderForm.setStockInDate(dto.getStockInDate());
             }
 
-            orderForm.setOrderStatus("완료");
-
             // 각 요청 뭉치 안의 아이템들 순회
             for (LogisticsRequestDTO.LogisticsItemDTO item : dto.getItems()) {
 
                 Integer amount = "IN".equals(dto.getLogisticsType()) ? item.getLogisticSno() : item.getDefectSno();
-
-                if (amount == null || amount <= 0) {
-                    continue;
-                }
+                if (amount == null || amount <= 0) continue;
 
                 // 2 & 4. Logistics 공통 저장 (IN 또는 OUT 분기)
                 LogisticsEntity logistics = LogisticsEntity.builder()
@@ -386,6 +388,63 @@ public class InventoryService {
                 }
             }
         }
+        orderForm.setOrderStatus("완료");
     }
 
+    // 출고 처리
+    @Transactional
+    public void processOutLogisticsAction ( List<OutLogisticsRequestDTO> dtoList ) {
+        for (OutLogisticsRequestDTO dto : dtoList) {
+            // 1. DTO 내의 아이템들 순회
+            for (OutLogisticsRequestDTO.OutLogisticsItemDTO item : dto.getItems()) {
+
+                // 수량 결정 (OUT 처리이므로 defectSno 또는 logisticSno 중 있는 값 사용)
+                Integer amount = item.getDefectSno() != null ? item.getDefectSno() : item.getLogisticSno();
+
+                if (amount == null || amount <= 0) continue;
+
+                // 2. Logistics (출고 이력) 테이블 저장
+                LogisticsEntity logistics = LogisticsEntity.builder()
+                        .productId(item.getProductId())
+                        .storageId(item.getStorageId())
+                        .logisticsType("OUT")
+                        .logisticDate(LocalDate.now())
+                        .logisticSno(amount)
+                        .logisticsPrice(item.getProductPrice())
+                        .logisticsOrderNum(item.getInventoryId())
+                        .build();
+                LogisticsEntity savedLogistics = logisticsRepository.save(logistics);
+
+                // 3. Inventory (재고) 차감 로직
+                if (item.getInventoryId() != null) {
+                    InventoryEntity inventory = inventoryRepository.findById(item.getInventoryId())
+                            .orElseThrow(() -> new RuntimeException("재고 정보를 찾을 수 없습니다. ID: " + item.getInventoryId()));
+
+                    // 현재 재고보다 많이 나가는지 체크 (선택 사항)
+                    if (inventory.getInventorySno() < amount) {
+                        throw new RuntimeException("재고가 부족합니다. 현재 재고: " + inventory.getInventorySno());
+                    }
+
+                    // 재고 차감 후 업데이트
+                    inventory.setInventorySno(inventory.getInventorySno() - amount);
+                    inventoryRepository.save(inventory);
+                }
+
+                // 4. Defect (불량) 테이블 저장 (불량 상태일 경우에만)
+                if ("불량".equals(item.getDefectStatus())) {
+                    DefectEntity defect = DefectEntity.builder()
+                            .userId(item.getUserId())
+                            .inventoryId(item.getInventoryId())
+                            .defectSno(amount)
+                            .defectStatus(item.getDefectStatus())
+                            .reqDate(LocalDateTime.now())
+                            .disposalDate(item.getDisposalDate())
+                            .defectMemo(item.getMemo())
+                            .build();
+                    defectRepository.save(defect);
+                }
+            }
+        }
+
+    }
 }

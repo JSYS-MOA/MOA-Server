@@ -4,6 +4,7 @@ package com.moa.server.entity.inventory.controller;
 import com.moa.server.entity.inventory.dto.LogisticsRequestDTO;
 import com.moa.server.entity.inventory.dto.OrderFormPostDTO;
 import com.moa.server.entity.inventory.dto.OrderPutDTO;
+import com.moa.server.entity.inventory.dto.OutLogisticsRequestDTO;
 import com.moa.server.entity.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -83,6 +84,12 @@ public class InventoryController {
         return inventoryService.getStorageCord( pageable);
     }
 
+    // 인벤토리 선택용
+    @GetMapping("/orders/select/inventory")
+    public Page<?> getInventoryList (@Param("search") String search, @PageableDefault(page = 0, size = 10 )Pageable pageable) {
+        return inventoryService.getInventoryCord(search, pageable);
+    }
+
     // 오더폼 , 오더 추가
     @PostMapping("/orders")
     public void postAddOrderForm( @RequestBody OrderFormPostDTO dtoList) {
@@ -107,22 +114,28 @@ public class InventoryController {
         return inventoryService.getLogisticsListInfo(logisticsOrderNum, pageable);
     }
 
-    //입고 리스트
+    //출고 리스트
     @GetMapping("/outbounds")
     public Page<?> getLogisticsOutList (Pageable pageable) {
-        return inventoryService.getLogisticsList(pageable);
+        return inventoryService.getLogisticsOutList(pageable);
     }
 
-    //입고  상세리스트
+    //출고  상세리스트
     @GetMapping("/outbounds/{logisticsOrderNum}")
     public Page<?> getLogisticsOutListInfo( @PathVariable("logisticsOrderNum") Integer logisticsOrderNum, Pageable pageable) {
-        return inventoryService.getLogisticsListInfo(logisticsOrderNum, pageable);
+        return inventoryService.getLogisticsOutListInfo(logisticsOrderNum, pageable);
     }
 
     // 입고 처리 ( 오더폼 발주일 수정 => 입고 , 출고 처리 => 재고 추가 => 불량 추가 )
     @PostMapping("/inbounds/{orderformId}")
     public void postBoundsProcess ( @PathVariable("orderformId") Integer orderformId ,  @RequestBody List<LogisticsRequestDTO> dtoList ) {
         inventoryService.processLogisticsAction( orderformId ,  dtoList );
+    }
+
+    // 출고처리 , 불량 처리
+    @PostMapping("/outbounds")
+    public void postOutBoundsProcess ( @RequestBody List<OutLogisticsRequestDTO> dtoList ) {
+        inventoryService.processOutLogisticsAction( dtoList );
     }
 
 
