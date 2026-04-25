@@ -86,7 +86,7 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
     //권한 조회
     //재고조회
     @EntityGraph(attributePaths = {"role", "department" , "grade" })
-    Page<UserEntity> findByUserNameContaining(String userName, Pageable pageable);
+    Page<UserEntity> findWithRoleByUserNameContaining(String userName, Pageable pageable);
 
     @Modifying
     @Transactional

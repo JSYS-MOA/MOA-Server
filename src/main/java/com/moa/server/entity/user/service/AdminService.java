@@ -24,7 +24,7 @@ public class AdminService {
     // 권한 조회
     public Page<AdminUserDTO> getRoleList(String userName, Pageable pageable) {
 
-        Page<UserEntity> entityPage = userRepository.findByUserNameContaining( userName,  pageable);
+        Page<UserEntity> entityPage = userRepository.findWithRoleByUserNameContaining( userName,  pageable);
 
         // .map()을 통해 간단하게 DTO로 변환
         return entityPage.map(UserEntity::toDTO);
