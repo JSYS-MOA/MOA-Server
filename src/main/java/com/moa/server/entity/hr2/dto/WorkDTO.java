@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class WorkDTO {
     private Integer workId;
     private String employeeId;
+    private String userName;
     private LocalDate workDate;
     private String workMemo;
     private String allowanceName;
@@ -21,10 +22,14 @@ public class WorkDTO {
     public WorkDTO(WorkEntity entity) {
         this.workId = entity.getWorkId();
         this.employeeId = (entity.getUser() != null) ? entity.getUser().getEmployeeId() : "알수없는사번";
+        this.userName = (entity.getUser() != null) ? entity.getUser().getUserName() : "알수없음";
         this.workDate = entity.getWorkDate();
         this.workMemo = entity.getWorkMemo();
         this.allowanceName = (entity.getAllowance() != null)
                 ? entity.getAllowance().getAllowanceName() : null;
     }
 
+    public void getAllowance(AllowanceEntity allowance) {
+        this.allowanceName = allowance.getAllowanceName();
+    }
 }
