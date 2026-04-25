@@ -1,4 +1,6 @@
 package com.moa.server.entity.user.controller;
+import com.moa.server.entity.user.UserEntity;
+import com.moa.server.entity.user.dto.AdminUserDTO;
 import com.moa.server.entity.user.dto.LoginRequestDTO;
 import com.moa.server.entity.user.dto.LoginResponseDTO;
 import com.moa.server.entity.user.service.UserService;
@@ -7,6 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
 
 @RestController // json을 반환하기 위함  @Controller + @ResponseBody
 @RequestMapping("/api/auth")
@@ -18,7 +25,6 @@ public class UserController{
     //로그인
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request, HttpSession session){
-
         return ResponseEntity.ok(userService.login(request,session));
     }
 
@@ -37,4 +43,5 @@ public class UserController{
 
         return ResponseEntity.ok(userService.check(session));
     }
+
 }

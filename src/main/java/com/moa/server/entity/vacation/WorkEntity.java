@@ -22,6 +22,9 @@ public class WorkEntity extends BaseEntity {
     @Column(name = "work_id")
     private Integer workId;
 
+    @Column(name = "user_id" , insertable = false, updatable = false)
+    private Integer userId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
