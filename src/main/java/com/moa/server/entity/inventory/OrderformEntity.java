@@ -1,6 +1,7 @@
 package com.moa.server.entity.inventory;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.inventory.dto.InventoryDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,9 +26,15 @@ public class OrderformEntity extends BaseEntity {
     @Column(name = "orderform_date")
     private LocalDate orderformDate;
 
-    @Column(name = "stock_in_date")
+    @Column(name = "stock_in_date", nullable = true)
     private LocalDate stockInDate;
 
     @Column(name = "order_status")
     private String orderStatus;
+
+    //vendor 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id", insertable = false, updatable = false)
+    private VendorEntity vendor;
+
 }

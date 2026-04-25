@@ -8,8 +8,8 @@ import java.util.Optional;
 @Repository
 public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Integer> {
 
-    //예시
-    //List<BoardVOEntity> findByTitleContaining  (String title);
+    //findById는 기본제공
+
     Optional<DepartmentEntity> findByDepartmentId(Integer departmentId);
     
 }

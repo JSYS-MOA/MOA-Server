@@ -9,5 +9,6 @@ public interface AdminRoleRepository extends JpaRepository<AdminRoleEntity, Inte
     //예시
     //List<BoardVOEntity> findByTitleContaining  (String title);
 
+
 }
 
