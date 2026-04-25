@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.Writer;
+
 // 결재관련
 
 @RestController
@@ -25,6 +27,11 @@ public class ApprovalController {
     @GetMapping("/approvals")
     public Page<ApprovaUserDTO> getApprovaUserList(@Param("writer") Integer writer, @Param("search") String search, @PageableDefault(page = 0, size = 10 )Pageable pageable) {
         return approvalService.getApprovaUserList(writer, pageable);
+    }
+
+    @GetMapping("/approvals/{approvaId}")
+    public Page<ApprovaUserDTO> getApprovaInfo( @PathVariable("approvaId") Integer approvaId , @PageableDefault(page = 0, size = 10 )Pageable pageable) {
+        return  approvalService.getApprovaInfo( approvaId, pageable);
     }
 
 

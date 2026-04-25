@@ -2,8 +2,6 @@ package com.moa.server.entity.approval;
 
 import com.moa.server.common.BaseEntity;
 import com.moa.server.entity.approval.dto.ApprovaUserDTO;
-import com.moa.server.entity.inventory.dto.InventoryCordMapDTO;
-import com.moa.server.entity.user.AdminRoleEntity;
 import com.moa.server.entity.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;

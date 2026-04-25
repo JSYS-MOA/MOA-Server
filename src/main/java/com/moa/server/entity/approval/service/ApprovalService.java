@@ -5,8 +5,6 @@ import com.moa.server.entity.approval.ApprovaRepository;
 import com.moa.server.entity.approval.ApprovalLineRepository;
 import com.moa.server.entity.approval.DocumentRepository;
 import com.moa.server.entity.approval.dto.ApprovaUserDTO;
-import com.moa.server.entity.inventory.InventoryEntity;
-import com.moa.server.entity.inventory.dto.InventoryDTO;
 import com.moa.server.entity.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,11 +24,18 @@ public class ApprovalService {
     private final ApprovalLineRepository approvalLineRepository;
     private final ApprovaRepository approvaRepository;
 
+    // 내가 작성한 결재 목록
     public Page<ApprovaUserDTO> getApprovaUserList(Integer writer, Pageable pageable) {
         Page<ApprovaEntity> entityPage = approvaRepository.findByWriter(  writer,  pageable);
 
         return entityPage.map(ApprovaEntity::MapDTO);
     }
 
+    // 결재 내역 상세 조회
+    public Page<ApprovaUserDTO> getApprovaInfo( Integer approvaId ,Pageable pageable) {
+        Page<ApprovaEntity> entityPage = approvaRepository.findByApprovaId( approvaId,  pageable);
+
+        return entityPage.map(ApprovaEntity::MapDTO);
+    }
 
 }
