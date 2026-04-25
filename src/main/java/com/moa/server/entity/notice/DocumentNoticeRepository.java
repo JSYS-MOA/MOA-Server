@@ -10,5 +10,6 @@ public interface DocumentNoticeRepository extends JpaRepository<DocumentNoticeEn
     //예시
     //List<BoardVOEntity> findByTitleContaining  (String title);
 
+    //noticeserve에서 한번에 함.나중에 옮길수도
 }
 
