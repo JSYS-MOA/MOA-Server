@@ -52,8 +52,16 @@ public class UserEntity extends BaseEntity implements Serializable {
     @Column(name = "department_id")
     private Integer departmentId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id", referencedColumnName = "department_id", insertable = false, updatable = false)
+    private DepartmentEntity department;
+
     @Column(name = "grade_id")
     private Integer gradeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grade_id", referencedColumnName = "grade_id", insertable = false, updatable = false)
+    private GradeEntity grade;
 
     @Column(name = "birth")
     private LocalDate birth;
