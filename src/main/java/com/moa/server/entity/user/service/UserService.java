@@ -52,7 +52,6 @@ public class UserService {
         session.invalidate();
     }
 
-
     //로그인 확인
     public LoginResponseDTO check(HttpSession session){
         SessionUser loginUser = (SessionUser) session.getAttribute(SessionUser.USER);

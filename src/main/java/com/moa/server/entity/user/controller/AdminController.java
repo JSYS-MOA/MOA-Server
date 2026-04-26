@@ -4,6 +4,7 @@ import com.moa.server.entity.user.UserEntity;
 import com.moa.server.entity.user.dto.AdminUserDTO;
 import com.moa.server.entity.user.dto.LoginRequestDTO;
 import com.moa.server.entity.user.dto.LoginResponseDTO;
+import com.moa.server.entity.user.dto.TeamUserDTO;
 import com.moa.server.entity.user.service.AdminService;
 import com.moa.server.entity.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -22,22 +23,39 @@ public class AdminController {
 
     private final AdminService adminService;
 
+    //권한 조회
     @GetMapping("/levels")
-    public ResponseEntity<?> searchAdminUsers(
-            @PageableDefault(page = 0, size = 10, sort = "UserId", direction = Sort.Direction.ASC) Pageable pageable,
-            @RequestParam(defaultValue = "") String search) {
-
+    public ResponseEntity<?> searchAdminUsers( @PageableDefault(page = 0, size = 10, sort = "UserId", direction = Sort.Direction.ASC) Pageable pageable,  @RequestParam(defaultValue = "") String search) {
         Page<AdminUserDTO> result = adminService.getRoleList(search, pageable);
         return ResponseEntity.ok(result);
     }
 
+    // 권한 업데이트
     @PatchMapping("/levels/{userId}")
-    public ResponseEntity<?> updateUserRole (
-         @PathVariable("userId") Integer userId,
-         @RequestParam("roleId") Integer roleId ) {
+    public ResponseEntity<?> updateUserRole ( @PathVariable("userId") Integer userId, @RequestParam("roleId") Integer roleId ) {
         int result =adminService.updateUserRole(userId , roleId);
         return ResponseEntity.ok(result);
     }
 
+    // 팀원 조회 teamMembers
+    @GetMapping("/teamMembers")
+    public ResponseEntity<?> getTeamMembers( Integer departmentId ,@PageableDefault(page = 0, size = 10, sort = "UserId", direction = Sort.Direction.ASC) Pageable pageable,  @RequestParam(defaultValue = "") String search) {
+        Page<TeamUserDTO> result = adminService.findByDepartmentIdAndUserNameContaining(departmentId, search, pageable);
+        return ResponseEntity.ok(result);
+    }
+
+    // 팀원 상세 조회 teamMembers
+    @GetMapping("/teamMembers/{userId}")
+    public ResponseEntity<?> getTeamMemberInfo ( @PathVariable("userId") Integer userId ) {
+        TeamUserDTO result = adminService.findTeamByUserId( userId );
+        return ResponseEntity.ok(result);
+    }
+
+    // 팀원 인사평가
+    @PatchMapping("/teamMembers/{userId}")
+    public ResponseEntity<?> updateUserRole ( @PathVariable("userId") Integer userId, @RequestParam("performance") String performance ) {
+        int result = adminService.updatePerformance(userId , performance);
+        return ResponseEntity.ok(result);
+    }
 
 }

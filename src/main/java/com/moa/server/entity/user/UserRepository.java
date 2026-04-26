@@ -1,5 +1,6 @@
 package com.moa.server.entity.user;
 
+import com.moa.server.entity.user.dto.TeamUserDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -78,7 +79,6 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 
 
     //권한 조회
-    //재고조회
     @EntityGraph(attributePaths = {"role", "department" , "grade" })
     Page<UserEntity> findWithRoleByUserNameContaining(String userName, Pageable pageable);
 
@@ -87,6 +87,20 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
     @Transactional
     @Query("UPDATE UserEntity u SET u.roleId = :roleId WHERE u.userId = :userId")
     int updateUserIdRoleId(Integer userId, Integer roleId);
+
+    //팀원 조회
+    @EntityGraph(attributePaths = {"role", "department" , "grade" })
+    Page<UserEntity> findByDepartmentIdAndUserNameContaining( Integer departmentId , String search, Pageable pageable);
+
+    //팀원 상세 조회
+    @EntityGraph(attributePaths = {"role", "department" , "grade" })
+    TeamUserDTO findTeamByUserId(Integer userId );
+
+    // 팀원 인사평가 
+    @Modifying
+    @Transactional
+    @Query("UPDATE UserEntity u SET u.performance = :performance WHERE u.userId = :userId")
+    int updateUserIdPerformance(Integer userId, String performance);
 
 //    boolean existsByEmployeeIdAndPassword(String employeeId, String password);
 //    UserEntity getUserByEmployeeId(String employeeId);
