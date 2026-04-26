@@ -22,6 +22,9 @@ public class WorkEntity extends BaseEntity {
     @Column(name = "work_id")
     private Integer workId;
 
+    @Column(name = "user_id" , insertable = false, updatable = false)
+    private Integer userId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
@@ -44,7 +47,10 @@ public class WorkEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "allowance_cord",
-            referencedColumnName = "allowance_cord"
+            referencedColumnName = "allowance_cord",
+            insertable = false,
+            updatable = false,
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT) // 물리적 FK 생성 안 함
     )
     private AllowanceEntity allowance;
 

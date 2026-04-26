@@ -3,11 +3,11 @@ package com.moa.server.entity.user.service;
 import com.moa.server.common.exception.CustomException;
 import com.moa.server.common.exception.ErrorCode;
 import com.moa.server.entity.user.*;
+import lombok.RequiredArgsConstructor;
 import com.moa.server.entity.user.dto.LoginRequestDTO;
 import com.moa.server.entity.user.dto.LoginResponseDTO;
 import com.moa.server.entity.user.dto.SessionUser;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,4 +67,13 @@ public class UserService {
                 .userId(loginUser.getUserId())
                 .build();
     }
+
+
+    public UserEntity loginInfo(String employeeId) {
+        return userRepository.getUserByEmployeeId(employeeId);
+    }
+
+
+
+
 }

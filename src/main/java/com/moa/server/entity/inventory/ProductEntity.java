@@ -1,6 +1,8 @@
 package com.moa.server.entity.inventory;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.inventory.dto.InventoryDTO;
+import com.moa.server.entity.inventory.dto.ProductCordMapDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,4 +33,14 @@ public class ProductEntity extends BaseEntity {
 
     @Column(name = "product_category")
     private String productCategory;
+
+    public ProductCordMapDTO toDTO() {
+        return ProductCordMapDTO.builder()
+                .productId(this.productId)
+                .productCord(this.productCord)
+                .productName(this.productName)
+                .productPrice(this.productPrice)
+                .build();
+    }
+
 }

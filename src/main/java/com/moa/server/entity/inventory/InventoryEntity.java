@@ -1,9 +1,10 @@
 package com.moa.server.entity.inventory;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.inventory.dto.InventoryCordMapDTO;
 import jakarta.persistence.*;
 import lombok.*;
-
+import com.moa.server.entity.inventory.dto.InventoryDTO;
 import java.time.LocalDateTime;
 
 @Entity
@@ -36,4 +37,59 @@ public class InventoryEntity extends BaseEntity {
 
     @Column(name = "logistics_id")
     private Integer logisticsId;
+
+
+    //productEntity 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private ProductEntity product;
+
+    //storageEntity 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "storage_id", insertable = false, updatable = false)
+    private StorageEntity storage;
+
+    //logisticsEntity 와 join
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "logistics_id", insertable = false, updatable = false)
+    private LogisticsEntity logistics;
+
+
+
+    // InventoryEntity.java 내부 혹은 별도 Mapper
+    public InventoryDTO toDTO() {
+        return InventoryDTO.builder()
+                .inventoryId(this.inventoryId)
+                .productId(this.productId)
+                .storageId(this.storageId)
+                .inventorySno(this.inventorySno)
+                .expirationDate(this.expirationDate)
+                .inventoryMemo(this.inventoryMemo)
+                .logisticsId(this.logisticsId)
+                .productCord(this.product != null ? this.product.getProductCord() : null)
+                .productName(this.product != null ? this.product.getProductName() : null)
+                .productPrice(this.product != null ? this.product.getProductPrice() : null)
+                .storageCord(this.storage != null ? this.storage.getStorageCord() : null)
+                .storageName(this.storage != null ? this.storage.getStorageName() : null)
+                .build();
+    }
+
+    public InventoryCordMapDTO MapDTO() {
+        return InventoryCordMapDTO.builder()
+                .inventoryId(this.inventoryId)
+                .productId(this.productId)
+                .storageId(this.storageId)
+                .inventorySno(this.inventorySno)
+                .expirationDate(this.expirationDate)
+                .logisticsId(this.logisticsId)
+                .logisticSno(this.logistics != null ? this.logistics.getLogisticSno() : null )
+                .productCord(this.product != null ? this.product.getProductCord() : null)
+                .productName(this.product != null ? this.product.getProductName() : null)
+                .productPrice(this.product != null ? this.product.getProductPrice() : null)
+                .storageCord(this.storage != null ? this.storage.getStorageCord() : null)
+                .storageName(this.storage != null ? this.storage.getStorageName() : null)
+                .build();
+    }
+
+
 }

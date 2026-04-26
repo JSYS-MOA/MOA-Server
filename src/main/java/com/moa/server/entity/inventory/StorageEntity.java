@@ -1,6 +1,8 @@
 package com.moa.server.entity.inventory;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.inventory.dto.StorageCordMapDTO;
+import com.moa.server.entity.inventory.dto.VendorCordMapDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,4 +30,15 @@ public class StorageEntity extends BaseEntity {
 
     @Column(name = "storage_address")
     private String storageAddress;
+
+    public StorageCordMapDTO toDTO() {
+        return StorageCordMapDTO.builder()
+                .storageId(this.storageId)
+                .storageCord(this.storageCord)
+                .storageName(this.storageName)
+                .storageAddress(this.storageAddress)
+                .build();
+    }
+
+
 }
