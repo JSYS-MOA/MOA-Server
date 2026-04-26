@@ -45,7 +45,7 @@ public class ApprovalController {
     }
 
     // 결재라인 선택
-    @GetMapping("/orders/select/approvaLine")
+    @GetMapping("/select/approvaLine")
     public Page<?> getApprovaLineList ( @PageableDefault(page = 0, size = 10 )Pageable pageable) {
         return approvalService.getApprovaLineCord( pageable);
     }

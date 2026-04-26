@@ -3,6 +3,7 @@ package com.moa.server.entity.approval;
 import com.moa.server.common.BaseEntity;
 import com.moa.server.entity.approval.dto.ApprovaLineCordMapDTO;
 import com.moa.server.entity.inventory.dto.ProductCordMapDTO;
+import com.moa.server.entity.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,6 +31,10 @@ public class ApprovalLineEntity extends BaseEntity {
 
     @Column(name = "approval_line_is_use")
     private Integer approvalLineIsUse;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approval_line_user", insertable = false, updatable = false, referencedColumnName = "user_id")
+    private UserEntity userApprover;
 
     public ApprovaLineCordMapDTO MapDTO() {
         return ApprovaLineCordMapDTO.builder()

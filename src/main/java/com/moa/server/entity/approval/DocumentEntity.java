@@ -25,4 +25,7 @@ public class DocumentEntity extends BaseEntity {
 
     @Column(name = "document_is_use")
     private Integer documentIsUse;
+
+
+
 }

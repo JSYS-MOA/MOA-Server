@@ -13,15 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer> {
 
     //내가 신청한 결재목록
-    @EntityGraph(attributePaths = {"Line", "UserWriter", "UserWriter.department", "UserWriter.grade", "UserApprover" , "UserApprover.department", "UserApprover.grade"})
+    @EntityGraph(attributePaths = {"line", "userWriter", "userWriter.department", "userWriter.grade", "lineApprover" , "lineApprover.userApprover" , "lineApprover.userApprover.department", "lineApprover.userApprover.grade"})
     Page<ApprovaEntity> findByWriter(Integer writer, Pageable pageable );
 
     // 결재 상세정보 / 팀장용 결재 상세 조회
-    @EntityGraph(attributePaths = {"Line", "UserWriter", "UserWriter.department", "UserWriter.grade", "UserApprover" , "UserApprover.department", "UserApprover.grade"})
+    @EntityGraph(attributePaths = {"line", "userWriter", "userWriter.department", "userWriter.grade", "lineApprover" , "lineApprover.userApprover" , "lineApprover.userApprover.department", "lineApprover.userApprover.grade"})
     Page<ApprovaEntity> findByApprovaId( Integer approvaId ,Pageable pageable );
 
     //팀장용 결재목록 조회
-    @EntityGraph(attributePaths = {"Line", "UserWriter", "UserWriter.department", "UserWriter.grade", "UserApprover" , "UserApprover.department", "UserApprover.grade"})
+    @EntityGraph(attributePaths = {"line", "userWriter", "userWriter.department", "userWriter.grade", "lineApprover" , "lineApprover.userApprover" , "lineApprover.userApprover.department", "lineApprover.userApprover.grade"})
     Page<ApprovaEntity> findByApprover(Integer approver, Pageable pageable );
 
     //  미결재 결재 삭제

@@ -17,42 +17,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController // json을 반환하기 위함  @Controller + @ResponseBody
-@RequestMapping("/api/admin")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AdminController {
 
     private final AdminService adminService;
 
     //권한 조회
-    @GetMapping("/levels")
+    @GetMapping("/admin/levels")
     public ResponseEntity<?> searchAdminUsers( @PageableDefault(page = 0, size = 10, sort = "UserId", direction = Sort.Direction.ASC) Pageable pageable,  @RequestParam(defaultValue = "") String search) {
         Page<AdminUserDTO> result = adminService.getRoleList(search, pageable);
         return ResponseEntity.ok(result);
     }
 
     // 권한 업데이트
-    @PatchMapping("/levels/{userId}")
+    @PatchMapping("/admin/levels/{userId}")
     public ResponseEntity<?> updateUserRole ( @PathVariable("userId") Integer userId, @RequestParam("roleId") Integer roleId ) {
         int result =adminService.updateUserRole(userId , roleId);
         return ResponseEntity.ok(result);
     }
 
     // 팀원 조회 teamMembers
-    @GetMapping("/teamMembers")
+    @GetMapping("/gw/teamMembers")
     public ResponseEntity<?> getTeamMembers( Integer departmentId ,@PageableDefault(page = 0, size = 10, sort = "UserId", direction = Sort.Direction.ASC) Pageable pageable,  @RequestParam(defaultValue = "") String search) {
         Page<TeamUserDTO> result = adminService.findByDepartmentIdAndUserNameContaining(departmentId, search, pageable);
         return ResponseEntity.ok(result);
     }
 
     // 팀원 상세 조회 teamMembers
-    @GetMapping("/teamMembers/{userId}")
+    @GetMapping("/gw/teamMembers/{userId}")
     public ResponseEntity<?> getTeamMemberInfo ( @PathVariable("userId") Integer userId ) {
         TeamUserDTO result = adminService.findTeamByUserId( userId );
         return ResponseEntity.ok(result);
     }
 
     // 팀원 인사평가
-    @PatchMapping("/teamMembers/{userId}")
+    @PatchMapping("/gw/teamMembers/{userId}")
     public ResponseEntity<?> updateUserRole ( @PathVariable("userId") Integer userId, @RequestParam("performance") String performance ) {
         int result = adminService.updatePerformance(userId , performance);
         return ResponseEntity.ok(result);
