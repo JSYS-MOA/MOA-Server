@@ -31,9 +31,6 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 
     Optional<UserEntity> findByEmployeeIdAndPassword(String employeeId, String password);
 
-
-    boolean existsByEmployeeIdAndPassword(String employeeId, String password);
-
     @EntityGraph(attributePaths = {"department", "grade"})
     List<UserEntity> findByUserNameContaining(String userName);
 
@@ -45,7 +42,6 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 
     @EntityGraph(attributePaths = {"department", "grade"})
     Page<UserEntity> findByEmployeeIdContaining(String employeeId, Pageable pageable);
-
 
     @EntityGraph(attributePaths = {"department", "grade"})
     List<UserEntity> findByQuitDateIsNotNull();
@@ -81,18 +77,19 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
     boolean existsByGradeId(Integer gradeId);
 
 
-    UserEntity getUserByEmployeeId(String employeeId);
-
     //권한 조회
     //재고조회
     @EntityGraph(attributePaths = {"role", "department" , "grade" })
     Page<UserEntity> findWithRoleByUserNameContaining(String userName, Pageable pageable);
 
+    // 권한 업데이트
     @Modifying
     @Transactional
     @Query("UPDATE UserEntity u SET u.roleId = :roleId WHERE u.userId = :userId")
     int updateUserIdRoleId(Integer userId, Integer roleId);
 
+//    boolean existsByEmployeeIdAndPassword(String employeeId, String password);
+//    UserEntity getUserByEmployeeId(String employeeId);
 
 }
 

@@ -29,10 +29,29 @@ public class ApprovalController {
         return approvalService.getApprovaUserList(writer, pageable);
     }
 
+    // 결재조회 / 팀장 결제 내역 상세조회
     @GetMapping("/approvals/{approvaId}")
     public Page<ApprovaUserDTO> getApprovaInfo( @PathVariable("approvaId") Integer approvaId , @PageableDefault(page = 0, size = 10 )Pageable pageable) {
         return  approvalService.getApprovaInfo( approvaId, pageable);
     }
+
+    // 팀장 결제 내역 조회
+    @GetMapping("/approvalWait")
+    public Page<ApprovaUserDTO> getApproverList(@Param("approver") Integer approver, @Param("search") String search, @PageableDefault(page = 0, size = 10 )Pageable pageable) {
+        return approvalService.getApprovaUserList(approver, pageable);
+    }
+
+    // 결재 요청 approvals
+
+    // 미결재 결재 삭제 approvals/{approva_id}
+
+    // 팀장 결제 내역 반려 / 결재 처리 approvalAct/{approva_id}
+
+    // 팀원 조회 teamMembers
+
+    // 팀원 조회 teamMembers/{department_id} <= {user_id} 바꿔
+
+    // 인사 평가 추가 teamMembers/{user_id}
 
 
 }

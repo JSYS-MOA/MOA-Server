@@ -38,4 +38,11 @@ public class ApprovalService {
         return entityPage.map(ApprovaEntity::MapDTO);
     }
 
+    // 팀장용 결재 조회
+    public Page<ApprovaUserDTO> getApproverList(Integer approver, Pageable pageable) {
+        Page<ApprovaEntity> entityPage = approvaRepository.findByApprover(  approver,  pageable);
+
+        return entityPage.map(ApprovaEntity::MapDTO);
+    }
+
 }

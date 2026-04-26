@@ -13,10 +13,13 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
     @EntityGraph(attributePaths = {"Line", "UserWriter", "UserWriter.department", "UserWriter.grade", "UserApprover" , "UserApprover.department", "UserApprover.grade"})
     Page<ApprovaEntity> findByWriter(Integer writer, Pageable pageable );
 
-
+    // 결재 상세정보 / 팀장용 결재 상세 조회
     @EntityGraph(attributePaths = {"Line", "UserWriter", "UserWriter.department", "UserWriter.grade", "UserApprover" , "UserApprover.department", "UserApprover.grade"})
     Page<ApprovaEntity> findByApprovaId( Integer approvaId ,Pageable pageable );
 
+    //팀장용 결재목록 조회
+    @EntityGraph(attributePaths = {"Line", "UserWriter", "UserWriter.department", "UserWriter.grade", "UserApprover" , "UserApprover.department", "UserApprover.grade"})
+    Page<ApprovaEntity> findByApprover(Integer approver, Pageable pageable );
 
 
 }

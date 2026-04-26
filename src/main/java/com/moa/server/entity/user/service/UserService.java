@@ -69,9 +69,9 @@ public class UserService {
     }
 
 
-    public UserEntity loginInfo(String employeeId) {
-        return userRepository.getUserByEmployeeId(employeeId);
-    }
+//    public UserEntity loginInfo(String employeeId) {
+//        return userRepository.getUserByEmployeeId(employeeId);
+//    }
 
 
 
