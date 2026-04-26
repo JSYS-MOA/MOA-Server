@@ -17,9 +17,9 @@ public class CalendarRoleEntity extends BaseEntity {
     @Column(name = "calender_role_id")
     private Integer calendarRoleId;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id")  //공유받은 유저
     private Integer userId;
 
-    @Column(name = "calender_id")
+    @Column(name = "calender_id") //공유된 캘린더
     private Integer calendarId;
 }
