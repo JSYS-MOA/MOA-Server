@@ -42,6 +42,8 @@ public class ApprovalLineEntity extends BaseEntity {
                 .approvalLineCord(this.approvalLineCord)
                 .approvalLineUser(this.approvalLineUser)
                 .approvalLineName(this.approvalLineName)
+                .userName(this.userApprover.getUserName())
+                .employeeId(this.userApprover.getEmployeeId())
                 .build();
     }
 

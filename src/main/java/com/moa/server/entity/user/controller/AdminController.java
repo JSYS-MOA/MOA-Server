@@ -1,10 +1,8 @@
 package com.moa.server.entity.user.controller;
 
+import com.moa.server.entity.approval.dto.ApprovaUserDTO;
 import com.moa.server.entity.user.UserEntity;
-import com.moa.server.entity.user.dto.AdminUserDTO;
-import com.moa.server.entity.user.dto.LoginRequestDTO;
-import com.moa.server.entity.user.dto.LoginResponseDTO;
-import com.moa.server.entity.user.dto.TeamUserDTO;
+import com.moa.server.entity.user.dto.*;
 import com.moa.server.entity.user.service.AdminService;
 import com.moa.server.entity.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -33,7 +31,7 @@ public class AdminController {
     // 권한 업데이트
     @PatchMapping("/admin/levels/{userId}")
     public ResponseEntity<?> updateUserRole ( @PathVariable("userId") Integer userId, @RequestParam("roleId") Integer roleId ) {
-        int result =adminService.updateUserRole(userId , roleId);
+        int result = adminService.updateUserRole(userId , roleId);
         return ResponseEntity.ok(result);
     }
 
@@ -53,9 +51,15 @@ public class AdminController {
 
     // 팀원 인사평가
     @PatchMapping("/gw/teamMembers/{userId}")
-    public ResponseEntity<?> updateUserRole ( @PathVariable("userId") Integer userId, @RequestParam("performance") String performance ) {
-        int result = adminService.updatePerformance(userId , performance);
+    public ResponseEntity<?> updateUserRole ( @PathVariable("userId") Integer userId, @RequestBody RequestPerformace dto ) {
+        int result = adminService.updatePerformance(userId , dto.getPerformance() );
         return ResponseEntity.ok(result);
+    }
+
+    // 권한 선택
+    @GetMapping("/select/role")
+    public Page<?> getRoleList ( @PageableDefault(page = 0, size = 10 )Pageable pageable) {
+        return adminService.getRoleCord( pageable);
     }
 
 }

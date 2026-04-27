@@ -14,4 +14,6 @@ public class ApprovaLineCordMapDTO {
     private String approvalLineCord;
     private Integer approvalLineUser;
     private String approvalLineName;
+    private String userName;
+    private String employeeId;
 }

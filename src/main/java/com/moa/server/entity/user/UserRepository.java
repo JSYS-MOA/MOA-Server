@@ -94,7 +94,7 @@ public interface UserRepository extends  JpaRepository<UserEntity, Integer> {
 
     //팀원 상세 조회
     @EntityGraph(attributePaths = {"role", "department" , "grade" })
-    TeamUserDTO findTeamByUserId(Integer userId );
+    UserEntity findTeamByUserId(Integer userId );
 
     // 팀원 인사평가 
     @Modifying

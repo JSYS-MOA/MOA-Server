@@ -4,6 +4,7 @@ import com.moa.server.entity.approval.*;
 import com.moa.server.entity.approval.dto.ApprovaAddDTO;
 import com.moa.server.entity.approval.dto.ApprovaLineCordMapDTO;
 import com.moa.server.entity.approval.dto.ApprovaUserDTO;
+import com.moa.server.entity.approval.dto.DocumentCordMapDTO;
 import com.moa.server.entity.inventory.OrdererEntity;
 import com.moa.server.entity.inventory.OrderformEntity;
 import com.moa.server.entity.inventory.dto.OrderFormPostDTO;
@@ -51,8 +52,8 @@ public class ApprovalService {
     }
 
     // 팀장용 결재 조회
-    public Page<ApprovaUserDTO> getApproverList(Integer approver, Pageable pageable) {
-        Page<ApprovaEntity> entityPage = approvaRepository.findByApprover(  approver,  pageable);
+    public Page<ApprovaUserDTO> getApproverList(Integer approvalLineUser, Pageable pageable) {
+        Page<ApprovaEntity> entityPage = approvaRepository.findByLineApprover_ApprovalLineUser(  approvalLineUser,  pageable);
 
         return entityPage.map(ApprovaEntity::MapDTO);
     }
@@ -61,6 +62,12 @@ public class ApprovalService {
     public Page<ApprovaLineCordMapDTO> getApprovaLineCord(Pageable pageable) {
         Page<ApprovalLineEntity> entityPage = approvalLineRepository.findAll(pageable);
         return entityPage.map(ApprovalLineEntity::MapDTO);
+    }
+
+    // 문서종류 선택
+    public Page<DocumentCordMapDTO> getDocumentCord(Pageable pageable) {
+        Page<DocumentEntity> entityPage = documentRepository.findAll(pageable);
+        return entityPage.map(DocumentEntity::MapDTO);
     }
 
     // 결재 요청 approvals

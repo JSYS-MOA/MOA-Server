@@ -40,14 +40,20 @@ public class ApprovalController {
 
     // 팀장 결제 내역 조회
     @GetMapping("/approvalWait")
-    public Page<ApprovaUserDTO> getApproverList(@Param("approver") Integer approver, @Param("search") String search, @PageableDefault(page = 0, size = 10 )Pageable pageable) {
-        return approvalService.getApproverList(approver, pageable);
+    public Page<ApprovaUserDTO> getApproverList(@Param("approvalLineUser") Integer approvalLineUser, @Param("search") String search, @PageableDefault(page = 0, size = 10 )Pageable pageable) {
+        return approvalService.getApproverList(approvalLineUser, pageable);
     }
 
     // 결재라인 선택
     @GetMapping("/select/approvaLine")
     public Page<?> getApprovaLineList ( @PageableDefault(page = 0, size = 10 )Pageable pageable) {
         return approvalService.getApprovaLineCord( pageable);
+    }
+
+    // 문서 선택
+    @GetMapping("/select/document")
+    public Page<?> getDocumentCord ( @PageableDefault(page = 0, size = 10 )Pageable pageable) {
+        return approvalService.getDocumentCord( pageable);
     }
 
     // 결재 요청 approvals
@@ -64,8 +70,8 @@ public class ApprovalController {
 
     // 팀장 결제 내역 반려 / 결재 처리 approvalAct/{approva_id}
     @PatchMapping("/approvalAct/{approvaId}")
-    public ResponseEntity<?> updateUserRole (@PathVariable("approvaId") Integer approvaId, @RequestParam("approvaStatus") String approvaStatus ) {
-        int result = approvalService.updateApprovaStatus(approvaId , approvaStatus);
+    public ResponseEntity<?> updateUserRole (@PathVariable("approvaId") Integer approvaId, @RequestBody ApprovaUserDTO dto ) {
+        int result = approvalService.updateApprovaStatus(approvaId , dto.getApprovaStatus());
         return ResponseEntity.ok(result);
     }
 

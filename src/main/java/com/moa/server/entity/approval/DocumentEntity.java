@@ -1,6 +1,8 @@
 package com.moa.server.entity.approval;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.approval.dto.ApprovaLineCordMapDTO;
+import com.moa.server.entity.approval.dto.DocumentCordMapDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +28,13 @@ public class DocumentEntity extends BaseEntity {
     @Column(name = "document_is_use")
     private Integer documentIsUse;
 
+    public DocumentCordMapDTO MapDTO() {
+        return DocumentCordMapDTO.builder()
+                .documentId(this.documentId)
+                .documentCord(this.documentCord)
+                .documentName(this.documentName)
+                .build();
+    }
 
 
 }
