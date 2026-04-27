@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,19 +119,33 @@ public class LeaversController {
     }
 
     @PostMapping("/leavers/add")
-    public ResponseEntity<?> hrCardAdd(@RequestBody UserEntity user) {
+    public ResponseEntity<?> hrCardAdd(@RequestBody Map<String, Object> request) {
         try {
-            hrCardService.hrCardAdd(user);
+            Integer userId = parseInteger(request.get("userId"), "직원");
+            LocalDate quitDate = parseDate(request.get("quitDate"), "퇴사일");
+            HrCardResponseDTO user = hrCardService.hrCardRegisterLeaver(userId, quitDate);
 
             Map<String, Object> response = new HashMap<>();
-            response.put("result", true);
-            response.put("message", "퇴사자 인사카드 등록 완료");
-            return ResponseEntity.ok(response);
+            if (user != null) {
+                response.put("result", true);
+                response.put("message", "퇴사 처리 완료");
+                response.put("user", user);
+                return ResponseEntity.ok(response);
+            }
+
+            response.put("result", false);
+            response.put("message", "해당 직원이 없습니다.");
+            return ResponseEntity.badRequest().body(response);
+        } catch (IllegalArgumentException e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
 
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("result", false);
-            response.put("message", "퇴사자 인사카드 등록 실패: " + e.getMessage());
+            response.put("message", "퇴사 처리 실패: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -149,6 +164,46 @@ public class LeaversController {
             response.put("result", false);
             response.put("message", "퇴사자 인사카드 삭제 실패: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    private Integer parseInteger(Object value, String fieldName) {
+        if (value == null) {
+            throw new IllegalArgumentException(fieldName + "을 선택해 주세요.");
+        }
+
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+
+        String raw = value.toString().trim();
+
+        if (raw.isEmpty()) {
+            throw new IllegalArgumentException(fieldName + "을 선택해 주세요.");
+        }
+
+        try {
+            return Integer.parseInt(raw);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(fieldName + " 값이 올바르지 않습니다.");
+        }
+    }
+
+    private LocalDate parseDate(Object value, String fieldName) {
+        if (value == null) {
+            throw new IllegalArgumentException(fieldName + "을 입력해 주세요.");
+        }
+
+        String raw = value.toString().trim();
+
+        if (raw.isEmpty()) {
+            throw new IllegalArgumentException(fieldName + "을 입력해 주세요.");
+        }
+
+        try {
+            return LocalDate.parse(raw);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(fieldName + " 형식이 올바르지 않습니다.");
         }
     }
 }

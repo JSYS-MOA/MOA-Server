@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.moa.server.entity.user.dto.CertificatesCardUpdateDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -107,6 +108,25 @@ public class HrCardService {
         return userRepository.save(user);
     }
 
+    public HrCardResponseDTO hrCardRegisterLeaver(Integer userId, LocalDate quitDate) {
+        if (userId == null) {
+            throw new IllegalArgumentException("퇴사 처리할 직원을 선택해 주세요.");
+        }
+
+        if (quitDate == null) {
+            throw new IllegalArgumentException("퇴사일을 입력해 주세요.");
+        }
+
+        UserEntity user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return null;
+        }
+
+        user.setQuitDate(quitDate);
+        return toResponse(userRepository.save(user));
+    }
+
     public UserEntity hrCardUpdate(Integer userId, UserEntity newUser) {
         UserEntity user = userRepository.findById(userId).orElse(null);
 
@@ -185,5 +205,40 @@ public class HrCardService {
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .build();
+    }
+
+    @Transactional
+    public UserEntity certificatesCardUpdate(Integer userId, CertificatesCardUpdateDTO request) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return null;
+        }
+
+        if (request.getRoleId() != null) {
+            user.setRoleId(request.getRoleId());
+        }
+
+        if (request.getDepartmentId() != null) {
+            user.setDepartmentId(request.getDepartmentId());
+        }
+
+        if (request.getGradeId() != null) {
+            user.setGradeId(request.getGradeId());
+        }
+
+        return userRepository.save(user);
+    }
+
+    // 인사 평가 수정
+    public UserEntity evaluationsCardUpdate(Integer userId, String performance) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return null;
+        }
+
+        user.setPerformance(performance);
+
+        return userRepository.save(user);
     }
 }

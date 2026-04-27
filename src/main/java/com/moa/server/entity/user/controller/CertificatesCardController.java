@@ -1,16 +1,17 @@
 package com.moa.server.entity.user.controller;
 
 import com.moa.server.entity.user.UserEntity;
+import com.moa.server.entity.user.dto.CertificatesCardUpdateDTO;
 import com.moa.server.entity.user.dto.HrCardRequestPageDTO;
 import com.moa.server.entity.user.dto.HrCardResponseDTO;
 import com.moa.server.entity.user.service.HrCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/hr")
@@ -93,9 +94,12 @@ public class CertificatesCardController {
     }
 
     @PutMapping("/certificates/{user_id}")
-    public ResponseEntity<?> hrCardUpdate(@PathVariable Integer user_id, @RequestBody UserEntity user) {
+    public ResponseEntity<?> hrCardUpdate(
+            @PathVariable Integer user_id,
+            @RequestBody CertificatesCardUpdateDTO request
+    ) {
         try {
-            UserEntity users = hrCardService.hrCardUpdate(user_id, user);
+            UserEntity users = hrCardService.certificatesCardUpdate(user_id, request);
 
             Map<String, Object> response = new HashMap<>();
 
