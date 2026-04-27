@@ -3,6 +3,8 @@ package com.moa.server.entity.calendar.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 public class CalendarResponseDTO {
@@ -19,5 +21,6 @@ public class CalendarResponseDTO {
     private String file;
     private Integer alarm;
     private String writerName;
+    private List<Integer> sharedUserIds;
 }
 

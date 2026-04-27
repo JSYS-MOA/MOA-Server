@@ -1,5 +1,6 @@
 package com.moa.server.entity.calendar.service;
 
+import com.moa.server.common.FileUtil;
 import com.moa.server.common.exception.CustomException;
 import com.moa.server.common.exception.ErrorCode;
 import com.moa.server.entity.calendar.*;
@@ -13,7 +14,10 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -26,6 +30,7 @@ public class CalendarService {
     private final CalendarRepository calendarRepository;
     private final CalendarCategoryRepository calendarCategoryRepository;
     private final CalendarRoleRepository calendarRoleRepository;
+    private final FileUtil fileUtil;
 
     private SessionUser getLoginUser(HttpSession session) {
         SessionUser loginUser = (SessionUser) session.getAttribute(SessionUser.USER);
@@ -36,6 +41,12 @@ public class CalendarService {
     private String formatDate(java.time.LocalDateTime date){
         if(date == null) return null;
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+
+    private LocalDateTime parseDate(String date) {
+        if (date == null) return null;
+        return LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
     }
 
     private CalendarResponseDTO toDTO(CalendarEntity c) {
@@ -53,6 +64,12 @@ public class CalendarService {
                 .file(c.getFile())
                 .alarm(c.getAlarm())
                 .writerName(c.getWriterUser() != null ? c.getWriterUser().getUserName() : null)
+                .sharedUserIds(
+                        calendarRoleRepository.findByCalendarId(c.getCalendarId())
+                                .stream()
+                                .map(CalendarRoleEntity::getUserId)
+                                .toList()
+                )
                 .build();
     }
 
@@ -60,7 +77,6 @@ public class CalendarService {
     public List<CalendarResponseDTO> getCalendars(String type, HttpSession session){
 
         SessionUser loginUser = getLoginUser(session);
-        System.out.println("로그인 유저 ID: " + loginUser.getUserId());
         //공유캘린더 목록
         List<Integer> sharedCalendarIds = calendarRoleRepository
                 .findByUserId(loginUser.getUserId())
@@ -116,37 +132,42 @@ public class CalendarService {
 
         SessionUser loginUser = getLoginUser(session);
 
-        return userRepository.findByDepartmentId(loginUser.getDepartmentId())
+        return userRepository.findAll()
                 .stream()
                 //본인을 목록에서 제외
                 .filter(u -> !u.getUserId().equals(loginUser.getUserId()))
                 .map( u -> UserResponseDTO.builder()
                         .userId(u.getUserId())
                         .userName(u.getUserName())
+                        .departmentName(u.getDepartment().getDepartmentName())
                         .build())
                 .toList();
     }
 
     //캘린더 등록
-    public void saveCalendar(CalendarRequestDTO request, HttpSession session){
-
+    public void saveCalendar(CalendarRequestDTO request, MultipartFile file, HttpSession session) throws IOException {
         SessionUser loginUser = getLoginUser(session);
+
+        String fileName = null;
+        if (file != null && !file.isEmpty()) {
+            fileName = fileUtil.saveFile(file);
+        }
 
         CalendarEntity calendar = CalendarEntity.builder()
                 .writer(loginUser.getUserId())
                 .type(request.getType())
                 .calendarCategoryId(request.getCalendarCategoryId())
-                .eventStartDate(request.getEventStartDate())
-                .eventEndDate(request.getEventEndDate())
+                .eventStartDate(parseDate(request.getEventStartDate()))
+                .eventEndDate(parseDate(request.getEventEndDate()))
                 .eventTitle(request.getEventTitle())
                 .eventContent(request.getEventContent())
                 .alarm(request.getAlarm())
+                .file(fileName)
                 .build();
 
-        //등록 전에는 calendarID 없어서 가져와야 됨
         CalendarEntity saved = calendarRepository.save(calendar);
 
-        if(request.getSharedUserIds() != null && !request.getSharedUserIds().isEmpty()){
+        if (request.getSharedUserIds() != null && !request.getSharedUserIds().isEmpty()) {
             request.getSharedUserIds().forEach(userId -> {
                 CalendarRoleEntity role = CalendarRoleEntity.builder()
                         .calendarId(saved.getCalendarId())
@@ -158,29 +179,38 @@ public class CalendarService {
     }
 
     //캘린더 수정
-    public void updateCalendar(Integer calendarId, CalendarRequestDTO request, HttpSession session){
-
+    public void updateCalendar(Integer calendarId, CalendarRequestDTO request, MultipartFile file, HttpSession session) throws IOException {
         SessionUser loginUser = getLoginUser(session);
 
         CalendarEntity calendar = calendarRepository.findById(calendarId)
-                .orElseThrow(()-> new CustomException(ErrorCode.CALENDAR_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CALENDAR_NOT_FOUND));
 
         if (!calendar.getWriter().equals(loginUser.getUserId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
+
+        final String fileName;
+
+        if (file != null && !file.isEmpty()) {
+            fileUtil.deleteFile(calendar.getFile());
+            fileName = fileUtil.saveFile(file);
+        } else {
+            fileName = calendar.getFile();
+        }
+
         calendar.setType(request.getType());
         calendar.setCalendarCategoryId(request.getCalendarCategoryId());
-        calendar.setEventStartDate(request.getEventStartDate());
-        calendar.setEventEndDate(request.getEventEndDate());
+        calendar.setEventStartDate(parseDate(request.getEventStartDate()));
+        calendar.setEventEndDate(parseDate(request.getEventEndDate()));
         calendar.setEventTitle(request.getEventTitle());
         calendar.setEventContent(request.getEventContent());
         calendar.setAlarm(request.getAlarm());
+        calendar.setFile(fileName);
 
-        //기존 공유자 삭제 후 새로 저장
         calendarRoleRepository.deleteByCalendarId(calendarId);
 
-        if(request.getSharedUserIds() != null && !request.getSharedUserIds().isEmpty()){
+        if (request.getSharedUserIds() != null && !request.getSharedUserIds().isEmpty()) {
             request.getSharedUserIds().forEach(userId -> {
                 CalendarRoleEntity role = CalendarRoleEntity.builder()
                         .calendarId(calendarId)
@@ -192,8 +222,7 @@ public class CalendarService {
     }
 
     // 캘린더 삭제
-    public void deleteCalendar(Integer calendarId, HttpSession session){
-
+    public void deleteCalendar(Integer calendarId, HttpSession session) {
         SessionUser loginUser = getLoginUser(session);
         CalendarEntity calendar = calendarRepository.findById(calendarId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CALENDAR_NOT_FOUND));
@@ -201,6 +230,9 @@ public class CalendarService {
         if (!calendar.getWriter().equals(loginUser.getUserId())) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
+
+        fileUtil.deleteFile(calendar.getFile());
+
         calendarRoleRepository.deleteByCalendarId(calendarId);
         calendarRepository.delete(calendar);
     }

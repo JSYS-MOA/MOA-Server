@@ -1,5 +1,6 @@
 package com.moa.server.entity.notice.service;
 
+import com.moa.server.common.FileUtil;
 import com.moa.server.common.exception.CustomException;
 import com.moa.server.common.exception.ErrorCode;
 import com.moa.server.entity.notice.NoticeEntity;
@@ -10,19 +11,14 @@ import com.moa.server.entity.user.UserRepository;
 import com.moa.server.entity.user.dto.SessionUser;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,13 +27,12 @@ import java.util.stream.Collectors;
 public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final UserRepository userRepository;
+    private final FileUtil fileUtil;
     private String getWriterName(Integer writerId) {
         return userRepository.findById(writerId)
                 .map(UserEntity::getUserName)
                 .orElse("알 수 없음");
     }
-    @Value("${file.upload-dir}")
-    private String uploadDir;
 
     private SessionUser getLoginUser(HttpSession session){
         SessionUser loginUser = (SessionUser) session.getAttribute(SessionUser.USER);
@@ -96,19 +91,9 @@ public class NoticeService {
 
         SessionUser loginUser = getLoginUser(session);
 
-        //파일 저장
         String fileName = null;
-        if(file != null && !file.isEmpty()){
-            //같은 파일명 덮어쓰기를 방지하기 위해 uuid라는 랜덤 고유 문자열을 사용
-            fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            //업로드 경로를 path 객체로 변환(문자열 -> 객체)
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-                //폴더가 없을 때 자동으로 만들어줌(서버 컴퓨터에 저장을 위한 폴더생성)
-            }
-            //파일 저장
-            Files.copy(file.getInputStream(), uploadPath.resolve(fileName));
+        if (file != null && !file.isEmpty()) {
+            fileName = fileUtil.saveFile(file);
         }
 
         NoticeEntity notice = NoticeEntity.builder()
@@ -138,27 +123,13 @@ public class NoticeService {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
-        String fileName = notice.getFile();
+        final String fileName;
 
-        if(file != null && !file.isEmpty()) {
-
-            fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            Files.copy(
-                    file.getInputStream(),
-                    uploadPath.resolve(fileName),
-                    java.nio.file.StandardCopyOption.REPLACE_EXISTING
-            );
-
-            if(notice.getFile() != null){
-                Path oldFile = Paths.get(uploadDir).resolve(notice.getFile());
-                Files.deleteIfExists(oldFile);
-            }
+        if (file != null && !file.isEmpty()) {
+            fileUtil.deleteFile(notice.getFile());
+            fileName = fileUtil.saveFile(file);
+        } else {
+            fileName = notice.getFile();
         }
 
         notice.setNoticeTitle(noticeTitle);
@@ -180,14 +151,7 @@ public class NoticeService {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
-        if(notice.getFile() != null){
-            Path oldFile = Paths.get(uploadDir).resolve(notice.getFile());
-            try {
-                Files.deleteIfExists(oldFile);
-            }catch(IOException e){
-                System.out.println("파일 삭제 실패");
-            }
-        }
+        fileUtil.deleteFile(notice.getFile());
         noticeRepository.delete(notice);
     }
 }

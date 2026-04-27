@@ -8,9 +8,12 @@ import com.moa.server.entity.calendar.service.CalendarService;
 import com.moa.server.entity.user.dto.UserResponseDTO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -49,21 +52,23 @@ public class CalendarController {
     }
 
     //캘린더 등록
-    @PostMapping
+    @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<Void> saveCalendar(
-            @RequestBody CalendarRequestDTO request,
-            HttpSession session) {
-        calendarService.saveCalendar(request, session);
+            @RequestPart("request") CalendarRequestDTO request,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            HttpSession session) throws IOException {
+        calendarService.saveCalendar(request, file, session);
         return ResponseEntity.ok().build();
     }
 
     //캘린더 수정
-    @PutMapping("/{calendarId}")
+    @PutMapping(value = "/{calendarId}", consumes = "multipart/form-data")
     public ResponseEntity<Void> updateCalendar(
             @PathVariable Integer calendarId,
-            @RequestBody CalendarRequestDTO request,
-            HttpSession session) {
-        calendarService.updateCalendar(calendarId, request, session);
+            @RequestPart("request") CalendarRequestDTO request,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            HttpSession session) throws IOException {
+        calendarService.updateCalendar(calendarId, request, file, session);
         return ResponseEntity.ok().build();
     }
 

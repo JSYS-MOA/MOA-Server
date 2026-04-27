@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "calender_role")
+@Table(name = "calendar_role")
 @Getter
 @Setter // DTO 역할을 위해 세터를 열어줍니다
 @NoArgsConstructor // JPA와 DTO 처리를 위한 기본 생성자
