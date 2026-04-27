@@ -52,6 +52,7 @@ public class CalendarService {
                 .eventContent(c.getEventContent())
                 .file(c.getFile())
                 .alarm(c.getAlarm())
+                .writerName(c.getWriterUser() != null ? c.getWriterUser().getUserName() : null)
                 .build();
     }
 
@@ -68,7 +69,7 @@ public class CalendarService {
                 .toList();
 
         List<CalendarEntity> calendars;
-        if("팀".equals(type)){
+        if("공유".equals(type)){
             //공유일정만
             calendars = calendarRepository.findByCalendarIdIn(sharedCalendarIds);
         } else if ("개인".equals(type)) {

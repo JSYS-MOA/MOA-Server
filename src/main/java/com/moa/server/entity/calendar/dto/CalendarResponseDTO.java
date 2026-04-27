@@ -18,6 +18,6 @@ public class CalendarResponseDTO {
     private String eventContent;
     private String file;
     private Integer alarm;
-
+    private String writerName;
 }
 
