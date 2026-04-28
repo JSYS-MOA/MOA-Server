@@ -50,6 +50,7 @@ public enum ErrorCode {
     FILE_NOT_FOUND(404,"F001","파일을 찾을 수 없습니다"),
     NOTICE_NOT_FOUND(404,"F001","공지사항을 찾을 수 없습니다"),
     CALENDAR_NOT_FOUND(404,"F001","해당 캘린더를 찾을 수 없습니다"),
+    TRANSACTION_NOT_FOUND(404,"F001","해당 전표를 찾을 수 없습니다"),
     //유저
     USER_NOT_FOUND(404, "U001", "사용자를 찾을 수 없습니다");
 
