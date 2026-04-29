@@ -1,6 +1,7 @@
 package com.moa.server.entity.calendar;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,7 +26,7 @@ public class CalendarEntity extends BaseEntity {
     @Column(name = "type")
     private String type;
 
-    @Column(name = "calender_category_id")
+    @Column(name = "calendar_category_id")
     private Integer calendarCategoryId;
 
     @Column(name = "event_start_date")
@@ -45,4 +46,12 @@ public class CalendarEntity extends BaseEntity {
 
     @Column(name = "alarm")
     private Integer alarm;
+
+    @ManyToOne
+    @JoinColumn(name = "calendar_category_id", insertable = false, updatable = false)
+    private CalendarCategoryEntity calendarCategory;
+
+    @ManyToOne
+    @JoinColumn(name = "writer", insertable = false, updatable = false)
+    private UserEntity writerUser;
 }

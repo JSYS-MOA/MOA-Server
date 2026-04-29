@@ -10,4 +10,5 @@ import lombok.RequiredArgsConstructor;
 public class UserResponseDTO {
     private Integer userId;
     private String userName;
+    private String departmentName;
 }
