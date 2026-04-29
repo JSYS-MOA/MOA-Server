@@ -106,4 +106,13 @@ public class SalesService {
                 .build();
 
     }
+
+    // 전자세금계산서 목록 조회
+    public List<TransactionResponseDTO> getTaxInvoiceList() {
+        return transactionRepository.findAllByOrderByTransactionIdDesc()
+                .stream()
+                .filter(t -> t.getOrderformId() != null)
+                .map(this::toDTO)
+                .toList();
+    }
 }
