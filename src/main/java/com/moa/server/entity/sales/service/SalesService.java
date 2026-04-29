@@ -2,8 +2,9 @@ package com.moa.server.entity.sales.service;
 
 import com.moa.server.common.exception.CustomException;
 import com.moa.server.common.exception.ErrorCode;
-import com.moa.server.entity.inventory.TransactionEntity;
-import com.moa.server.entity.inventory.TransactionRepository;
+import com.moa.server.entity.inventory.*;
+import com.moa.server.entity.inventory.dto.OrderDTO;
+import com.moa.server.entity.sales.dto.TaxInvoiceResponseDTO;
 import com.moa.server.entity.sales.dto.TransactionRequestDTO;
 import com.moa.server.entity.sales.dto.TransactionResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,10 @@ import java.util.List;
 public class SalesService {
 
     private final TransactionRepository transactionRepository;
+    private final OrdererRepository ordererRepository;
+    private final VendorRepository vendorRepository;
+
+    private static final Integer SUPPLIER_VENDOR_ID = 11;
 
     private TransactionResponseDTO toDTO(TransactionEntity t){
         return TransactionResponseDTO.builder()
@@ -63,5 +68,42 @@ public class SalesService {
                 .orElseThrow(()-> new CustomException(ErrorCode.TRANSACTION_NOT_FOUND));
 
         transactionRepository.delete(t);
+    }
+
+    //전자세금계산서 조회
+    public TaxInvoiceResponseDTO getTaxInvoice(Integer transactionId){
+
+        TransactionEntity t = transactionRepository.findById(transactionId)
+                .orElseThrow(()-> new CustomException(ErrorCode.TRANSACTION_NOT_FOUND));
+
+        VendorEntity supplier = vendorRepository.findById(SUPPLIER_VENDOR_ID)
+                .orElseThrow(()-> new CustomException(ErrorCode.TRANSACTION_NOT_FOUND));
+
+        VendorEntity receiver = vendorRepository.findById(t.getVendorId())
+                .orElseThrow(()-> new CustomException(ErrorCode.TRANSACTION_NOT_FOUND));
+
+        List<OrderDTO> items = ordererRepository.findByOrderformId(t.getOrderformId())
+                .stream()
+                .map(OrdererEntity::toinfoDTO)
+                .toList();
+
+        int supplyPrice = t.getTransactionPrice();
+        int tax = (int) (supplyPrice * 0.1);
+        int totalPrice = supplyPrice + tax;
+
+        return TaxInvoiceResponseDTO.builder()
+
+                .supplierName(supplier.getVendorName())
+                .supplierCode(supplier.getVendorCord())
+                .receiverName(receiver.getVendorName())
+                .receiverCode(receiver.getVendorCord())
+                .transactionId(t.getTransactionId())
+                .transactionDate(t.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .supplyPrice(supplyPrice)
+                .tax(tax)
+                .totalPrice(totalPrice)
+                .items(items)
+                .build();
+
     }
 }
