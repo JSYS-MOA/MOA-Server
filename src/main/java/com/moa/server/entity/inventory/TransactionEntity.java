@@ -1,17 +1,27 @@
 package com.moa.server.entity.inventory;
 
-import com.moa.server.common.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "transaction")
 @Getter
-@Setter // DTO 역할을 위해 세터를 열어줍니다
-@NoArgsConstructor // JPA와 DTO 처리를 위한 기본 생성자
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TransactionEntity extends BaseEntity {
+public class TransactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")
@@ -37,4 +47,10 @@ public class TransactionEntity extends BaseEntity {
 
     @Column(name = "transaction_memo")
     private String transactionMemo;
+
+    @Column(name = "created_at")
+    private LocalDate createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
 }

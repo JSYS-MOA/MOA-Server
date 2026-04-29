@@ -57,7 +57,6 @@ public class HrCardService {
             case "employeeid", "employee_id" -> userRepository.findByEmployeeIdContaining(keyword);
             case "departmentid", "department_id" -> userRepository.findByDepartmentId(parseInteger(keyword));
             case "gradeid", "grade_id" -> userRepository.findByGradeId(parseInteger(keyword));
-            case "bank" -> userRepository.findByBank(keyword);
             case "active" -> userRepository.findByQuitDateIsNull();
             case "retired", "quit" -> userRepository.findByQuitDateIsNotNull();
             default -> throw new IllegalArgumentException("지원하지 않는 검색 조건입니다. " + searchCondition);
