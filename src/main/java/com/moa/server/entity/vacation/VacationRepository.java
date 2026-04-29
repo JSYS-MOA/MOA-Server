@@ -1,7 +1,10 @@
 package com.moa.server.entity.vacation;
 
-import com.moa.server.entity.user.AdminRoleEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -9,6 +12,19 @@ public interface VacationRepository extends JpaRepository<VacationEntity, Intege
 
     //예시
     //List<BoardVOEntity> findByTitleContaining  (String title);
-
+    @Query("SELECT v FROM VacationEntity v " +
+            "JOIN FETCH v.user u " +
+            "LEFT JOIN FETCH u.department d " +
+            "LEFT JOIN FETCH v.basicVacation bv " + // 휴가 일수 정보 조인
+            "WHERE (:startDate IS NULL OR v.startDate >= :startDate) " +
+            "AND (:finishDate IS NULL OR v.endDate <= :finishDate) " +
+            "AND (:category IS NULL OR d.departmentName = :category) " +
+            "AND (:keyword IS NULL OR u.userName LIKE %:keyword%)")
+    Page<VacationEntity> findVacationPrint(
+            @Param("startDate") String startDate,
+            @Param("finishDate") String finishDate,
+            @Param("category") String category,
+            @Param("keyword") String keyword,
+            Pageable pageable);
 }
 

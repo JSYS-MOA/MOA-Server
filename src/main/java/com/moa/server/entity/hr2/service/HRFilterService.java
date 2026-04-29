@@ -2,13 +2,17 @@ package com.moa.server.entity.hr2.service;
 
 import com.moa.server.entity.approval.DocumentRepository;
 import com.moa.server.entity.hr2.dto.FilterKeywordDTO;
-import com.moa.server.entity.user.DepartmentEntity;
 import com.moa.server.entity.user.DepartmentRepository;
 import com.moa.server.entity.user.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
 
+@Service
+@Transactional
 public class HRFilterService {
 
     private final UserRepository userRepository;
