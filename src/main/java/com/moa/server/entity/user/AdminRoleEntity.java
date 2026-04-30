@@ -1,6 +1,8 @@
 package com.moa.server.entity.user;
 
 import com.moa.server.common.BaseEntity;
+import com.moa.server.entity.approval.dto.ApprovaLineCordMapDTO;
+import com.moa.server.entity.user.dto.AdminCordMapDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,5 +28,13 @@ public class AdminRoleEntity extends BaseEntity {
 
     @Column(name = "admin_role_is_use")
     private Integer isUse;
+
+    public AdminCordMapDTO MapDTO() {
+        return AdminCordMapDTO.builder()
+                .id(this.id)
+                .cord(this.cord)
+                .name(this.name)
+                .build();
+    }
 
 }
