@@ -20,6 +20,10 @@ public class TransactionEntity extends BaseEntity {
     @Column(name = "vendor_id")
     private Integer vendorId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id", insertable = false, updatable = false)
+    private VendorEntity vendor;
+
     @Column(name = "orderform_id")
     private Integer orderformId;
 
