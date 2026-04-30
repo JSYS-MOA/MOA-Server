@@ -1,5 +1,6 @@
 package com.moa.server.entity.hr2.service;
 
+import com.moa.server.entity.hr2.dto.FilterDTO;
 import com.moa.server.entity.hr2.dto.WorkDTO;
 import com.moa.server.entity.salary.AllowanceEntity;
 import com.moa.server.entity.salary.AllowanceRepository;
@@ -8,11 +9,12 @@ import com.moa.server.entity.user.UserRepository;
 import com.moa.server.entity.vacation.WorkEntity;
 import com.moa.server.entity.vacation.WorkRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,10 +25,10 @@ public class WorkService {
 
     // 1. 전체 조회
     @Transactional
-    public List<WorkDTO> getList() {
-        return workRepository.findAllWithDetails().stream()
-                .map(WorkDTO::new)
-                .collect(Collectors.toList());
+    public Page<WorkDTO> getList(int page, int size, FilterDTO filterDTO) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("workDate").descending());
+        return workRepository.findAllWithDetails(filterDTO.getStartDate(),filterDTO.getFinishDate(), filterDTO.getCategory(), filterDTO.getKeyword(), pageable)
+                .map(WorkDTO::new);
     }
 
     // 2. 상세 조회

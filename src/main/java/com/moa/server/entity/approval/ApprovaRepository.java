@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +21,7 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
     // 결재 상세정보 / 팀장용 결재 상세 조회
     @EntityGraph(attributePaths = {"line", "userWriter", "userWriter.department", "userWriter.grade", "lineApprover" , "lineApprover.userApprover" , "lineApprover.userApprover.department", "lineApprover.userApprover.grade"})
     Page<ApprovaEntity> findByApprovaId( Integer approvaId ,Pageable pageable );
-
+W
     //팀장용 결재목록 조회
     @EntityGraph(attributePaths = {"line", "userWriter", "userWriter.department", "userWriter.grade", "lineApprover" , "lineApprover.userApprover" , "lineApprover.userApprover.department", "lineApprover.userApprover.grade"})
     Page<ApprovaEntity> findByLineApprover_ApprovalLineUser(Integer approvalLineUser, Pageable pageable );
@@ -34,5 +36,18 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
     int updateApprovaIdApprovaStatus(Integer  approvaId , String approvaStatus);
 
 
+    @Query("SELECT a FROM ApprovalEntity a " +
+            "JOIN FETCH a.user u " +
+            "LEFT JOIN FETCH u.department d " +
+            "WHERE (:startDate IS NULL OR a.approvaDate >= :startDate) " +
+            "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
+            "AND (:category IS NULL OR d.departmentName = :category) " +
+            "AND (:keyword IS NULL OR u.userName LIKE %:keyword%)")
+    Page<ApprovaEntity> findApprovalList(
+            @Param("startDate") String startDate,
+            @Param("finishDate") String finishDate,
+            @Param("category") String category,
+            @Param("keyword") String keyword,
+            Pageable pageable);
 }
 

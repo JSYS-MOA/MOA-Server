@@ -1,8 +1,10 @@
 package com.moa.server.entity.hr2.controller;
 
+import com.moa.server.entity.hr2.dto.FilterDTO;
 import com.moa.server.entity.hr2.dto.WorkDTO;
 import com.moa.server.entity.hr2.service.WorkService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +16,10 @@ public class WorkController {
     private final WorkService service;
 
     @GetMapping
-    public List<WorkDTO> list() {
-        return service.getList();
+    public Page<WorkDTO> list(@RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "15") int size,
+                              FilterDTO filterDTO) {
+        return service.getList(page,size, filterDTO);
     }
     @GetMapping("/{workId}")
     public WorkDTO detail(@PathVariable Integer workId) {
