@@ -210,6 +210,21 @@ public class InventoryService {
         // 상세 내역 리스트를 orderer 테이블에 일괄 저장
         ordererRepository.saveAll(ordererDetails);
 
+        //발주서 등록 시 일반전표 생성
+        int totalPrice = dto.getItems().stream()
+                .mapToInt(item -> item.getUnitPrice() * item.getOrderSno())
+                .sum();
+
+        TransactionEntity transaction = TransactionEntity.builder()
+                .vendorId(dto.getVendorId())
+                .orderformId(savedForm.getOrderformId())
+                .transactionNum(savedForm.getOrderformId())
+                .transactionType("일반전표")
+                .transactionPrice(totalPrice)
+                .transactionMemo("")
+                .build();
+
+        transactionRepository.save(transaction);
     }
 
     // 발주폼 삭제

@@ -11,8 +11,8 @@ import java.util.List;
 public class CalendarRequestDTO {
     private String type;
     private Integer calendarCategoryId;
-    private LocalDateTime eventStartDate;
-    private LocalDateTime eventEndDate;
+    private String eventStartDate;
+    private String eventEndDate;
     private String eventTitle;
     private String eventContent;
     private Integer alarm;
