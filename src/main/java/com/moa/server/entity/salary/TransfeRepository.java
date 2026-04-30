@@ -1,3 +1,4 @@
+/*
 package com.moa.server.entity.salary;
 
 import org.springframework.data.domain.Page;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,8 +36,6 @@ public interface TransfeRepository extends JpaRepository<SalaryLedgerEntity, Int
 
 
     //검색용
-    @EntityGraph(attributePaths = {"vendor", "user"})
-    Optional<SalaryLedgerEntity> findBySalaryLedgerUserId(Integer UserId);
 
     @EntityGraph(attributePaths = {"vendor", "user"})
     Optional<SalaryLedgerEntity> findBySalaryLedgerUserIdContaining(Integer UserId);
@@ -43,15 +43,16 @@ public interface TransfeRepository extends JpaRepository<SalaryLedgerEntity, Int
     @EntityGraph(attributePaths = {"vendor", "user"})
     Optional<SalaryLedgerEntity> findBySalaryLedgerSalaryDate(LocalDate SalaryDate);
 
+
     @EntityGraph(attributePaths = {"vendor", "user"})
-    Optional<SalaryLedgerEntity> findBySalaryLedgerSalaryDateContaining(LocalDate SalaryDate);
+    List<TransfeEntity> findBySalaryLedger_SalaryDate(LocalDateTime salaryDate);
 
     //값이 널인것만 찾기
     @EntityGraph(attributePaths = {"vendor", "user"})
     List<SalaryLedgerEntity> findByCreatedAtIsNull();
 
     @EntityGraph(attributePaths = {"vendor", "user"})
-    Page<SalaryLedgerEntity> ffindByCreatedAtIsNull(Pageable pageable);
+    Page<TransfeEntity> findByCreatedAtIsNull(Pageable pageable);
 
     @EntityGraph(attributePaths = {"vendor", "user"})
     List<SalaryLedgerEntity> findByUpdatedAtIsNull();
@@ -63,3 +64,4 @@ public interface TransfeRepository extends JpaRepository<SalaryLedgerEntity, Int
 
 }
 
+*/

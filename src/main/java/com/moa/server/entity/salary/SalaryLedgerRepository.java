@@ -64,7 +64,7 @@ public interface SalaryLedgerRepository extends JpaRepository<SalaryLedgerEntity
     List<SalaryLedgerEntity> findByCreatedAtIsNotNull();
 
     @EntityGraph(attributePaths = {"vendor", "user"})
-    Page<SalaryLedgerEntity> ffindByCreatedAtIsNotNull(Pageable pageable);
+    Page<SalaryLedgerEntity> findByCreatedAtIsNotNull(Pageable pageable);
 
     @EntityGraph(attributePaths = {"vendor", "user"})
     List<SalaryLedgerEntity> findByUpdatedAtIsNotNull();

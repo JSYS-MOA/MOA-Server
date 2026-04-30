@@ -3,6 +3,7 @@ package com.moa.server.entity.inventory.dto;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -25,7 +26,7 @@ public class TransactionSalaryDTO {
 
     private String transactionMemo;
 
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 }

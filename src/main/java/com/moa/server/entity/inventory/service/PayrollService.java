@@ -6,7 +6,6 @@ import com.moa.server.entity.inventory.dto.TransactionSalaryDTO;
 import com.moa.server.entity.inventory.dto.TransactionSalaryRequestDTO;
 import com.moa.server.entity.salary.SalaryLedgerRepository;
 import com.moa.server.entity.salary.SalaryRepository;
-import com.moa.server.entity.salary.TransfeRepository;
 import com.moa.server.entity.user.AdminRoleRepository;
 import com.moa.server.entity.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
@@ -30,7 +30,6 @@ public class PayrollService {
     private final AdminRoleRepository adminRoleRepository;
     private final SalaryRepository salaryRepository;
     private final SalaryLedgerRepository salaryLedgerRepository;
-    private final TransfeRepository transfeRepository;
     private final TransactionRepository transactionRepository;
 
     public List<TransactionEntity> transactionSalaryList() {
@@ -56,11 +55,26 @@ public class PayrollService {
         String condition = searchCondition.trim().toLowerCase(Locale.ROOT);
         String keyword = searchKeyword == null ? "" : searchKeyword.trim();
 
+
+
+
         return switch (condition) {
             case "salaryledgerid", "salary_ledger_id" -> transactionRepository.findBySalaryLedgerId(parseInteger(keyword));
             case "vendorid", "vendor_id" -> transactionRepository.findByVendorId(parseInteger(keyword));
-            case "createdat", "created_at" -> transactionRepository.findByCreatedAt(parseLocalDate(keyword));
-            case "updatedat", "updated_at", "updateat" -> transactionRepository.findByUpdatedAt(parseLocalDate(keyword));
+            case "createdat", "created_at" -> {
+                LocalDate date = parseLocalDate(keyword);
+                yield transactionRepository.findByCreatedAtBetween(
+                        date.atStartOfDay(),
+                        date.plusDays(1).atStartOfDay()
+                );
+            }
+            case "updatedat", "updated_at", "updateat" -> {
+                LocalDate date = parseLocalDate(keyword);
+                yield transactionRepository.findByUpdatedAtBetween(
+                        date.atStartOfDay(),
+                        date.plusDays(1).atStartOfDay()
+                );
+            }
             default -> throw new IllegalArgumentException("지원하지 않는 검색 조건입니다. " + searchCondition);
         };
     }
@@ -85,7 +99,7 @@ public class PayrollService {
                 .build();
 
         if (transaction.getCreatedAt() == null) {
-            transaction.setCreatedAt(LocalDate.now());
+            transaction.setCreatedAt(LocalDateTime.now());
         }
 
         return transactionRepository.save(transaction);

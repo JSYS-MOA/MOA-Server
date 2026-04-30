@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,9 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
     @EntityGraph(attributePaths = {"vendorId", "salaryLedgerId"})
     Optional<TransactionEntity> findById(Integer transactionId);
 
+
+
+
     @EntityGraph(attributePaths = {"vendorId", "salaryLedgerId"})
     List<TransactionEntity> findBySalaryLedgerId(Integer salaryLedgerId);
 
@@ -38,13 +42,13 @@ public interface TransactionRepository extends JpaRepository<TransactionEntity, 
     Optional<TransactionEntity> findFirstByVendorId(Integer vendorId);
 
     @EntityGraph(attributePaths = {"vendorId", "salaryLedgerId"})
-    List<TransactionEntity> findByCreatedAt(LocalDate createdAt);
+    List<TransactionEntity> findByCreatedAt(LocalDateTime createdAt);
 
     @EntityGraph(attributePaths = {"vendorId", "salaryLedgerId"})
-    List<TransactionEntity> findByCreatedAtBetween(LocalDate start, LocalDate end);
+    List<TransactionEntity> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     @EntityGraph(attributePaths = {"vendorId", "salaryLedgerId"})
-    List<TransactionEntity> findByUpdatedAt(LocalDate updatedAt);
+    List<TransactionEntity> findByUpdatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     @EntityGraph(attributePaths = {"vendorId", "salaryLedgerId"})
     List<TransactionEntity> findBySalaryLedgerIdIsNull();

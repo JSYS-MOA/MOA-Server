@@ -16,7 +16,6 @@ public class SalaryService {
     private final SalaryRepository salaryRepository;
     private final SalaryLedgerRepository salaryLedgerRepository;
     private final AllowanceRepository allowanceRepository;
-    private final TransfeRepository transfeRepository;
     private final CompanyAccountRepository companyAccountRepository;
 
 
