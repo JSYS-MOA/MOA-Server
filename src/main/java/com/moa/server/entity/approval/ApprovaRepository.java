@@ -21,7 +21,7 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
     // 결재 상세정보 / 팀장용 결재 상세 조회
     @EntityGraph(attributePaths = {"line", "userWriter", "userWriter.department", "userWriter.grade", "lineApprover" , "lineApprover.userApprover" , "lineApprover.userApprover.department", "lineApprover.userApprover.grade"})
     Page<ApprovaEntity> findByApprovaId( Integer approvaId ,Pageable pageable );
-W
+
     //팀장용 결재목록 조회
     @EntityGraph(attributePaths = {"line", "userWriter", "userWriter.department", "userWriter.grade", "lineApprover" , "lineApprover.userApprover" , "lineApprover.userApprover.department", "lineApprover.userApprover.grade"})
     Page<ApprovaEntity> findByLineApprover_ApprovalLineUser(Integer approvalLineUser, Pageable pageable );
