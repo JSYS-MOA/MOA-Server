@@ -4,6 +4,7 @@ import com.moa.server.common.exception.CustomException;
 import com.moa.server.common.exception.ErrorCode;
 import com.moa.server.entity.inventory.*;
 import com.moa.server.entity.inventory.dto.OrderDTO;
+import com.moa.server.entity.sales.dto.VendorMonthlyDTO;
 import com.moa.server.entity.sales.dto.TaxInvoiceResponseDTO;
 import com.moa.server.entity.sales.dto.TransactionRequestDTO;
 import com.moa.server.entity.sales.dto.TransactionResponseDTO;
@@ -11,8 +12,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -22,6 +28,36 @@ public class SalesService {
     private final TransactionRepository transactionRepository;
     private final OrdererRepository ordererRepository;
     private final VendorRepository vendorRepository;
+    private List<VendorMonthlyDTO> getMonthlyStats(List<TransactionEntity> transactions){
+
+        int currentYear = LocalDateTime.now().getYear();
+        Map<Integer, List<TransactionEntity>> groupedByVendor = transactions.stream()
+                .filter(t -> t.getCreatedAt() != null)  //더미데이터로 데이터를 저장했기 때문에 createdAt이 혹시 null일 경우를 방지
+                .filter(t -> t.getCreatedAt().getYear() == currentYear)
+                .collect(Collectors.groupingBy(TransactionEntity::getVendorId));
+
+        //entrySet -> Map을 순회할 때 나오는 키. 값
+        return groupedByVendor.values().stream()
+                .map(transactionEntities -> {
+                    VendorEntity vendor = transactionEntities.getFirst().getVendor();
+                    List<Long> monthly = new ArrayList<>(Collections.nCopies(12, 0L));
+
+                    for (TransactionEntity t : transactionEntities) {
+                        int monthIdx = t.getCreatedAt().getMonthValue() - 1;
+                        monthly.set(monthIdx, monthly.get(monthIdx) + t.getTransactionPrice());
+                    }
+
+                    long total = monthly.stream().mapToLong(Long::longValue).sum();
+
+                    return VendorMonthlyDTO.builder()
+                            .vendorCode(vendor != null ? vendor.getVendorCord() : null)
+                            .vendorName(vendor != null ? vendor.getVendorName() : null)
+                            .monthly(monthly)
+                            .total(total)
+                            .build();
+                })
+                .toList();
+    }
 
     private static final Integer SUPPLIER_VENDOR_ID = 11;
 
@@ -44,7 +80,9 @@ public class SalesService {
     //전체조회
     public List<TransactionResponseDTO> getTransactions() {
         return transactionRepository.findAllByOrderByTransactionIdDesc()
-                .stream().map(this::toDTO).toList();
+                .stream()
+                .filter(t -> t.getTransactionType().equals("일반전표"))
+                .map(this::toDTO).toList();
     }
 
     //상세조회
@@ -114,5 +152,24 @@ public class SalesService {
                 .filter(t -> t.getOrderformId() != null)
                 .map(this::toDTO)
                 .toList();
+    }
+
+    //월별매입집계
+    public List<VendorMonthlyDTO> getMonthlyExpense(){
+        List<TransactionEntity> transactions = transactionRepository.findAllByOrderByTransactionIdDesc()
+                .stream()
+                .filter(t -> t.getOrderformId() != null)
+                .toList();
+
+        return getMonthlyStats(transactions);
+    }
+
+    //월별매출집계
+    public List<VendorMonthlyDTO> getMonthlyRevenue(){
+        List<TransactionEntity> transactions = transactionRepository.findAllByOrderByTransactionIdDesc()
+                .stream()
+                .filter(t -> t.getTransactionType().equals("매출전표"))
+                .toList();
+        return getMonthlyStats(transactions);
     }
 }
