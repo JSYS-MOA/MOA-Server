@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -24,8 +25,8 @@ public interface WorkRepository extends JpaRepository<WorkEntity, Integer> {
             "AND (:startDate IS NULL OR w.workDate >= :startDate) " +
             "AND (:finishDate IS NULL OR w.workDate <= :finishDate)")
     Page<WorkEntity> findAllWithDetails(
-            @Param("startDate") String startDate,
-            @Param("finishDate") String finishDate,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("finishDate") LocalDateTime finishDate,
             @Param("category") String category,
             @Param("keyword") String keyword,
             Pageable pageable);
@@ -33,16 +34,16 @@ public interface WorkRepository extends JpaRepository<WorkEntity, Integer> {
     //지각현황
     @Query("SELECT w FROM WorkEntity w " +
             "JOIN FETCH w.user u " +
-            "LEFT JOIN FETCH w.department d" +
+            "LEFT JOIN FETCH u.department d" +
             " WHERE w.workStatus = '정상' " +      // 조건 1: 정상 상태
-            "AND w.startTime > '09:00:00' " +    // 조건 2: 9시 이후 출근
+            "AND (HOUR(w.startWork) > 9 OR (HOUR(w.startWork) = 9 AND MINUTE(w.startWork) > 0))" +    // 조건 2: 9시 이후 출근
             "AND (:startDate IS NULL OR w.workDate >= :startDate) " +
             "AND (:finishDate IS NULL OR w.workDate <= :finishDate) " +
             "AND (:category IS NULL OR d.departmentName = :category)" +
             "AND (:keyword IS NULL OR u.userName LIKE %:keyword%)") // 사원명 검색
     Page<WorkEntity> findLateness(
-            @Param("startDate") String startDate,
-            @Param("finishDate") String finishDate,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("finishDate") LocalDateTime finishDate,
             @Param("category") String category,
             @Param("keyword") String keyword,
             Pageable pageable

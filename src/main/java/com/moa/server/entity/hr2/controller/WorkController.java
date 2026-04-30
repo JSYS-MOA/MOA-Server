@@ -1,13 +1,14 @@
 package com.moa.server.entity.hr2.controller;
 
 import com.moa.server.entity.hr2.dto.FilterDTO;
+import com.moa.server.entity.hr2.dto.SelectMappingDTO;
 import com.moa.server.entity.hr2.dto.WorkDTO;
 import com.moa.server.entity.hr2.service.WorkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/hr/attendances")
@@ -34,9 +35,17 @@ public class WorkController {
         data.setWorkId(workId);
         service.modify(data);
     }
-    @DeleteMapping("/{workId}")
-    public void delete(@PathVariable Integer workId) {
-        service.remove(workId);
+    // 프론트에서 "사원번호 입력 시" 호출하는 엔드포인트
+    @GetMapping("/{employeeId}")
+    public ResponseEntity<SelectMappingDTO> fetchEmployee(@PathVariable String employeeId) {
+        return ResponseEntity.ok(service.getEmployeeDetails(employeeId));
     }
 
+    // 프론트에서 "수당코드 입력 시" 호출하는 엔드포인트
+    @GetMapping("/{allowanceCord}")
+    public ResponseEntity<SelectMappingDTO> fetchAllowance(@PathVariable String allowanceCord) {
+        return ResponseEntity.ok(service.getAllowanceDetails(allowanceCord));
+    }
 }
+
+

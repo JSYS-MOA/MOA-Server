@@ -25,7 +25,7 @@ public class ApprovalWaitDTO {
 
         // 1. 부서 매칭 로직 (LineName에 DeptName이 포함되는지 확인)
         if (entity.getLine() != null && entity.getUserWriter() != null && entity.getUserWriter().getDepartment() != null) {
-            String lineName = entity.getLine().getApprovalLineName();
+            String lineName = entity.getLineApprover().getApprovalLineName();
             String deptName = entity.getUserWriter().getDepartment().getDepartmentName();
 
             if (lineName != null && deptName != null && lineName.contains(deptName)) {
@@ -40,7 +40,7 @@ public class ApprovalWaitDTO {
                 .approvaDate(entity.getApprovaDate().toString())
                 .approvaTitle(entity.getApprovaTitle())
                 .writer(entity.getUserWriter().getUserName()) // User 조인 결과
-                .documentName(entity.get)
+                .documentName(entity.getLine().getDocumentName())
                 .approvaState(entity.getApprovaStatus())
                 .departmentName(saveDeptName)
                 .memo("")
