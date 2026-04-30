@@ -2,8 +2,6 @@ package com.moa.server.entity.approval;
 
 import com.moa.server.common.BaseEntity;
 import com.moa.server.entity.approval.dto.ApprovaUserDTO;
-import com.moa.server.entity.inventory.dto.InventoryCordMapDTO;
-import com.moa.server.entity.user.AdminRoleEntity;
 import com.moa.server.entity.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -50,20 +48,26 @@ public class ApprovaEntity extends BaseEntity {
     @Column(name = "approva_date")
     private LocalDateTime approvaDate;
 
-    //ApprovalLineEntity 와 join
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    //ApprovaEntity 와 join
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approva_kind", insertable = false, updatable = false, referencedColumnName = "approval_line_id")
-    private ApprovalLineEntity Line;
+    @JoinColumn(name = "approva_kind", insertable = false, updatable = false, referencedColumnName = "document_id")
+    private DocumentEntity line;
 
     //UserEntity 와 join
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer", insertable = false, updatable = false, referencedColumnName = "user_id")
-    private UserEntity UserWriter;
+    private UserEntity userWriter;
 
     //UserEntity 와 join
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approver", insertable = false, updatable = false, referencedColumnName = "user_id")
-    private UserEntity UserApprover;
+    @JoinColumn(name = "approver", insertable = false, updatable = false, referencedColumnName = "approval_line_id")
+    private ApprovalLineEntity lineApprover;
 
     public ApprovaUserDTO MapDTO() {
         return ApprovaUserDTO.builder()
@@ -75,8 +79,8 @@ public class ApprovaEntity extends BaseEntity {
                 .approvaMemu(this.approvaMemu)
                 .file(this.file)
                 .approvaDate(this.approvaDate)
-                .writerInfo(this.UserWriter != null ? createUserDetail(this.UserWriter) : null)
-                .approverInfo(this.UserApprover != null ? createUserDetail(this.UserApprover) : null)
+                .writerInfo(this.userWriter != null ? createUserDetail(this.userWriter) : null)
+                .approverInfo(this.lineApprover != null ? createApproverDetail(this.lineApprover) : null)
                 .build();
     }
 
@@ -96,6 +100,29 @@ public class ApprovaEntity extends BaseEntity {
                 .build();
     }
 
+    private ApprovaUserDTO.ApproverInfo createApproverDetail(ApprovalLineEntity user) {
+        return ApprovaUserDTO.ApproverInfo.builder()
+                .userId(user.getUserApprover().getUserId())
+                .userName(user.getUserApprover().getUserName())
+                .employeeId(user.getUserApprover().getEmployeeId())
+                .phone(user.getUserApprover().getPhone())
+                .email(user.getUserApprover().getEmail())
+                .roleName(user.getUserApprover().getRole() != null ? user.getUserApprover().getRole().getName() : null)
+                .roleCode(user.getUserApprover().getRole() != null ? user.getUserApprover().getRole().getCord() : null)
+                .gradeName(user.getUserApprover().getGrade() != null ? user.getUserApprover().getGrade().getGradeName() : null)
+                .gradeCord(user.getUserApprover().getGrade() != null ? user.getUserApprover().getGrade().getGradeCord() : null)
+                .departmentName(user.getUserApprover().getDepartment() != null ? user.getUserApprover().getDepartment().getDepartmentName() : null)
+                .departmentCord(user.getUserApprover().getDepartment() != null ? user.getUserApprover().getDepartment().getDepartmentCord() : null)
+                .build();
+    }
+
+
+
+    private String gradeName;
+    private String gradeCord;
+
+    private String departmentName;
+    private String departmentCord;
 
 
 }
