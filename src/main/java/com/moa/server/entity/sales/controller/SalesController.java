@@ -2,6 +2,7 @@ package com.moa.server.entity.sales.controller;
 import com.moa.server.entity.sales.dto.TaxInvoiceResponseDTO;
 import com.moa.server.entity.sales.dto.TransactionRequestDTO;
 import com.moa.server.entity.sales.dto.TransactionResponseDTO;
+import com.moa.server.entity.sales.dto.VendorMonthlyDTO;
 import com.moa.server.entity.sales.service.SalesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +55,17 @@ public class SalesController {
     @GetMapping("/taxInv")
     public ResponseEntity<List<TransactionResponseDTO>> getTaxInvoiceList() {
         return ResponseEntity.ok(salesService.getTaxInvoiceList());
+    }
+
+    //월별매입집계
+    @GetMapping("/expense")
+    public ResponseEntity<List<VendorMonthlyDTO>> getMonthlyExpense() {
+        return ResponseEntity.ok(salesService.getMonthlyExpense());
+    }
+
+    //월별매출집계
+    @GetMapping("/revenue")
+    public ResponseEntity<List<VendorMonthlyDTO>> getMonthlyRevenue() {
+        return ResponseEntity.ok(salesService.getMonthlyRevenue());
     }
 }
