@@ -14,6 +14,7 @@ public class ApprovalWaitDTO {
     private String approvaDate;
     private String approvaTitle;
     private String writer;
+    private String documentName;
     private String approvaState;
     private String memo;
     private String departmentName; // 탭 구분
@@ -39,6 +40,7 @@ public class ApprovalWaitDTO {
                 .approvaDate(entity.getApprovaDate().toString())
                 .approvaTitle(entity.getApprovaTitle())
                 .writer(entity.getUserWriter().getUserName()) // User 조인 결과
+                .documentName(entity.get)
                 .approvaState(entity.getApprovaStatus())
                 .departmentName(saveDeptName)
                 .memo("")

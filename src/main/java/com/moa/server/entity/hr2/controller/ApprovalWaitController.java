@@ -22,8 +22,8 @@ public class ApprovalWaitController {
     }
     @PatchMapping("/{approvaId}")
     public String updateStatus(@PathVariable Integer approvaId,
-                               @RequestParam String approvaStatus) {
-        service.changeStatus(approvaId, approvaStatus);
+                               @RequestParam String approvaState) {
+        service.changeStatus(approvaId, approvaState);
         return "변경 성공";
     }
 }

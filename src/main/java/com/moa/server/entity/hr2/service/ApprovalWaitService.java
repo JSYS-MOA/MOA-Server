@@ -28,13 +28,13 @@ public class ApprovalWaitService {
     }
 
     @Transactional
-    public void changeStatus(Integer approvaId, String approvaStatus) {
+    public void changeStatus(Integer approvaId, String approvaState) {
         // 1. 레포지토리에서 해당 결재 건 조회
         ApprovaEntity entity = repository.findById(approvaId)
                 .orElseThrow(() -> new RuntimeException("해당 결재 정보를 찾을 수 없습니다."));
 
         // 2. 상태 변경 (select 박스에서 넘어온 값으로 세팅)
-        entity.setApprovaStatus(approvaStatus);
+        entity.setApprovaStatus(approvaState);
 
         // Dirty Checking(변경 감지) 덕분에 save를 호출하지 않아도
         // 트랜잭션이 끝날 때 자동으로 DB에 UPDATE 쿼리가 날아갑니다.
