@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer{
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-				.allowedOrigins("https://moa-7h4oyyc4v-mutajunes-projects.vercel.app/") // 실제 Vercel 주소로 변경
+				.allowedOrigins("https://moa-7h4oyyc4v-mutajunes-projects.vercel.app")
 				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 				.allowedHeaders("*")
 				.allowCredentials(true);
