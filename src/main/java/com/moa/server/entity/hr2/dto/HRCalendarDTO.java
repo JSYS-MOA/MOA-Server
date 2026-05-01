@@ -2,6 +2,9 @@ package com.moa.server.entity.hr2.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -9,14 +12,11 @@ import lombok.*;
 @Builder
 public class HRCalendarDTO {
 
-    //Repository에서 년월일 분리
-    private int year;
-    private int month;
-    private int day;
+    private LocalDateTime workDate;
+    private String userName;
+    private String departmentName;
+    private LocalDateTime startWork;
+    private LocalDateTime finishWork;
 
-    //총 출근인원(내근+외근)
-    private long totalCount;
-    private long internalCount;
-    private long externalCount;
 
 }

@@ -1,5 +1,7 @@
 package com.moa.server.entity.vacation;
 
+import com.moa.server.entity.hr2.dto.HRCalendarDTO;
+import com.moa.server.entity.hr2.dto.HRCountDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,7 +43,8 @@ public interface WorkRepository extends JpaRepository<WorkEntity, Integer> {
             "AND (:startDate IS NULL OR w.workDate >= :startDate) " +
             "AND (:finishDate IS NULL OR w.workDate <= :finishDate) " +
             "AND (:category IS NULL OR d.departmentName = :category)" +
-            "AND (:keyword IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%'))") // 사원명 검색
+            "AND (:keyword IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%'))")
+    // 사원명 검색
     Page<WorkEntity> findLateness(
             @Param("startDate") LocalDateTime startDate,
             @Param("finishDate") LocalDateTime finishDate,
@@ -49,6 +53,31 @@ public interface WorkRepository extends JpaRepository<WorkEntity, Integer> {
             Pageable pageable
     );
 
+    //출퇴근인원수
+    @Query("SELECT new HRCountDTO(" +
+            "FUNCTION('DATE', w.workDate), " +
+            "COUNT(w)) " +
+            "FROM WorkEntity w " +
+            "WHERE w.workDate >= :startDate AND w.workDate < :endDate " +
+            "GROUP BY FUNCTION('DATE', w.workDate) " +
+            "ORDER BY FUNCTION('DATE', w.workDate) ASC")
+    List<HRCountDTO> findWorkCount(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
 
+    @Query("SELECT new com.moa.server.entity.hr2.dto.HRCalendarDTO(" +
+            "w.workDate, " +
+            "u.userName, " +
+            "u.department.departmentName, " +
+            "w.startWork, " +
+            "w.finishWork) " +
+            "FROM WorkEntity w " +
+            "JOIN w.user u " +
+            "WHERE w.workDate >= :startDate AND w.workDate < :endDate " +
+            "ORDER BY w.workDate DESC, u.userName ASC")
+    List<HRCalendarDTO> findWorkDetailList(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
 }
-
