@@ -4,4 +4,4 @@ COPY . .
 
 RUN chmod +x gradlew && ./gradlew clean build -x test
 
-ENTRYPOINT ["sh", "-c", "java -jar build/libs/*[!plain].jar"]
+ENTRYPOINT ["sh", "-c", "java -Dserver.port=8080 -jar build/libs/*[!plain].jar"]
