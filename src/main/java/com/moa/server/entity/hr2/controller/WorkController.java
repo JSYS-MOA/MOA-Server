@@ -9,12 +9,29 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/hr/attendances")
 @RequiredArgsConstructor
 public class WorkController {
     private final WorkService service;
+
+   // 선택한 사번/이름 데이터 반영
+    @GetMapping("/put/user")
+    public ResponseEntity<List<SelectMappingDTO>> fetchEmployee(@RequestParam String keyword) {
+        List<SelectMappingDTO> list = service.getUser(keyword);
+        return ResponseEntity.ok(list);
+    }
+
+    // 선택한 수당코드/수당명 데이터 반영
+    @GetMapping("/put/allowance")
+    public ResponseEntity<List<SelectMappingDTO>> fetchAllowance(@RequestParam String keyword) {
+        List<SelectMappingDTO> list = service.getAllowance(keyword);
+        return ResponseEntity.ok(list);
+    }
+
 
     @GetMapping
     public Page<WorkDTO> list(@RequestParam(defaultValue = "0") int page,
@@ -35,17 +52,7 @@ public class WorkController {
         data.setWorkId(workId);
         service.modify(data);
     }
-    // 프론트에서 "사원번호 입력 시" 호출하는 엔드포인트
-    @GetMapping("/{employeeId}")
-    public ResponseEntity<SelectMappingDTO> fetchEmployee(@PathVariable String employeeId) {
-        return ResponseEntity.ok(service.getEmployeeDetails(employeeId));
-    }
 
-    // 프론트에서 "수당코드 입력 시" 호출하는 엔드포인트
-    @GetMapping("/{allowanceCord}")
-    public ResponseEntity<SelectMappingDTO> fetchAllowance(@PathVariable String allowanceCord) {
-        return ResponseEntity.ok(service.getAllowanceDetails(allowanceCord));
-    }
 }
 
 

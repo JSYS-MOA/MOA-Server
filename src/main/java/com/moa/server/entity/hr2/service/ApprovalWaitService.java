@@ -32,15 +32,26 @@ public class ApprovalWaitService {
         LocalDate finish = (filterDTO.getFinishDate() != null && !filterDTO.getFinishDate().isEmpty())
                 ? LocalDate.parse(filterDTO.getFinishDate())
                 : null;
+        String category = (filterDTO.getCategory() != null && !filterDTO.getCategory().isEmpty())
+                ? filterDTO.getCategory() : null;
+
+        String keyword = (filterDTO.getKeyword() != null && !filterDTO.getKeyword().isEmpty())
+                ? filterDTO.getKeyword() : null;
+
+        Integer departmentId = filterDTO.getDepartmentId();
+
+        System.out.println("백엔드 전달 부서명: " + departmentId);
         return repository.findApprovalList(
                         start != null ? start.atStartOfDay() : null,
                         finish != null ? finish.atTime(23, 59, 59) : null,
-                        filterDTO.getCategory(),
-                    filterDTO.getKeyword(), pageable)
+                        category,
+                        keyword,
+                        departmentId,
+                        pageable)
                 .map(ApprovalWaitDTO::fromEntity);
     }
 
-    @Transactional
+    @Transactional // 리턴 안 해도 값이 넘어감
     public void changeStatus(Integer approvaId, String approvaState) {
         // 1. 레포지토리에서 해당 결재 건 조회
         ApprovaEntity entity = repository.findById(approvaId)
@@ -49,8 +60,6 @@ public class ApprovalWaitService {
         // 2. 상태 변경 (select 박스에서 넘어온 값으로 세팅)
         entity.setApprovaStatus(approvaState);
 
-        // Dirty Checking(변경 감지) 덕분에 save를 호출하지 않아도
-        // 트랜잭션이 끝날 때 자동으로 DB에 UPDATE 쿼리가 날아갑니다.
     }
 
 }

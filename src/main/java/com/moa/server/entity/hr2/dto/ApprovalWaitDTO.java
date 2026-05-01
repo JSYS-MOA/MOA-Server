@@ -18,21 +18,16 @@ public class ApprovalWaitDTO {
     private String approvaState;
     private String memo;
     private String departmentName; // 탭 구분
+    private Integer departmentId;
 
     public static ApprovalWaitDTO fromEntity(ApprovaEntity entity) {
 
-        String saveDeptName = "예외부서"; // 기본값 설정
+        // 1. ID를 기본값으로 설정 (String 변환)
+        Integer deptIdStr = 0;
 
-        // 1. 부서 매칭 로직 (LineName에 DeptName이 포함되는지 확인)
-        if (entity.getLine() != null && entity.getUserWriter() != null && entity.getUserWriter().getDepartment() != null) {
-            String lineName = entity.getLineApprover().getApprovalLineName();
-            String deptName = entity.getUserWriter().getDepartment().getDepartmentName();
-
-            if (lineName != null && deptName != null && lineName.contains(deptName)) {
-                saveDeptName = deptName; // 포함되면 깔끔한 부서명 ("인사팀")
-            } else {
-                saveDeptName = (lineName != null) ? lineName : "부서미지정";
-            }
+        if (entity.getUserWriter() != null && entity.getUserWriter().getDepartment() != null) {
+            // 2. departmentId를 가져와서 문자열로 저장
+            deptIdStr = (entity.getUserWriter().getDepartment().getDepartmentId());
         }
 
         return ApprovalWaitDTO.builder()
@@ -42,7 +37,8 @@ public class ApprovalWaitDTO {
                 .writer(entity.getUserWriter().getUserName()) // User 조인 결과
                 .documentName(entity.getLine().getDocumentName())
                 .approvaState(entity.getApprovaStatus())
-                .departmentName(saveDeptName)
+                .departmentName(entity.getDepartmentName())
+                .departmentId(deptIdStr)
                 .memo("")
                 .build();
     }

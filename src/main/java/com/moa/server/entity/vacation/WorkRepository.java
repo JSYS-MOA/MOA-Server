@@ -20,7 +20,7 @@ public interface WorkRepository extends JpaRepository<WorkEntity, Integer> {
     @Query("SELECT w FROM WorkEntity w " +
             "JOIN FETCH w.user " +           // 유저 정보 한방에
             "LEFT JOIN FETCH w.allowance" +  // 수당 정보 한방에 (없을 수 있으니 LEFT)
-            " WHERE (:keyword IS NULL OR w.user.userName LIKE %:keyword%) " +
+            " WHERE (:keyword IS NULL OR w.user.userName LIKE CONCAT('%', :keyword, '%')) " +
             "AND (:category IS NULL OR w.allowance.allowanceName = :category) " +
             "AND (:startDate IS NULL OR w.workDate >= :startDate) " +
             "AND (:finishDate IS NULL OR w.workDate <= :finishDate)")
@@ -40,7 +40,7 @@ public interface WorkRepository extends JpaRepository<WorkEntity, Integer> {
             "AND (:startDate IS NULL OR w.workDate >= :startDate) " +
             "AND (:finishDate IS NULL OR w.workDate <= :finishDate) " +
             "AND (:category IS NULL OR d.departmentName = :category)" +
-            "AND (:keyword IS NULL OR u.userName LIKE %:keyword%)") // 사원명 검색
+            "AND (:keyword IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%'))") // 사원명 검색
     Page<WorkEntity> findLateness(
             @Param("startDate") LocalDateTime startDate,
             @Param("finishDate") LocalDateTime finishDate,

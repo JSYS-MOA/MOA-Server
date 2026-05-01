@@ -13,5 +13,7 @@ public class FilterDTO {
     private String finishDate;
     private String category;
     private String keyword;
+    private Integer departmentId;
+    private String departmentName;
 
 }

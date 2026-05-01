@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/api/filter")
 @RequiredArgsConstructor
 public class FilterController {
-    private final HRFilterService hrFilterService;
+    private final HRFilterService service;
 
     /**
      * 필터 검색 API
@@ -27,8 +27,20 @@ public class FilterController {
             @RequestParam("type") String type,
             @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword
     ) {
-        List<FilterKeywordDTO> results = hrFilterService.getFilterList(type, keyword);
+        List<FilterKeywordDTO> results = service.getFilterList(type, keyword);
 
         return ResponseEntity.ok(results);
+    }
+    @GetMapping("/departments")
+    public ResponseEntity<List<FilterKeywordDTO>> getDeptOptions(@RequestParam(value = "departmentName", required = false) String departmentName) {
+        // 키워드 없이 전체 부서를 긁어옵니다.
+        List<FilterKeywordDTO> depts = service.searchDepartments("");
+
+        return ResponseEntity.ok(depts.stream()
+                .map(d -> FilterKeywordDTO.builder()
+                        .departmentId(d.getDepartmentId())
+                        .departmentName(d.getDepartmentName())
+                        .build())
+                .toList());
     }
 }

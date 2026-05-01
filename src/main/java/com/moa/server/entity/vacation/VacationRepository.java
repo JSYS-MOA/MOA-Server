@@ -23,7 +23,7 @@ public interface VacationRepository extends JpaRepository<VacationEntity, Intege
             "AND (:startDate IS NULL OR a.approvaDate >= :startDate) " +
             "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
             "AND (:category IS NULL OR d.departmentName = :category) " +
-            "AND (:keyword IS NULL OR u.userName LIKE %:keyword%)")
+            "AND (:keyword IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%'))")
     Page<VacationEntity> findVacationPrint(
             @Param("startDate") LocalDateTime startDate,
             @Param("finishDate") LocalDateTime finishDate,

@@ -11,6 +11,6 @@ public class SelectMappingDTO {
 
     private String employeeId;
     private String userName;
-    private String allowanceCode;
+    private String allowanceCord;
     private String allowanceName;
 }

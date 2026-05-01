@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -111,28 +112,38 @@ public class WorkService {
 
     //  직원 정보 자동 채우기용 서비스
     @Transactional(readOnly = true)
-    public SelectMappingDTO getEmployeeDetails(String employeeId) {
-        // DB에서 원본 데이터를 긁어옵니다.
-        UserEntity user = userRepository.findByEmployeeId(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("해당 사원을 찾을 수 없습니다."));
+    public List<SelectMappingDTO> getUser(String keyword) {
+        List<Object[]> results = null;
+        if(keyword==null || keyword.trim().isEmpty()){
+            results = userRepository.searchUser();
+        }else{
+            results = userRepository.searchUserByKeyword(keyword);
+        }
 
-        // DTO에 필요한 정보만 담아서 리턴합니다. ✊😠
-        SelectMappingDTO dto = new SelectMappingDTO();
-        dto.setEmployeeId(user.getEmployeeId());
-        dto.setUserName(user.getUserName());
-        return dto;
+        return results.stream() // 1. 데이터를 흐르게 한다 ✊😠
+                .map(result -> SelectMappingDTO.builder()
+                        .employeeId((String) result[0])
+                        .userName((String) result[1])
+                        .build())
+                .collect(Collectors.toList());
     }
 
     // 수당 정보 자동 채우기용 서비스
     @Transactional(readOnly = true)
-    public SelectMappingDTO getAllowanceDetails(String allowanceCord) {
-        AllowanceEntity allowance = allowanceRepository.findByAllowanceCord(allowanceCord)
-                .orElseThrow(() -> new EntityNotFoundException("해당 수당코드를 찾을 수 없습니다."));
+    public List<SelectMappingDTO> getAllowance(String keyword) {
+        List<Object[]> results = null;
+        if(keyword==null || keyword.trim().isEmpty()){
+            results = allowanceRepository.searchAllowance();
+        }else{
+            results = allowanceRepository.searchAllowanceByKeyword(keyword);
+        }
 
-        SelectMappingDTO dto = new SelectMappingDTO();
-        dto.setAllowanceCode(allowance.getAllowanceCord());
-        dto.setAllowanceName(allowance.getAllowanceName());
-        return dto;
+        return results.stream() // 1. 데이터를 흐르게 한다
+                .map(result -> SelectMappingDTO.builder()
+                        .allowanceCord((String) result[0])
+                        .allowanceName((String) result[1])
+                        .build())
+                .collect(Collectors.toList());
     }
 }
 
