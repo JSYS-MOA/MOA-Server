@@ -1,4 +1,4 @@
-FROM amazoncorretto:21-al2023-jdk
+FROM bellsoft/liberica-openjdk-alpine:21
 
 COPY . .
 
