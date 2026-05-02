@@ -11,6 +11,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -32,7 +34,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOrigin("http://localhost:5173"); // 프론트엔드 주소
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:5173", // 프론트엔드 주소
+                "https://*.vercel.app", // 모든 Vercel 배포 주소 허용
+                "https://moa-git-j-mutajunes-projects.vercel.app/"
+        ));
+
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.setAllowCredentials(true);
