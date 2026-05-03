@@ -136,13 +136,16 @@ public class PayrollService {
     }
 
     public TransactionEntity transactionSalaryAdd(TransactionSalaryRequestDTO transactionRequest) {
+        SalaryLedgerEntity salaryLedger = resolveOrCreateSalaryLedger(transactionRequest);
+        Long salaryAmount = resolveSalaryAmount(transactionRequest, salaryLedger);
+
         TransactionEntity transaction = TransactionEntity.builder()
                 .transactionId(transactionRequest.getTransactionId())
-                .vendorId(transactionRequest.getVendorId())
-                .salaryLedgerId(transactionRequest.getSalaryLedgerId())
-                .transactionNum(transactionRequest.getTransactionNum())
-                .transactionType(transactionRequest.getTransactionType())
-                .transactionPrice(transactionRequest.getTransactionPrice())
+                .vendorId(transactionRequest.getVendorId() == null ? PAYROLL_VENDOR_ID : transactionRequest.getVendorId())
+                .salaryLedgerId(salaryLedger == null ? transactionRequest.getSalaryLedgerId() : salaryLedger.getSalaryLedgerId())
+                .transactionNum(resolveTransactionNum(transactionRequest, salaryLedger))
+                .transactionType(transactionRequest.getTransactionType() == null ? "급여" : transactionRequest.getTransactionType())
+                .transactionPrice(resolveTransactionPrice(transactionRequest, salaryAmount))
                 .transactionMemo(transactionRequest.getTransactionMemo())
                 .createdAt(transactionRequest.getCreatedAt())
                 .updatedAt(transactionRequest.getUpdatedAt())
@@ -153,6 +156,84 @@ public class PayrollService {
         }
 
         return transactionRepository.save(transaction);
+    }
+
+    private SalaryLedgerEntity resolveOrCreateSalaryLedger(TransactionSalaryRequestDTO transactionRequest) {
+        if (transactionRequest.getSalaryLedgerId() != null
+                && transactionRequest.getUserId() == null
+                && transactionRequest.getBankTransferId() == null
+                && transactionRequest.getSalaryDate() == null
+                && transactionRequest.getSalaryAmount() == null) {
+            return salaryLedgerRepository.findById(transactionRequest.getSalaryLedgerId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Salary ledger not found."));
+        }
+
+        if (transactionRequest.getUserId() == null
+                && transactionRequest.getBankTransferId() == null
+                && transactionRequest.getSalaryDate() == null
+                && transactionRequest.getSalaryAmount() == null) {
+            return null;
+        }
+
+        if (transactionRequest.getUserId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "userId is required.");
+        }
+
+        if (!userRepository.existsById(transactionRequest.getUserId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found.");
+        }
+
+        Long salaryAmount = salaryRepository.findByUserId(transactionRequest.getUserId())
+                .map(SalaryEntity::getBasePay)
+                .orElse(transactionRequest.getSalaryAmount());
+
+        if (salaryAmount == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Salary base pay not found.");
+        }
+
+        SalaryLedgerEntity salaryLedger = SalaryLedgerEntity.builder()
+                .userId(transactionRequest.getUserId())
+                .bankTransferId(transactionRequest.getBankTransferId())
+                .salaryDate(transactionRequest.getSalaryDate())
+                .salaryAmount(salaryAmount)
+                .build();
+
+        return salaryLedgerRepository.save(salaryLedger);
+    }
+
+    private Long resolveSalaryAmount(TransactionSalaryRequestDTO transactionRequest, SalaryLedgerEntity salaryLedger) {
+        if (salaryLedger != null && salaryLedger.getSalaryAmount() != null) {
+            return salaryLedger.getSalaryAmount();
+        }
+
+        return transactionRequest.getSalaryAmount();
+    }
+
+    private Integer resolveTransactionNum(
+            TransactionSalaryRequestDTO transactionRequest,
+            SalaryLedgerEntity salaryLedger
+    ) {
+        if (transactionRequest.getTransactionNum() != null) {
+            return transactionRequest.getTransactionNum();
+        }
+
+        return salaryLedger == null ? null : salaryLedger.getSalaryLedgerId();
+    }
+
+    private Integer resolveTransactionPrice(TransactionSalaryRequestDTO transactionRequest, Long salaryAmount) {
+        if (transactionRequest.getTransactionPrice() != null) {
+            return transactionRequest.getTransactionPrice();
+        }
+
+        if (salaryAmount == null) {
+            return null;
+        }
+
+        if (salaryAmount > Integer.MAX_VALUE || salaryAmount < Integer.MIN_VALUE) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Salary amount is out of transaction price range.");
+        }
+
+        return salaryAmount.intValue();
     }
 
     public TransactionEntity transactionSalaryUpdate(

@@ -23,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SalaryController {
 
-    private final SalaryService salaryService;
     private final PayrollService payrollService;
 
     @GetMapping({"", "/", "/payroll"})
