@@ -15,6 +15,7 @@ import com.moa.server.entity.vacation.VacationRepository;
 import com.moa.server.entity.vacation.WorkEntity;
 import com.moa.server.entity.vacation.WorkRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -149,6 +151,47 @@ public class PayrollService {
         if (transaction.getCreatedAt() == null) {
             transaction.setCreatedAt(LocalDateTime.now());
         }
+
+        return transactionRepository.save(transaction);
+    }
+
+    public TransactionEntity transactionSalaryUpdate(
+            Integer transactionId,
+            TransactionSalaryRequestDTO transactionRequest
+    ) {
+        TransactionEntity transaction = transactionRepository.findById(transactionId)
+                .filter(item -> Objects.equals(item.getVendorId(), PAYROLL_VENDOR_ID))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payroll transaction not found."));
+
+        if (transactionRequest.getVendorId() != null) {
+            transaction.setVendorId(transactionRequest.getVendorId());
+        }
+
+        if (transactionRequest.getSalaryLedgerId() != null) {
+            transaction.setSalaryLedgerId(transactionRequest.getSalaryLedgerId());
+        }
+
+        if (transactionRequest.getTransactionNum() != null) {
+            transaction.setTransactionNum(transactionRequest.getTransactionNum());
+        }
+
+        if (transactionRequest.getTransactionType() != null) {
+            transaction.setTransactionType(transactionRequest.getTransactionType());
+        }
+
+        if (transactionRequest.getTransactionPrice() != null) {
+            transaction.setTransactionPrice(transactionRequest.getTransactionPrice());
+        }
+
+        if (transactionRequest.getTransactionMemo() != null) {
+            transaction.setTransactionMemo(transactionRequest.getTransactionMemo());
+        }
+
+        if (transactionRequest.getCreatedAt() != null) {
+            transaction.setCreatedAt(transactionRequest.getCreatedAt());
+        }
+
+        transaction.setUpdatedAt(transactionRequest.getUpdatedAt());
 
         return transactionRepository.save(transaction);
     }
