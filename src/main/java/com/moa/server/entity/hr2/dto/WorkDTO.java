@@ -18,6 +18,8 @@ public class WorkDTO {
     private LocalDate workDate;
     private String workMemo;
     private String allowanceName;
+    private String startWork;
+    private String finishWork;
 
     public WorkDTO(WorkEntity entity) {
         this.workId = entity.getWorkId();
@@ -27,7 +29,10 @@ public class WorkDTO {
         this.workMemo = entity.getWorkMemo();
         this.allowanceName = (entity.getAllowance() != null)
                 ? entity.getAllowance().getAllowanceName() : null;
+        this.startWork = entity.getStartWork() != null ? entity.getStartWork().toString() : null;
+        this.finishWork = entity.getFinishWork() != null ? entity.getFinishWork().toString() : null;
     }
+
 
     public void getAllowance(AllowanceEntity allowance) {
         this.allowanceName = allowance.getAllowanceName();
