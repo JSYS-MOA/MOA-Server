@@ -28,6 +28,18 @@ public class SalaryLedgerEntity extends BaseEntity {
     @Column(name = "salary_date")
     private LocalDateTime salaryDate;
 
+    @Column(name = "base_pay")
+    private Long basePay;
+
     @Column(name = "salary_amount")
     private Long salaryAmount;
+
+    @Column(name = "overtime_allowance")
+    private Long overtimeAllowance;
+
+    @Column(name = "weekend_allowance")
+    private Long weekendAllowance;
+
+    @Column(name = "annual_allowance")
+    private Long annualAllowance;
 }

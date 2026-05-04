@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class LeaversController {
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "등록된 인사카드가 없습니다.");
+        response.put("message", "No leaver cards found.");
         return ResponseEntity.ok(response);
     }
 
@@ -53,7 +54,7 @@ public class LeaversController {
             }
 
             Map<String, Object> response = new HashMap<>();
-            response.put("message", "검색 결과가 없습니다.");
+            response.put("message", "No matching leaver cards found.");
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             Map<String, Object> response = new HashMap<>();
@@ -88,49 +89,87 @@ public class LeaversController {
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("message", "해당 사번의 퇴사자를 찾을 수 없습니다.");
+        response.put("message", "Employee not found.");
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/leavers/{user_id}")
     public ResponseEntity<?> hrCardUpdate(@PathVariable Integer user_id, @RequestBody UserEntity user) {
         try {
-            UserEntity users = hrCardService.hrCardUpdate(user_id, user);
+            UserEntity updatedUser = hrCardService.hrCardUpdate(user_id, user);
 
             Map<String, Object> response = new HashMap<>();
 
-            if (users != null) {
+            if (updatedUser != null) {
                 response.put("result", true);
-                response.put("message", "퇴사자 인사카드 수정 완료");
-                response.put("user", users);
+                response.put("message", "Leaver card updated successfully.");
+                response.put("user", updatedUser);
                 return ResponseEntity.ok(response);
             }
 
             response.put("result", false);
-            response.put("message", "해당 퇴사자가 없습니다.");
+            response.put("message", "Employee not found.");
             return ResponseEntity.badRequest().body(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("result", false);
-            response.put("message", "퇴사자 인사카드 수정 실패: " + e.getMessage());
+            response.put("message", "Failed to update leaver card: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @PutMapping("/leavers/{user_id}/restore")
+    public ResponseEntity<?> hrCardRestore(@PathVariable Integer user_id) {
+        try {
+            HrCardResponseDTO user = hrCardService.hrCardRestore(user_id);
+
+            Map<String, Object> response = new HashMap<>();
+
+            if (user != null) {
+                response.put("result", true);
+                response.put("message", "Employee restored successfully.");
+                response.put("user", user);
+                return ResponseEntity.ok(response);
+            }
+
+            response.put("result", false);
+            response.put("message", "Employee not found.");
+            return ResponseEntity.badRequest().body(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", false);
+            response.put("message", "Failed to restore employee: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
 
     @PostMapping("/leavers/add")
-    public ResponseEntity<?> hrCardAdd(@RequestBody UserEntity user) {
+    public ResponseEntity<?> hrCardAdd(@RequestBody Map<String, Object> request) {
         try {
-            hrCardService.hrCardAdd(user);
+            Integer userId = parseInteger(request.get("userId"), "Employee");
+            LocalDate quitDate = parseDate(request.get("quitDate"), "Quit date");
+            HrCardResponseDTO user = hrCardService.hrCardRegisterLeaver(userId, quitDate);
 
             Map<String, Object> response = new HashMap<>();
-            response.put("result", true);
-            response.put("message", "퇴사자 인사카드 등록 완료");
-            return ResponseEntity.ok(response);
+            if (user != null) {
+                response.put("result", true);
+                response.put("message", "Leaver registered successfully.");
+                response.put("user", user);
+                return ResponseEntity.ok(response);
+            }
 
+            response.put("result", false);
+            response.put("message", "Employee not found.");
+            return ResponseEntity.badRequest().body(response);
+        } catch (IllegalArgumentException e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("result", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("result", false);
-            response.put("message", "퇴사자 인사카드 등록 실패: " + e.getMessage());
+            response.put("message", "Failed to register leaver: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
@@ -142,13 +181,53 @@ public class LeaversController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("result", true);
-            response.put("message", "퇴사자 인사카드 삭제 완료");
+            response.put("message", "Leaver card deleted successfully.");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("result", false);
-            response.put("message", "퇴사자 인사카드 삭제 실패: " + e.getMessage());
+            response.put("message", "Failed to delete leaver card: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    private Integer parseInteger(Object value, String fieldName) {
+        if (value == null) {
+            throw new IllegalArgumentException(fieldName + " is required.");
+        }
+
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+
+        String raw = value.toString().trim();
+
+        if (raw.isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " is required.");
+        }
+
+        try {
+            return Integer.parseInt(raw);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(fieldName + " is invalid.");
+        }
+    }
+
+    private LocalDate parseDate(Object value, String fieldName) {
+        if (value == null) {
+            throw new IllegalArgumentException(fieldName + " is required.");
+        }
+
+        String raw = value.toString().trim();
+
+        if (raw.isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " is required.");
+        }
+
+        try {
+            return LocalDate.parse(raw);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(fieldName + " format is invalid.");
         }
     }
 }

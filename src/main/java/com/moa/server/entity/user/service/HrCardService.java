@@ -5,6 +5,7 @@ import com.moa.server.entity.user.DepartmentRepository;
 import com.moa.server.entity.user.GradeRepository;
 import com.moa.server.entity.user.UserEntity;
 import com.moa.server.entity.user.UserRepository;
+import com.moa.server.entity.user.dto.CertificatesCardUpdateDTO;
 import com.moa.server.entity.user.dto.HrCardRequestPageDTO;
 import com.moa.server.entity.user.dto.HrCardResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,6 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class HrCardService {
     private final UserRepository userRepository;
-
     private final AdminRoleRepository adminRoleRepository;
     private final DepartmentRepository departmentRepository;
     private final GradeRepository gradeRepository;
@@ -56,10 +56,9 @@ public class HrCardService {
             case "employeeid", "employee_id" -> userRepository.findByEmployeeIdContaining(keyword);
             case "departmentid", "department_id" -> userRepository.findByDepartmentId(parseInteger(keyword));
             case "gradeid", "grade_id" -> userRepository.findByGradeId(parseInteger(keyword));
-            case "bank" -> userRepository.findByBank(keyword);
             case "active" -> userRepository.findByQuitDateIsNull();
             case "retired", "quit" -> userRepository.findByQuitDateIsNotNull();
-            default -> throw new IllegalArgumentException("지원하지 않는 검색 조건입니다. " + searchCondition);
+            default -> throw new IllegalArgumentException("Unsupported search condition: " + searchCondition);
         };
     }
 
@@ -69,7 +68,12 @@ public class HrCardService {
                 .toList();
     }
 
-    public HrCardRequestPageDTO<HrCardResponseDTO> hrCardPageSearch(String searchCondition, String searchKeyword, int page, int size) {
+    public HrCardRequestPageDTO<HrCardResponseDTO> hrCardPageSearch(
+            String searchCondition,
+            String searchKeyword,
+            int page,
+            int size
+    ) {
         Pageable pageable = createPageable(page, size);
 
         if (searchCondition == null || searchCondition.isBlank()) {
@@ -87,7 +91,7 @@ public class HrCardService {
             case "bank" -> userRepository.findByBank(keyword, pageable);
             case "active" -> userRepository.findByQuitDateIsNull(pageable);
             case "retired", "quit" -> userRepository.findByQuitDateIsNotNull(pageable);
-            default -> throw new IllegalArgumentException("지원하지 않는 검색 조건입니다. " + searchCondition);
+            default -> throw new IllegalArgumentException("Unsupported search condition: " + searchCondition);
         };
 
         return toPageResponse(userPage);
@@ -105,6 +109,36 @@ public class HrCardService {
         }
 
         return userRepository.save(user);
+    }
+
+    public HrCardResponseDTO hrCardRegisterLeaver(Integer userId, LocalDate quitDate) {
+        if (userId == null) {
+            throw new IllegalArgumentException("Employee is required.");
+        }
+
+        if (quitDate == null) {
+            throw new IllegalArgumentException("Quit date is required.");
+        }
+
+        UserEntity user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return null;
+        }
+
+        user.setQuitDate(quitDate);
+        return toResponse(userRepository.save(user));
+    }
+
+    public HrCardResponseDTO hrCardRestore(Integer userId) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return null;
+        }
+
+        user.setQuitDate(null);
+        return toResponse(userRepository.save(user));
     }
 
     public UserEntity hrCardUpdate(Integer userId, UserEntity newUser) {
@@ -142,7 +176,7 @@ public class HrCardService {
         try {
             return Integer.valueOf(value);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("숫자 검색 조건에는 숫자 값을 입력해야 합니다.");
+            throw new IllegalArgumentException("Numeric search conditions require a numeric value.");
         }
     }
 
@@ -185,5 +219,38 @@ public class HrCardService {
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .build();
+    }
+
+    @Transactional
+    public UserEntity certificatesCardUpdate(Integer userId, CertificatesCardUpdateDTO request) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return null;
+        }
+
+        if (request.getRoleId() != null) {
+            user.setRoleId(request.getRoleId());
+        }
+
+        if (request.getDepartmentId() != null) {
+            user.setDepartmentId(request.getDepartmentId());
+        }
+
+        if (request.getGradeId() != null) {
+            user.setGradeId(request.getGradeId());
+        }
+
+        return userRepository.save(user);
+    }
+
+    public UserEntity evaluationsCardUpdate(Integer userId, String performance) {
+        UserEntity user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return null;
+        }
+
+        user.setPerformance(performance);
+        return userRepository.save(user);
     }
 }

@@ -17,9 +17,10 @@ public class TransfeEntity extends BaseEntity {
     @Column(name = "transfer_id")
     private Integer transferId;
 
-    @Column(name = "salary_ledger_id")
-    private Integer salaryLedgerId;
-
     @Column(name = "salary_status")
     private String salaryStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "salary_ledger_id")
+    private SalaryLedgerEntity salaryLedger;
 }
