@@ -7,6 +7,7 @@ import com.moa.server.entity.menu.MenuEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,7 +23,11 @@ public class LayoutService {
         Object[] user = layoutDAO.userLayoutInfo(employeeId);
 
         if (user == null) {
-            return null;
+            return LayoutDTO.builder()
+                    .userName("정보 없음")
+                    .employeeId(employeeId)
+                    .menuList(new ArrayList<>())
+                    .build();
         }
 
         // 2. 메뉴 리스트 조회 + DTO 변환
@@ -32,25 +37,16 @@ public class LayoutService {
                         .menuTitle(m.getMenuTitle())
                         .menuNum(m.getMenuNum())
                         .pagePath(m.getPagePath())
-                        .build()
-                )
+                        .build())
                 .toList();
 
         return LayoutDTO.builder()
-                .userName(String.valueOf(user[1]))
-                .departmentName(String.valueOf(user[2]))
-                .gradeName(String.valueOf(user[3]))
-                .employeeId(String.valueOf(user[4]))
+                .userName(user[1] != null ? String.valueOf(user[1]) : "")
+                .departmentName(user[2] != null ? String.valueOf(user[2]) : "")
+                .gradeName(user[3] != null ? String.valueOf(user[3]) : "")
+                .employeeId(user[4] != null ? String.valueOf(user[4]) : employeeId)
                 .menuList(menuList)
                 .build();
 
-//        // 3. LayoutDTO 조립해서 반환
-//        return LayoutDTO.builder()
-//                .userName((String) user[1])
-//                .employeeId((String) user[4])
-//                .departmentName((String) user[2])
-//                .gradeName((String) user[3])
-//                .menuList(menuList)
-//                .build();
     }
 }
