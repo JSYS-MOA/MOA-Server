@@ -2,11 +2,9 @@ package com.moa.server.entity.hr2.controller;
 
 import com.moa.server.entity.hr2.dto.WorkDTO;
 import com.moa.server.entity.hr2.service.WorkService;
-import com.moa.server.entity.user.UserEntity;
 import com.moa.server.entity.user.dto.SessionUser;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,9 +37,12 @@ public class WorkController {
 
     // 오늘 출퇴근 조회
     @GetMapping("/today")
-    public WorkDTO today(HttpSession session) {
+    public ResponseEntity<?> getToday(HttpSession session) {
         SessionUser loginUser = (SessionUser) session.getAttribute(SessionUser.USER);
-        return service.getTodayWork(loginUser.getUserId());
+        if (loginUser == null) return ResponseEntity.status(401).build();
+
+        WorkDTO dto = service.getTodayWork(loginUser.getUserId());
+        return ResponseEntity.ok(dto);
     }
 }
 
