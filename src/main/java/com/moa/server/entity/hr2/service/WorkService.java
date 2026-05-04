@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,6 +89,36 @@ public class WorkService {
     @Transactional
     public void remove(Integer workId) {
         workRepository.deleteById(workId);
+    }
+
+    // 출근
+    @Transactional
+    public void checkIn(Integer userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
+        WorkEntity work = WorkEntity.builder()
+                .user(user)
+                .workDate(LocalDate.now())
+                .startWork(LocalDateTime.now())
+                .workStatus("정상")
+                .build();
+        workRepository.save(work);
+    }
+
+    // 퇴근
+    @Transactional
+    public void checkOut(Integer userId) {
+        WorkEntity work = workRepository.findByUserIdAndWorkDate(userId, LocalDate.now());
+        if (work == null) throw new IllegalArgumentException("출근 기록 없음");
+        work.setFinishWork(LocalDateTime.now());
+    }
+
+    // 오늘 출퇴근 조회
+    @Transactional(readOnly = true)
+    public WorkDTO getTodayWork(Integer userId) {
+        WorkEntity work = workRepository.findByUserIdAndWorkDate(userId, LocalDate.now());
+        if (work == null) return null;
+        return new WorkDTO(work);
     }
 }
 
