@@ -8,6 +8,7 @@ import com.moa.server.entity.salary.SalaryEntity;
 import com.moa.server.entity.salary.SalaryLedgerEntity;
 import com.moa.server.entity.salary.SalaryLedgerRepository;
 import com.moa.server.entity.salary.SalaryRepository;
+import com.moa.server.entity.salary.TransfeRepository;
 import com.moa.server.entity.user.UserEntity;
 import com.moa.server.entity.user.UserRepository;
 import com.moa.server.entity.vacation.VacationEntity;
@@ -56,6 +57,7 @@ public class PayrollService {
     private final UserRepository userRepository;
     private final SalaryRepository salaryRepository;
     private final SalaryLedgerRepository salaryLedgerRepository;
+    private final TransfeRepository transfeRepository;
     private final TransactionRepository transactionRepository;
     private final WorkRepository workRepository;
     private final VacationRepository vacationRepository;
@@ -163,7 +165,11 @@ public class PayrollService {
                 && transactionRequest.getUserId() == null
                 && transactionRequest.getBankTransferId() == null
                 && transactionRequest.getSalaryDate() == null
-                && transactionRequest.getSalaryAmount() == null) {
+                && transactionRequest.getSalaryAmount() == null
+                && transactionRequest.getBasePay() == null
+                && transactionRequest.getOvertimeAllowance() == null
+                && transactionRequest.getWeekendAllowance() == null
+                && transactionRequest.getAnnualAllowance() == null) {
             return salaryLedgerRepository.findById(transactionRequest.getSalaryLedgerId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Salary ledger not found."));
         }
@@ -171,7 +177,11 @@ public class PayrollService {
         if (transactionRequest.getUserId() == null
                 && transactionRequest.getBankTransferId() == null
                 && transactionRequest.getSalaryDate() == null
-                && transactionRequest.getSalaryAmount() == null) {
+                && transactionRequest.getSalaryAmount() == null
+                && transactionRequest.getBasePay() == null
+                && transactionRequest.getOvertimeAllowance() == null
+                && transactionRequest.getWeekendAllowance() == null
+                && transactionRequest.getAnnualAllowance() == null) {
             return null;
         }
 
@@ -195,10 +205,26 @@ public class PayrollService {
                 .userId(transactionRequest.getUserId())
                 .bankTransferId(transactionRequest.getBankTransferId())
                 .salaryDate(transactionRequest.getSalaryDate())
+                .basePay(resolveLedgerBasePay(transactionRequest, salaryAmount))
                 .salaryAmount(salaryAmount)
+                .overtimeAllowance(defaultAllowanceAmount(transactionRequest.getOvertimeAllowance()))
+                .weekendAllowance(defaultAllowanceAmount(transactionRequest.getWeekendAllowance()))
+                .annualAllowance(transactionRequest.getAnnualAllowance())
                 .build();
 
         return salaryLedgerRepository.save(salaryLedger);
+    }
+
+    private Long resolveLedgerBasePay(TransactionSalaryRequestDTO transactionRequest, Long defaultBasePay) {
+        if (transactionRequest.getBasePay() != null) {
+            return transactionRequest.getBasePay();
+        }
+
+        return defaultBasePay;
+    }
+
+    private Long defaultAllowanceAmount(Long allowance) {
+        return allowance == null ? 0L : allowance;
     }
 
     private Long resolveSalaryAmount(TransactionSalaryRequestDTO transactionRequest, SalaryLedgerEntity salaryLedger) {
@@ -243,6 +269,7 @@ public class PayrollService {
         TransactionEntity transaction = transactionRepository.findById(transactionId)
                 .filter(item -> Objects.equals(item.getVendorId(), PAYROLL_VENDOR_ID))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payroll transaction not found."));
+        SalaryLedgerEntity salaryLedger = resolveLinkedSalaryLedger(transaction, transactionRequest);
 
         if (transactionRequest.getVendorId() != null) {
             transaction.setVendorId(transactionRequest.getVendorId());
@@ -272,9 +299,91 @@ public class PayrollService {
             transaction.setCreatedAt(transactionRequest.getCreatedAt());
         }
 
-        transaction.setUpdatedAt(transactionRequest.getUpdatedAt());
+        if (salaryLedger != null) {
+            if (transactionRequest.getUserId() != null) {
+                salaryLedger.setUserId(transactionRequest.getUserId());
+            }
+
+            if (transactionRequest.getBankTransferId() != null) {
+                salaryLedger.setBankTransferId(transactionRequest.getBankTransferId());
+            }
+
+            if (transactionRequest.getSalaryDate() != null) {
+                salaryLedger.setSalaryDate(transactionRequest.getSalaryDate());
+            }
+
+            if (transactionRequest.getBasePay() != null) {
+                salaryLedger.setBasePay(transactionRequest.getBasePay());
+            }
+
+            if (transactionRequest.getSalaryAmount() != null) {
+                salaryLedger.setSalaryAmount(transactionRequest.getSalaryAmount());
+            }
+
+            if (transactionRequest.getOvertimeAllowance() != null) {
+                salaryLedger.setOvertimeAllowance(transactionRequest.getOvertimeAllowance());
+            }
+
+            if (transactionRequest.getWeekendAllowance() != null) {
+                salaryLedger.setWeekendAllowance(transactionRequest.getWeekendAllowance());
+            }
+
+            if (transactionRequest.getAnnualAllowance() != null) {
+                salaryLedger.setAnnualAllowance(transactionRequest.getAnnualAllowance());
+            }
+
+            salaryLedgerRepository.save(salaryLedger);
+        }
+
+        transaction.setUpdatedAt(
+                transactionRequest.getUpdatedAt() == null ? LocalDateTime.now() : transactionRequest.getUpdatedAt()
+        );
 
         return transactionRepository.save(transaction);
+    }
+
+    public void transactionSalaryDelete(Integer transactionId) {
+        TransactionEntity transaction = transactionRepository.findById(transactionId)
+                .filter(item -> Objects.equals(item.getVendorId(), PAYROLL_VENDOR_ID))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Payroll transaction not found."));
+
+        Integer salaryLedgerId = resolveSalaryLedgerId(transaction);
+        transactionRepository.delete(transaction);
+        transactionRepository.flush();
+
+        if (salaryLedgerId == null) {
+            return;
+        }
+
+        boolean isReferencedByOtherPayroll = transactionRepository.findBySalaryLedgerId(salaryLedgerId).stream()
+                .filter(other -> Objects.equals(other.getVendorId(), PAYROLL_VENDOR_ID))
+                .filter(other -> !Objects.equals(other.getTransactionId(), transactionId))
+                .findAny()
+                .isPresent();
+
+        if (!isReferencedByOtherPayroll) {
+            transfeRepository.deleteBySalaryLedger_SalaryLedgerId(salaryLedgerId);
+            salaryLedgerRepository.findById(salaryLedgerId)
+                    .ifPresent(salaryLedgerRepository::delete);
+        }
+    }
+
+    private SalaryLedgerEntity resolveLinkedSalaryLedger(
+            TransactionEntity transaction,
+            TransactionSalaryRequestDTO transactionRequest
+    ) {
+        Integer salaryLedgerId = transactionRequest.getSalaryLedgerId();
+
+        if (salaryLedgerId == null) {
+            salaryLedgerId = resolveSalaryLedgerId(transaction);
+        }
+
+        if (salaryLedgerId == null) {
+            return null;
+        }
+
+        return salaryLedgerRepository.findById(salaryLedgerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Salary ledger not found."));
     }
 
     private List<TransactionSalaryDTO> toSalaryResponses(List<TransactionEntity> transactions) {
@@ -295,8 +404,9 @@ public class PayrollService {
                     List<WorkEntity> workRecords = userId == null ? List.of() : workByUserId.getOrDefault(userId, List.of());
                     VacationEntity vacation = userId == null ? null : vacationByUserId.get(userId);
                     LocalDate payrollDate = resolvePayrollDate(transaction, salaryLedger);
+                    Long basePay = resolveBasePay(salaryLedger, salary);
                     PayrollAllowanceSummary allowanceSummary = calculateAllowanceSummary(
-                            salary == null ? null : salary.getBasePay(),
+                            basePay,
                             workRecords,
                             vacation,
                             payrollDate
@@ -308,10 +418,40 @@ public class PayrollService {
                             salaryLedger,
                             user,
                             salary,
-                            allowanceSummary
+                            basePay,
+                            mergeAllowanceSummary(salaryLedger, allowanceSummary)
                     );
                 })
                 .toList();
+    }
+
+    private Long resolveBasePay(SalaryLedgerEntity salaryLedger, SalaryEntity salary) {
+        if (salaryLedger != null && salaryLedger.getBasePay() != null) {
+            return salaryLedger.getBasePay();
+        }
+
+        return salary == null ? null : salary.getBasePay();
+    }
+
+    private PayrollAllowanceSummary mergeAllowanceSummary(
+            SalaryLedgerEntity salaryLedger,
+            PayrollAllowanceSummary calculatedSummary
+    ) {
+        if (salaryLedger == null) {
+            return calculatedSummary;
+        }
+
+        return new PayrollAllowanceSummary(
+                salaryLedger.getOvertimeAllowance() != null
+                        ? salaryLedger.getOvertimeAllowance()
+                        : calculatedSummary.getOvertimeAllowance(),
+                salaryLedger.getWeekendAllowance() != null
+                        ? salaryLedger.getWeekendAllowance()
+                        : calculatedSummary.getWeekendAllowance(),
+                salaryLedger.getAnnualAllowance() != null
+                        ? salaryLedger.getAnnualAllowance()
+                        : calculatedSummary.getAnnualAllowance()
+        );
     }
 
     private Integer resolveSalaryLedgerId(TransactionEntity transaction) {
@@ -455,7 +595,7 @@ public class PayrollService {
     private long countOvertimeDays(List<WorkEntity> workRecords, YearMonth payrollMonth) {
         return workRecords.stream()
                 .filter(work -> isInPayrollMonth(work, payrollMonth))
-                .filter(this::isOvertimeWorkDay)
+                .filter(this::isPayrollOvertimeWorkDay)
                 .map(WorkEntity::getWorkDate)
                 .filter(Objects::nonNull)
                 .distinct()
@@ -465,7 +605,7 @@ public class PayrollService {
     private long countWeekendDays(List<WorkEntity> workRecords, YearMonth payrollMonth) {
         return workRecords.stream()
                 .filter(work -> isInPayrollMonth(work, payrollMonth))
-                .filter(this::isWeekendWorkDay)
+                .filter(this::isPayrollWeekendWorkDay)
                 .map(WorkEntity::getWorkDate)
                 .filter(Objects::nonNull)
                 .distinct()
@@ -497,6 +637,42 @@ public class PayrollService {
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
+    private boolean isPayrollOvertimeWorkDay(WorkEntity work) {
+        if (work.getFinishWork() != null && work.getFinishWork().toLocalTime().isAfter(OVERTIME_START_TIME)) {
+            return true;
+        }
+
+        return containsAnyText(
+                work.getWorkStatus(),
+                "\uC57C\uADFC",
+                "\uC5F0\uC7A5",
+                "night",
+                "over"
+        ) || (work.getAllowance() != null && containsAnyText(
+                work.getAllowance().getAllowanceName(),
+                "\uC57C\uADFC",
+                "\uC5F0\uC7A5",
+                "night",
+                "over"
+        ));
+    }
+
+    private boolean isPayrollWeekendWorkDay(WorkEntity work) {
+        return containsAnyText(
+                work.getWorkStatus(),
+                "\uC8FC\uB9D0\uADFC\uBB34",
+                "\uD734\uC77C\uADFC\uBB34",
+                "weekend",
+                "holiday"
+        ) || (work.getAllowance() != null && containsAnyText(
+                work.getAllowance().getAllowanceName(),
+                "\uC8FC\uB9D0",
+                "\uD734\uC77C",
+                "weekend",
+                "holiday"
+        ));
+    }
+
     private int resolveRemainingVacationDays(VacationEntity vacation) {
         if (vacation == null || vacation.getRemainingVacation() == null || vacation.getRemainingVacation() < 0) {
             return 0;
@@ -507,6 +683,22 @@ public class PayrollService {
 
     private boolean containsText(String source, String keyword) {
         return source != null && source.contains(keyword);
+    }
+
+    private boolean containsAnyText(String source, String... keywords) {
+        if (source == null || source.isBlank()) {
+            return false;
+        }
+
+        String normalizedSource = source.toLowerCase();
+
+        for (String keyword : keywords) {
+            if (keyword != null && normalizedSource.contains(keyword.toLowerCase())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private long calculateOvertimeAllowance(Long basePay, long overtimeDays) {
@@ -562,6 +754,7 @@ public class PayrollService {
             SalaryLedgerEntity salaryLedger,
             UserEntity user,
             SalaryEntity salary,
+            Long resolvedBasePay,
             PayrollAllowanceSummary allowanceSummary
     ) {
         Long salaryAmount = salaryLedger == null ? null : salaryLedger.getSalaryAmount();
@@ -587,7 +780,7 @@ public class PayrollService {
                 .departmentName(resolveDepartmentName(user))
                 .gradeId(user == null ? null : user.getGradeId())
                 .gradeName(resolveGradeName(user))
-                .basePay(salary == null ? null : salary.getBasePay())
+                .basePay(resolvedBasePay)
                 .bankTransferId(salaryLedger == null ? null : salaryLedger.getBankTransferId())
                 .salaryDate(salaryLedger == null ? null : salaryLedger.getSalaryDate())
                 .salaryAmount(salaryAmount)

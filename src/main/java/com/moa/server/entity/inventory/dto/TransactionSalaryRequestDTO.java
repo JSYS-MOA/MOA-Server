@@ -41,8 +41,20 @@ public class TransactionSalaryRequestDTO {
     @JsonAlias("salary_date")
     private LocalDateTime salaryDate;
 
+    @JsonAlias("base_pay")
+    private Long basePay;
+
     @JsonAlias("salary_amount")
     private Long salaryAmount;
+
+    @JsonAlias("overtime_allowance")
+    private Long overtimeAllowance;
+
+    @JsonAlias("weekend_allowance")
+    private Long weekendAllowance;
+
+    @JsonAlias("annual_allowance")
+    private Long annualAllowance;
 
     @JsonAlias("created_at")
     private LocalDateTime createdAt;

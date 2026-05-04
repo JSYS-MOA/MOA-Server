@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 
@@ -72,5 +73,10 @@ public class SalaryController {
             @RequestBody TransactionSalaryRequestDTO transactionRequest
     ) {
         return payrollService.transactionSalaryUpdate(transactionId, transactionRequest);
+    }
+
+    @DeleteMapping({"/{transactionId}", "/payrolls/{transactionId}"})
+    public void deletePayroll(@PathVariable Integer transactionId) {
+        payrollService.transactionSalaryDelete(transactionId);
     }
 }

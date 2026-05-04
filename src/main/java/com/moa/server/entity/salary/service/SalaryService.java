@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 //급여 회계 관련
 @Service
 @Transactional
@@ -18,5 +20,8 @@ public class SalaryService {
     private final AllowanceRepository allowanceRepository;
     private final CompanyAccountRepository companyAccountRepository;
 
+    public List<SalaryEntity> getSalaryList() {
+        return salaryRepository.findAll();
+    }
 
 }

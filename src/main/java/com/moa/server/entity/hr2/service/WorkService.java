@@ -56,6 +56,7 @@ public class WorkService {
                 .user(user)
                 .allowance(allowance)
                 .workDate(dto.getWorkDate())
+                .workStatus(dto.getWorkStatus())
                 .workMemo(dto.getWorkMemo())
                 .build();
 
@@ -80,6 +81,7 @@ public class WorkService {
 
         // 데이터 업데이트 (Dirty Checking으로 자동 반영)
         work.setWorkDate(dto.getWorkDate());
+        work.setWorkStatus(dto.getWorkStatus());
         work.setWorkMemo(dto.getWorkMemo());
     }
 

@@ -1,67 +1,14 @@
-/*
 package com.moa.server.entity.salary;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface TransfeRepository extends JpaRepository<SalaryLedgerEntity, Integer> {
+public interface TransfeRepository extends JpaRepository<TransfeEntity, Integer> {
 
-    //예시
-    //List<BoardVOEntity> findByTitleContaining  (String title);
+    List<TransfeEntity> findBySalaryLedger_SalaryLedgerId(Integer salaryLedgerId);
 
-
-    //모든 값 검색
-    @Override
-    @EntityGraph(attributePaths = {"vendor", "user"})
-    List<SalaryLedgerEntity> findAll();
-
-    //페이지 계산
-    @Override
-    @EntityGraph(attributePaths = {"vendor", "user"})
-    Page<SalaryLedgerEntity> findAll(Pageable pageable);
-
-    //순서
-    @Override
-    @EntityGraph(attributePaths = {"vendor", "user"})
-    Optional<SalaryLedgerEntity> findById(Integer integer);
-
-
-    //검색용
-
-    @EntityGraph(attributePaths = {"vendor", "user"})
-    Optional<SalaryLedgerEntity> findBySalaryLedgerUserIdContaining(Integer UserId);
-
-    @EntityGraph(attributePaths = {"vendor", "user"})
-    Optional<SalaryLedgerEntity> findBySalaryLedgerSalaryDate(LocalDate SalaryDate);
-
-
-    @EntityGraph(attributePaths = {"vendor", "user"})
-    List<TransfeEntity> findBySalaryLedger_SalaryDate(LocalDateTime salaryDate);
-
-    //값이 널인것만 찾기
-    @EntityGraph(attributePaths = {"vendor", "user"})
-    List<SalaryLedgerEntity> findByCreatedAtIsNull();
-
-    @EntityGraph(attributePaths = {"vendor", "user"})
-    Page<TransfeEntity> findByCreatedAtIsNull(Pageable pageable);
-
-    @EntityGraph(attributePaths = {"vendor", "user"})
-    List<SalaryLedgerEntity> findByUpdatedAtIsNull();
-
-    @EntityGraph(attributePaths = {"vendor", "user"})
-    Page<SalaryLedgerEntity> findByUpdatedAtIsNull(Pageable pageable);
-
-
-
+    long deleteBySalaryLedger_SalaryLedgerId(Integer salaryLedgerId);
 }
-
-*/
