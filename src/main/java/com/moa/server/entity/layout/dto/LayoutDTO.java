@@ -4,6 +4,7 @@ import com.moa.server.entity.menu.MenuEntity;
 import lombok.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -17,6 +18,6 @@ public class LayoutDTO {
     private String departmentName;
     private String gradeName;
 
-    private List<MenuEntity> menuList;
+    private List<Map<String, Object>> menuList;
 
 }
