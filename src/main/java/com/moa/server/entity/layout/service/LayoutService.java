@@ -36,13 +36,21 @@ public class LayoutService {
                 )
                 .toList();
 
-        // 3. LayoutDTO 조립해서 반환
         return LayoutDTO.builder()
-                .userName((String) user[1])
-                .employeeId((String) user[4])
-                .departmentName((String) user[2])
-                .gradeName((String) user[3])
+                .userName(String.valueOf(user[1]))
+                .departmentName(String.valueOf(user[2]))
+                .gradeName(String.valueOf(user[3]))
+                .employeeId(String.valueOf(user[4]))
                 .menuList(menuList)
                 .build();
+
+//        // 3. LayoutDTO 조립해서 반환
+//        return LayoutDTO.builder()
+//                .userName((String) user[1])
+//                .employeeId((String) user[4])
+//                .departmentName((String) user[2])
+//                .gradeName((String) user[3])
+//                .menuList(menuList)
+//                .build();
     }
 }
