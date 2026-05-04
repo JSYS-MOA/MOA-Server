@@ -35,9 +35,10 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOriginPatterns(List.of(
-                "http://localhost:5173", // 프론트엔드 주소
-                "https://*.vercel.app", // 모든 Vercel 배포 주소 허용
-                "https://moa-git-j-mutajunes-projects.vercel.app/"
+                "http://localhost:5173",
+                "https://*.vercel.app",
+                "https://moa-ivory.vercel.app",
+                "https://moa-git-j-mutajunes-projects.vercel.app"
         ));
 
         configuration.addAllowedMethod("*");
