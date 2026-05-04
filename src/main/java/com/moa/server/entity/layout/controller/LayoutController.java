@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth/layout")
+@RequestMapping("/api/auth")
 public class LayoutController {
 
     private final LayoutService layoutService;
 
-    @GetMapping
+    @GetMapping("/layout")
     public LayoutDTO getLayout(@RequestParam("employeeId") String employeeId) {
         return layoutService.getLayout(employeeId);
     }
