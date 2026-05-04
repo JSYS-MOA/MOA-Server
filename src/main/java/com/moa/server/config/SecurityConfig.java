@@ -37,7 +37,8 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
                 "https://moa-ivory.vercel.app",
-                "https://moa-git-j-mutajunes-projects.vercel.app"
+                "https://moa-git-j-mutajunes-projects.vercel.app",
+                "https://*.vercel.app"
         ));
 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
