@@ -19,16 +19,8 @@ public class LayoutService {
 
     public LayoutDTO getLayout(String employeeId) {
 
-        // 1. 유저 정보 조회
-//       Object[] user = layoutDAO.userLayoutInfo(employeeId);
-//
-//        if (user == null) {
-//            return LayoutDTO.builder()
-//                    .userName("정보 없음")
-//                    .employeeId(employeeId)
-//                    .menuList(new ArrayList<>())
-//                    .build();
-//        }
+//     1. 유저 정보 조회
+       Object[] user = layoutDAO.userLayoutInfo(employeeId);
 
         // 2. 메뉴 리스트 조회 + DTO 변환
         List<MenuEntity> menuList = repository.findAll().stream()
@@ -40,20 +32,24 @@ public class LayoutService {
                         .build())
                 .toList();
 
-        return LayoutDTO.builder()
-                .userName("메뉴 테스트 중") // 유저 정보는 가짜로
-                .employeeId(employeeId)
-                .menuList(menuList)      // 실제 DB에서 가져온 메뉴 리스트
-                .build();
-        
+        // 3. [핵심] 유저 데이터가 없을 경우 방어 코드
+        if (user == null) {
+            return LayoutDTO.builder()
+                    .userName("정보 없음")
+                    .employeeId(employeeId)
+                    .departmentName("-")
+                    .gradeName("-")
+                    .menuList(menuList)
+                    .build();
+        }
 
-//        return LayoutDTO.builder()
-//                .userName(user[1] != null ? String.valueOf(user[1]) : "")
-//                .departmentName(user[2] != null ? String.valueOf(user[2]) : "")
-//                .gradeName(user[3] != null ? String.valueOf(user[3]) : "")
-//                .employeeId(user[4] != null ? String.valueOf(user[4]) : employeeId)
-//                .menuList(menuList)
-//                .build();
+            return LayoutDTO.builder()
+                    .userName(user[1] != null ? String.valueOf(user[1]) : "이름없음")
+                    .departmentName(user[2] != null ? String.valueOf(user[2]) : "부서미정")
+                    .gradeName(user[3] != null ? String.valueOf(user[3]) : "직급미정")
+                    .employeeId(user[4] != null ? String.valueOf(user[4]) : employeeId)
+                    .menuList(menuList)
+                    .build();
 
     }
 }
