@@ -2,21 +2,19 @@ package com.moa.server.entity.layout.controller;
 
 import com.moa.server.entity.layout.dto.LayoutDTO;
 import com.moa.server.entity.layout.service.LayoutService;
-import com.moa.server.entity.user.UserEntity;
-import com.moa.server.entity.user.dto.SessionUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth/layout")
+@RequestMapping("/api/auth")
 public class LayoutController {
 
     private final LayoutService layoutService;
 
-    @GetMapping
-    public LayoutDTO getLayout(@SessionAttribute(name = "user") SessionUser user) {
-        return layoutService.getLayout(user.getEmployeeId());
+    @GetMapping("/layout")
+    public LayoutDTO getLayout(@RequestParam("employeeId") String employeeId) {
+        return layoutService.getLayout(employeeId);
     }
 
 }

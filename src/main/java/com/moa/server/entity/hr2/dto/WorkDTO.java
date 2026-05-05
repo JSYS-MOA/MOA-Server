@@ -16,6 +16,7 @@ public class WorkDTO {
     private String employeeId;
     private String userName;
     private LocalDate workDate;
+    private String workStatus;
     private String workMemo;
     private String allowanceName;
     private String startWork;
@@ -26,6 +27,7 @@ public class WorkDTO {
         this.employeeId = (entity.getUser() != null) ? entity.getUser().getEmployeeId() : "알수없는사번";
         this.userName = (entity.getUser() != null) ? entity.getUser().getUserName() : "알수없음";
         this.workDate = entity.getWorkDate();
+        this.workStatus = entity.getWorkStatus();
         this.workMemo = entity.getWorkMemo();
         this.allowanceName = (entity.getAllowance() != null)
                 ? entity.getAllowance().getAllowanceName() : null;
