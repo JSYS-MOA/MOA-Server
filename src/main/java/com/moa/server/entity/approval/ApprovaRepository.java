@@ -6,8 +6,11 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Repository
 public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer> {
@@ -34,5 +37,21 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
     int updateApprovaIdApprovaStatus(Integer  approvaId , String approvaStatus);
 
 
+    @Query("SELECT a FROM ApprovaEntity a " +
+            "JOIN FETCH a.userWriter u " +
+            "LEFT JOIN u.department d " +
+            "LEFT JOIN a.line dc " +
+            "WHERE (:startDate IS NULL OR a.approvaDate >= :startDate) " +
+            "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
+            "AND (:category IS NULL OR dc.documentName = :category) " +
+            "AND (:keyword IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%')) " +
+            "AND (:departmentId IS NULL OR d.departmentId = :departmentId)")
+    Page<ApprovaEntity> findApprovalList(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("finishDate") LocalDateTime finishDate,
+            @Param("category") String category,
+            @Param("keyword") String keyword,
+            @Param("departmentId") Integer departmentId,
+            Pageable pageable);
 }
 
