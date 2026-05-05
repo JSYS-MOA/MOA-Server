@@ -17,7 +17,7 @@ import java.util.List;
 @Repository
 public interface WorkRepository extends JpaRepository<WorkEntity, Integer> {
 
-//  중복쿼리 봐ㅑ함
+//  중복쿼리 봐함
 //   @Query("SELECT w FROM WorkEntity w JOIN FETCH w.user LEFT JOIN FETCH w.allowance")
 //   List<WorkEntity> findAllWithDetails();
 
