@@ -18,8 +18,12 @@ public class VacationEntity extends BaseEntity {
     @Column(name = "vacation_id")
     private Integer vacationId;
 
+    @Column(name = "user_id")
+    private Integer userId;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity user;
 
     @OneToOne(fetch = FetchType.LAZY)

@@ -9,9 +9,12 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @Repository
 public interface VacationRepository extends JpaRepository<VacationEntity, Integer> {
+
+    List<VacationEntity> findByUserIdIn(Collection<Integer> userIds);
 
     @Query("SELECT v FROM VacationEntity v " +
             "JOIN FETCH v.user u " +
