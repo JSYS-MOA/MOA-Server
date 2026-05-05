@@ -41,6 +41,7 @@ public class VacationPrintService {
 
         return result.map(VacationPrintDTO::fromEntity);
     }
+
     @Transactional
     public VacationPrintDTO getDetail(Integer vacationId) {
         return repository.findById(vacationId)

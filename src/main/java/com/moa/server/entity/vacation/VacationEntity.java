@@ -21,7 +21,6 @@ public class VacationEntity extends BaseEntity {
     @Column(name = "user_id")
     private Integer userId;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity user;

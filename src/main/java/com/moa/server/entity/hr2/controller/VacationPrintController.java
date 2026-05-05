@@ -20,6 +20,7 @@ public class VacationPrintController {
                                        FilterDTO filterDTO) {
         return service.getList(page, size, filterDTO);
     }
+
     @GetMapping("/{vacationId}")
     public VacationPrintDTO detail(@PathVariable Integer vacationId) {
         return service.getDetail(vacationId);
