@@ -36,16 +36,27 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
     @Query("UPDATE ApprovaEntity a SET a.approvaStatus = :approvaStatus WHERE a.approvaId = :approvaId")
     int updateApprovaIdApprovaStatus(Integer  approvaId , String approvaStatus);
 
-
-    @Query("SELECT a FROM ApprovaEntity a " +
-            "JOIN FETCH a.userWriter u " +
+    // [수정된 쿼리]
+    // 1. DISTINCT를 추가하여 조인 시 발생할 수 있는 데이터 중복 원천 차단
+    // 2. countQuery를 명시하여 페이징 성능 최적화 (불필요한 조인 제거)
+    @Query(value = "SELECT DISTINCT a FROM ApprovaEntity a " +
+            "JOIN a.userWriter u " +
             "LEFT JOIN u.department d " +
             "LEFT JOIN a.line dc " +
             "WHERE (:startDate IS NULL OR a.approvaDate >= :startDate) " +
             "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
             "AND (:category IS NULL OR dc.documentName = :category) " +
             "AND (:keyword IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%')) " +
-            "AND (:departmentId IS NULL OR d.departmentId = :departmentId)")
+            "AND (:departmentId IS NULL OR d.departmentId = :departmentId)",
+            countQuery = "SELECT COUNT(DISTINCT a) FROM ApprovaEntity a " +
+                    "JOIN a.userWriter u " +
+                    "LEFT JOIN u.department d " +
+                    "LEFT JOIN a.line dc " +
+                    "WHERE (:startDate IS NULL OR a.approvaDate >= :startDate) " +
+                    "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
+                    "AND (:category IS NULL OR dc.documentName = :category) " +
+                    "AND (:keyword IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%')) " +
+                    "AND (:departmentId IS NULL OR d.departmentId = :departmentId)")
     Page<ApprovaEntity> findApprovalList(
             @Param("startDate") LocalDateTime startDate,
             @Param("finishDate") LocalDateTime finishDate,
