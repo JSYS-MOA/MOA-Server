@@ -27,19 +27,37 @@ public interface WorkRepository extends JpaRepository<WorkEntity, Integer> {
     List<WorkEntity> findByUserIdIn(@Param("userIds") Collection<Integer> userIds);
 
     //근무기록
-    @Query("SELECT w FROM WorkEntity w " +
-            "JOIN FETCH w.user " +           // 유저 정보 한방에
-            "LEFT JOIN FETCH w.allowance" +  // 수당 정보 한방에 (없을 수 있으니 LEFT)
-            " WHERE (:keyword IS NULL OR w.user.userName LIKE CONCAT('%', :keyword, '%')) " +
-            "AND (:category IS NULL OR w.allowance.allowanceName = :category) " +
+    @Query(value = "SELECT w FROM WorkEntity w " +
+            "JOIN FETCH w.user " +
+            "LEFT JOIN FETCH w.allowance " +
+            "WHERE (CAST(:keyword AS string) IS NULL OR w.user.userName LIKE CONCAT('%', CAST(:keyword AS string), '%')) " +
+            "AND (CAST(:category AS string) IS NULL OR w.allowance.allowanceName = CAST(:category AS string)) " +
             "AND (:startDate IS NULL OR w.workDate >= :startDate) " +
-            "AND (:finishDate IS NULL OR w.workDate <= :finishDate)")
-    Page<WorkEntity> findAllWithDetails(
-            @Param("startDate") LocalDateTime startDate,
-            @Param("finishDate") LocalDateTime finishDate,
-            @Param("category") String category,
-            @Param("keyword") String keyword,
-            Pageable pageable);
+            "AND (:finishDate IS NULL OR w.workDate <= :finishDate)",
+            countQuery = "SELECT COUNT(w) FROM WorkEntity w " +
+                    "WHERE (CAST(:keyword AS string) IS NULL OR w.user.userName LIKE CONCAT('%', CAST(:keyword AS string), '%')) " +
+                    "AND (CAST(:category AS string) IS NULL OR w.allowance.allowanceName = :category)")
+            Page<WorkEntity> findAllWithDetails(
+                    @Param("startDate") LocalDateTime startDate,
+                    @Param("finishDate") LocalDateTime finishDate,
+                    @Param("category") String category,
+                    @Param("keyword") String keyword,
+                    Pageable pageable);
+
+
+//    @Query("SELECT w FROM WorkEntity w " +
+//            "JOIN FETCH w.user " +           // 유저 정보 한방에
+//            "LEFT JOIN FETCH w.allowance" +  // 수당 정보 한방에 (없을 수 있으니 LEFT)
+//            " WHERE (:keyword IS NULL OR w.user.userName LIKE CONCAT('%', :keyword, '%')) " +
+//            "AND (:category IS NULL OR w.allowance.allowanceName = :category) " +
+//            "AND (:startDate IS NULL OR w.workDate >= :startDate) " +
+//            "AND (:finishDate IS NULL OR w.workDate <= :finishDate)")
+//    Page<WorkEntity> findAllWithDetails(
+//            @Param("startDate") LocalDateTime startDate,
+//            @Param("finishDate") LocalDateTime finishDate,
+//            @Param("category") String category,
+//            @Param("keyword") String keyword,
+//            Pageable pageable);
 
     //지각현황
     @Query("SELECT w FROM WorkEntity w " +

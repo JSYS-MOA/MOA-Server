@@ -42,8 +42,8 @@ public class WorkService {
         LocalDate finish = (filterDTO.getFinishDate() != null && !filterDTO.getFinishDate().isEmpty())
                 ? LocalDate.parse(filterDTO.getFinishDate()) : null;
 
-        String category = (filterDTO.getCategory() == null) ? "" : filterDTO.getCategory();
         String keyword = (filterDTO.getKeyword() == null) ? "" : filterDTO.getKeyword();
+        String category = filterDTO.getCategory();
 
         return workRepository.findAllWithDetails(
                         start != null ? start.atStartOfDay() : null,
