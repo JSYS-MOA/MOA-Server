@@ -4,6 +4,7 @@ import com.moa.server.entity.hr2.dto.HRCalendarDTO;
 import com.moa.server.entity.hr2.dto.HRCountDTO;
 import com.moa.server.entity.vacation.WorkRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Service
 @RequiredArgsConstructor
 @Transactional
 public class HRCalendarService {
@@ -40,7 +42,7 @@ public class HRCalendarService {
                                 dto -> dto.getWorkDate().toLocalDate()
                         ));
 
-        Map<LocalDate, Long> countMap =
+        Map<LocalDateTime, Long> countMap =
                 countList.stream()
                         .collect(Collectors.toMap(
                                 HRCountDTO::getDate,
@@ -50,15 +52,15 @@ public class HRCalendarService {
 
         List<HRCountDTO> result = new ArrayList<>();
 
-        for (LocalDate date = month;
-             !date.isAfter(month.plusMonths(1).minusDays(1));
+        for (LocalDateTime date = month.atStartOfDay();
+             !date.isAfter(month.plusMonths(1).minusDays(1).atStartOfDay());
              date = date.plusDays(1)) {
 
             result.add(
                     HRCountDTO.builder()
                             .date(date)
                             // 데이터 없으면 0
-                            .totalCount(countMap.getOrDefault(date, 0L).intValue())
+                            .totalCount((long) countMap.getOrDefault(date, 0L).intValue())
                             // 상세 없으면 빈 리스트
                             .details(Collections.emptyList())
                             .build()

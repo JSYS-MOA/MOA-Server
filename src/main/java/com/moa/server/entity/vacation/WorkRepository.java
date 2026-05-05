@@ -54,13 +54,13 @@ public interface WorkRepository extends JpaRepository<WorkEntity, Integer> {
     );
 
     //출퇴근인원수
-    @Query("SELECT new HRCountDTO(" +
+    @Query("SELECT new com.moa.server.entity.hr2.dto.HRCountDTO(" +
             "FUNCTION('DATE', w.workDate), " +
             "COUNT(w)) " +
             "FROM WorkEntity w " +
             "WHERE w.workDate >= :startDate AND w.workDate < :endDate " +
-            "GROUP BY FUNCTION('DATE', w.workDate) " +
-            "ORDER BY FUNCTION('DATE', w.workDate) ASC")
+            "GROUP BY DATE(w.workDate) " +
+            "ORDER BY DATE(w.workDate)")
     List<HRCountDTO> findWorkCount(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate

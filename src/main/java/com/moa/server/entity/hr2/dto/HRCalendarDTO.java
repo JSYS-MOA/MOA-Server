@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class HRCalendarDTO {
 
@@ -18,5 +17,17 @@ public class HRCalendarDTO {
     private LocalDateTime startWork;
     private LocalDateTime finishWork;
 
-
+    public HRCalendarDTO(
+            LocalDateTime workDate,
+            String userName,
+            String departmentName,
+            LocalDateTime startWork,
+            LocalDateTime finishWork
+    ) {
+        this.workDate = workDate;
+        this.userName = userName;
+        this.departmentName = departmentName;
+        this.startWork = startWork;
+        this.finishWork = finishWork;
+    }
 }
