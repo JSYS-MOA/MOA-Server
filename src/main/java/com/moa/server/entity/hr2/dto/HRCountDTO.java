@@ -12,11 +12,17 @@ import java.util.List;
 @Builder
 public class HRCountDTO {
 
-    private LocalDateTime date;
+    private LocalDate date;
     private Long totalCount;
     private List<HRCalendarDTO> details;
 
-    public HRCountDTO(LocalDateTime date, Long totalCount, List<HRCalendarDTO> details){
+
+    public HRCountDTO(LocalDate date, Long totalCount) {
+        this.date = date;
+        this.totalCount = totalCount;
+    }
+
+    public HRCountDTO(LocalDate date, Long totalCount, List<HRCalendarDTO> details){
         this.date = date;
         this.totalCount = totalCount;
         this.details=details;

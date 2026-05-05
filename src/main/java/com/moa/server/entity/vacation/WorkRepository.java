@@ -54,17 +54,29 @@ public interface WorkRepository extends JpaRepository<WorkEntity, Integer> {
     );
 
     //출퇴근인원수
-    @Query("SELECT new com.moa.server.entity.hr2.dto.HRCountDTO(" +
-            "FUNCTION('DATE', w.workDate), " +
-            "COUNT(w)) " +
+    @Query("SELECT new com.moa.server.entity.hr2.dto.HRCountDTO(w.workDate, COUNT(w)) " +
             "FROM WorkEntity w " +
-            "WHERE w.workDate >= :startDate AND w.workDate < :endDate " +
-            "GROUP BY DATE(w.workDate) " +
-            "ORDER BY DATE(w.workDate)")
+            "WHERE CAST(w.workDate AS localdatetime) >= :startDate " + // 필드를 LocalDateTime으로 형변환
+            "AND CAST(w.workDate AS localdatetime) < :endDate " +
+            "GROUP BY w.workDate " +
+            "ORDER BY w.workDate ASC")
     List<HRCountDTO> findWorkCount(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
     );
+
+
+//    @Query("SELECT new com.moa.server.entity.hr2.dto.HRCountDTO(" +
+//            "FUNCTION('DATE', w.workDate), " +
+//            "COUNT(w)) " +
+//            "FROM WorkEntity w " +
+//            "WHERE w.workDate >= :startDate AND w.workDate < :endDate " +
+//            "GROUP BY DATE(w.workDate) " +
+//            "ORDER BY DATE(w.workDate)")
+//    List<HRCountDTO> findWorkCount(
+//            @Param("startDate") LocalDateTime startDate,
+//            @Param("endDate") LocalDateTime endDate
+//    );
 
     @Query("SELECT new com.moa.server.entity.hr2.dto.HRCalendarDTO(" +
             "w.workDate, " +

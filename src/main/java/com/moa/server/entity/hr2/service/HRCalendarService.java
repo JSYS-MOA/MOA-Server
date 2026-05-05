@@ -29,43 +29,66 @@ public class HRCalendarService {
         LocalDateTime start = month.atStartOfDay();
         LocalDateTime end = month.plusMonths(1).atStartOfDay();
 
-        List<HRCountDTO> countList =
-                repository.findWorkCount(start, end);
+        List<HRCountDTO> countList = repository.findWorkCount(start, end);
+        List<HRCalendarDTO> detailList = repository.findWorkDetailList(start, end);
 
-        List<HRCalendarDTO> detailList =
-                repository.findWorkDetailList(start, end);
+
+        Map<LocalDate, List<HRCalendarDTO>> detailMap = detailList.stream()
+                .collect(Collectors.groupingBy(HRCalendarDTO::getWorkDate));
 
         // 날짜 기준으로 그룹핑
-        Map<LocalDate, List<HRCalendarDTO>> detailMap =
-                detailList.stream()
-                        .collect(Collectors.groupingBy(
-                                dto -> dto.getWorkDate().toLocalDate()
-                        ));
+//        Map<LocalDate, List<HRCalendarDTO>> detailMap =
+//                detailList.stream().collect(Collectors.groupingBy(
+//                                dto -> dto.getWorkDate().toLocalDate()
+//                        ));
 
-        Map<LocalDateTime, Long> countMap =
-                countList.stream()
-                        .collect(Collectors.toMap(
-                                HRCountDTO::getDate,
-                                dto -> dto.getTotalCount() == null ? 0L : dto.getTotalCount().longValue()
-                        ));
+
+        Map<LocalDate, Long> countMap = countList.stream()
+                .collect(Collectors.toMap(
+                        HRCountDTO::getDate, // LocalDate 반환
+                        dto -> dto.getTotalCount() == null ? 0L : dto.getTotalCount(),
+                        (existing, replacement) -> existing // 중복 날짜 발생 시 처리
+                ));
+
+
+//        Map<LocalDateTime, Long> countMap =
+//                countList.stream()
+//                        .collect(Collectors.toMap(
+//                                HRCountDTO::getDate,
+//                                dto -> dto.getTotalCount() == null ? 0L : dto.getTotalCount().longValue()
+//                        ));
 
 
         List<HRCountDTO> result = new ArrayList<>();
 
-        for (LocalDateTime date = month.atStartOfDay();
-             !date.isAfter(month.plusMonths(1).minusDays(1).atStartOfDay());
-             date = date.plusDays(1)) {
+        for (LocalDate date = month; date.isBefore(month.plusMonths(1)); date = date.plusDays(1)) {
 
             result.add(
                     HRCountDTO.builder()
                             .date(date)
-                            // 데이터 없으면 0
-                            .totalCount((long) countMap.getOrDefault(date, 0L).intValue())
-                            // 상세 없으면 빈 리스트
-                            .details(Collections.emptyList())
+                            // 3. getOrDefault를 사용하고 바로 Long으로 할당
+                            .totalCount(countMap.getOrDefault(date, 0L))
+                            // 상세 리스트 매핑 (detailMap에서 해당 날짜 데이터 가져오기)
+                            .details(detailMap.getOrDefault(date, Collections.emptyList()))
                             .build()
             );
         }
+
+
+//        for (LocalDateTime date = month.atStartOfDay();
+//             !date.isAfter(month.plusMonths(1).minusDays(1).atStartOfDay());
+//             date = date.plusDays(1)) {
+//
+//            result.add(
+//                    HRCountDTO.builder()
+//                            .date(date)
+//                            // 데이터 없으면 0
+//                            .totalCount((long) countMap.getOrDefault(date, 0L).intValue())
+//                            // 상세 없으면 빈 리스트
+//                            .details(Collections.emptyList())
+//                            .build()
+//            );
+//        }
 
         return result;
     }

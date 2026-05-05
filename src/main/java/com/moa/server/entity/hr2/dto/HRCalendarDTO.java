@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
 @Builder
 public class HRCalendarDTO {
 
-    private LocalDateTime workDate;
+    private LocalDate workDate;
     private String userName;
     private String departmentName;
     private LocalDateTime startWork;
     private LocalDateTime finishWork;
 
     public HRCalendarDTO(
-            LocalDateTime workDate,
+            LocalDate workDate,
             String userName,
             String departmentName,
             LocalDateTime startWork,
