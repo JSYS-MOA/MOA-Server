@@ -22,8 +22,8 @@ public interface VacationRepository extends JpaRepository<VacationEntity, Intege
             "LEFT JOIN FETCH v.basicVacation bv " +
             "JOIN u.approva a " +
             "WHERE a.approvaStatus = '결재' " +
-            "AND (:startDate IS NULL OR a.approvaDate >= :startDate) " +
-            "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
+            "AND (CAST(:startDate AS string) IS NULL OR a.approvaDate >= :startDate) " + // 날짜 캐스팅 추가
+            "AND (CAST(:finishDate AS string) IS NULL OR a.approvaDate <= :finishDate) " + // 날짜 캐스팅 추가
             "AND (CAST(:category AS string) IS NULL OR d.departmentName = CAST(:category AS string)) " +
             "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', CAST(:keyword AS string), '%'))",
             countQuery = "SELECT COUNT(v) FROM VacationEntity v " +
@@ -31,8 +31,8 @@ public interface VacationRepository extends JpaRepository<VacationEntity, Intege
                     "JOIN u.approva a " +
                     "LEFT JOIN u.department d " +
                     "WHERE a.approvaStatus = '결재' " +
-                    "AND (:startDate IS NULL OR a.approvaDate >= :startDate) " +
-                    "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
+                    "AND (CAST(:startDate AS string) IS NULL OR a.approvaDate >= :startDate) " + // 날짜 캐스팅 추가
+                    "AND (CAST(:finishDate AS string) IS NULL OR a.approvaDate <= :finishDate) " + // 날짜 캐스팅 추가
                     "AND (CAST(:category AS string) IS NULL OR d.departmentName = CAST(:category AS string)) " +
                     "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', CAST(:keyword AS string), '%'))")
     Page<VacationEntity> findVacationPrint(

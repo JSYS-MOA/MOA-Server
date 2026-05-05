@@ -41,8 +41,8 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
             "JOIN FETCH a.userWriter u " +
             "LEFT JOIN FETCH u.department d " +
             "LEFT JOIN FETCH a.line dc " +
-            "WHERE (:startDate IS NULL OR a.approvaDate >= :startDate) " +
-            "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
+            "WHERE (CAST(:startDate AS string) IS NULL OR a.approvaDate >= :startDate) " +
+            "AND (CAST(:finishDate AS string) IS NULL OR a.approvaDate <= :finishDate) " +
             "AND (CAST(:category AS string) IS NULL OR dc.documentName = CAST(:category AS string)) " +
             "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', CAST(:keyword AS string), '%')) " +
             "AND (:departmentId IS NULL OR d.departmentId = :departmentId)",
@@ -50,8 +50,8 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
                     "JOIN a.userWriter u " +
                     "LEFT JOIN u.department d " +
                     "LEFT JOIN a.line dc " +
-                    "WHERE (:startDate IS NULL OR a.approvaDate >= :startDate) " +
-                    "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
+                    "WHERE (CAST(:startDate AS string) IS NULL OR a.approvaDate >= :startDate) " +
+                    "AND (CAST(:finishDate AS string) IS NULL OR a.approvaDate <= :finishDate) " +
                     "AND (CAST(:category AS string) IS NULL OR dc.documentName = CAST(:category AS string)) " +
                     "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', CAST(:keyword AS string), '%')) " +
                     "AND (:departmentId IS NULL OR d.departmentId = :departmentId)")
@@ -62,7 +62,6 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
             @Param("keyword") String keyword,
             @Param("departmentId") Integer departmentId,
             Pageable pageable);
-
 
 
 //    @Query("SELECT a FROM ApprovaEntity a " +
