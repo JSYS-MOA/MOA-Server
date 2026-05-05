@@ -24,7 +24,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (테스트용)
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionFixation().none() // 테스트용으로 세션 유지를 강제해봄
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login", "/api/user/*").permitAll() // 로그인 주소는 누구나 접근 허용
                         .anyRequest().permitAll() // 일단 모든 요청 허용 (테스트 완료 후 수정 권장)
