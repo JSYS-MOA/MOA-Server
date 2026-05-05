@@ -33,11 +33,15 @@ public class ApprovalWaitDTO {
         return ApprovalWaitDTO.builder()
                 .approvaId(entity.getApprovaId())
                 .approvaDate(entity.getApprovaDate().toString())
+                // 날짜 null 체크 추가 (데이터 꼬임 대비)
+                .approvaDate(entity.getApprovaDate() != null ? entity.getApprovaDate().toString() : "")
                 .approvaTitle(entity.getApprovaTitle())
                 .writer(entity.getUserWriter().getUserName()) // User 조인 결과
                 .documentName(entity.getLine().getDocumentName())
+                .writer(entity.getUserWriter() != null ? entity.getUserWriter().getUserName() : "알 수 없음")
                 .approvaState(entity.getApprovaStatus())
                 .departmentName(entity.getDepartmentName())
+                .documentName(entity.getLine() != null ? entity.getLine().getDocumentName() : "삭제된 양식")
                 .departmentId(deptIdStr)
                 .memo("")
                 .build();
