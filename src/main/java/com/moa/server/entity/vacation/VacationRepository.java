@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Repository
 public interface VacationRepository extends JpaRepository<VacationEntity, Integer> {
@@ -28,5 +29,7 @@ public interface VacationRepository extends JpaRepository<VacationEntity, Intege
             @Param("category") String category,
             @Param("keyword") String keyword,
             Pageable pageable);
+
+   
 }
 

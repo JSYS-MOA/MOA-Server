@@ -1,7 +1,6 @@
 package com.moa.server.entity.hr2.service;
 
 import com.moa.server.entity.hr2.dto.FilterDTO;
-import com.moa.server.entity.hr2.dto.FilterKeywordDTO;
 import com.moa.server.entity.hr2.dto.SelectMappingDTO;
 import com.moa.server.entity.hr2.dto.WorkDTO;
 import com.moa.server.entity.salary.AllowanceEntity;
@@ -10,7 +9,6 @@ import com.moa.server.entity.user.UserEntity;
 import com.moa.server.entity.user.UserRepository;
 import com.moa.server.entity.vacation.WorkEntity;
 import com.moa.server.entity.vacation.WorkRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -141,7 +139,8 @@ public class WorkService {
         WorkEntity work = workRepository.findByUserIdAndWorkDate(userId, LocalDate.now());
         if (work == null) return null;
         return new WorkDTO(work);
-        
+    }
+
     //  직원 정보 자동 채우기용 서비스
     @Transactional(readOnly = true)
     public List<SelectMappingDTO> getUser(String keyword) {
