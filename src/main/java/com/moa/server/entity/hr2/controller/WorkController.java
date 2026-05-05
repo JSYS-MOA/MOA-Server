@@ -49,14 +49,17 @@ public class WorkController {
                               FilterDTO filterDTO) {
         return service.getList(page,size, filterDTO);
     }
+
     @GetMapping("/{workId}")
     public WorkDTO detail(@PathVariable Integer workId) {
         return service.getDetail(workId);
     }
+
     @PostMapping
     public void add(@RequestBody WorkDTO data) {
         service.register(data);
     }
+
     @PutMapping("/{workId}")
     public void update(@PathVariable Integer workId, @RequestBody WorkDTO data) {
         data.setWorkId(workId);

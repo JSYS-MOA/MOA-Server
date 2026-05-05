@@ -34,20 +34,32 @@ public class WorkService {
     @Transactional
     public Page<WorkDTO> getList(int page, int size, FilterDTO filterDTO) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("workDate").descending());
+
+
         LocalDate start = (filterDTO.getStartDate() != null && !filterDTO.getStartDate().isEmpty())
-                ? LocalDate.parse(filterDTO.getStartDate())
-                : null;
+                ? LocalDate.parse(filterDTO.getStartDate()) : null;
 
         LocalDate finish = (filterDTO.getFinishDate() != null && !filterDTO.getFinishDate().isEmpty())
-                ? LocalDate.parse(filterDTO.getFinishDate())
-                : null;
+                ? LocalDate.parse(filterDTO.getFinishDate()) : null;
+
+        String category = (filterDTO.getCategory() == null) ? "" : filterDTO.getCategory();
+        String keyword = (filterDTO.getKeyword() == null) ? "" : filterDTO.getKeyword();
 
         return workRepository.findAllWithDetails(
                         start != null ? start.atStartOfDay() : null,
                         finish != null ? finish.atTime(23, 59, 59) : null,
-                        filterDTO.getCategory(),
-                        filterDTO.getKeyword(), pageable)
+                        category,
+                        keyword,
+                        pageable)
                 .map(WorkDTO::new);
+
+
+//        return workRepository.findAllWithDetails(
+//                        start != null ? start.atStartOfDay() : null,
+//                        finish != null ? finish.atTime(23, 59, 59) : null,
+//                        filterDTO.getCategory(),
+//                        filterDTO.getKeyword(), pageable)
+//                .map(WorkDTO::new);
     }
 
     // 2. 상세 조회
