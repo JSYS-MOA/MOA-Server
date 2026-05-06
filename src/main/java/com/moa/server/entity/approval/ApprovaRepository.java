@@ -37,15 +37,24 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
     int updateApprovaIdApprovaStatus(Integer  approvaId , String approvaStatus);
 
 
-    @Query("SELECT a FROM ApprovaEntity a " +
-            "JOIN FETCH a.userWriter u " +
-            "LEFT JOIN u.department d " +
-            "LEFT JOIN a.line dc " +
+    @Query(value = "SELECT a FROM ApprovaEntity a " +
+            "LEFT JOIN FETCH a.userWriter u " +
+            "LEFT JOIN FETCH u.department d " +
+            "LEFT JOIN FETCH a.line dc " +
             "WHERE (:startDate IS NULL OR a.approvaDate >= :startDate) " +
             "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
-            "AND (:category IS NULL OR dc.documentName = :category) " +
-            "AND (:keyword IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%')) " +
-            "AND (:departmentId IS NULL OR d.departmentId = :departmentId)")
+            "AND (CAST(:category AS string) IS NULL OR dc.documentName = CAST(:category AS string)) " + // category도 안전하게 cast
+            "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', CAST(:keyword AS string), '%')) " + // 핵심 수정
+            "AND (:departmentId IS NULL OR d.departmentId = :departmentId)",
+            countQuery = "SELECT COUNT(a) FROM ApprovaEntity a " +
+                    "LEFT JOIN a.userWriter u " +
+                    "LEFT JOIN u.department d " +
+                    "LEFT JOIN a.line dc " +
+                    "WHERE (:startDate IS NULL OR a.approvaDate >= :startDate) " +
+                    "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
+                    "AND (CAST(:category AS string) IS NULL OR dc.documentName = CAST(:category AS string)) " +
+                    "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', CAST(:keyword AS string), '%')) " +
+                    "AND (:departmentId IS NULL OR d.departmentId = :departmentId)")
     Page<ApprovaEntity> findApprovalList(
             @Param("startDate") LocalDateTime startDate,
             @Param("finishDate") LocalDateTime finishDate,
