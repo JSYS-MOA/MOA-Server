@@ -41,13 +41,11 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
             "LEFT JOIN FETCH a.userWriter u " +
             "LEFT JOIN FETCH u.department d " +
             "LEFT JOIN FETCH a.line dc " +
-            // 1. 날짜 파라미터 null 체크 시 CAST 추가 (중요)
             "WHERE (CAST(:startDate AS string) IS NULL OR a.approvaDate >= :startDate) " +
             "AND (CAST(:finishDate AS string) IS NULL OR a.approvaDate <= :finishDate) " +
-            // 2. 문자열 파라미터 CAST 유지
-            "AND (CAST(:category AS string) IS NULL OR dc.documentName = :category) " +
-            "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%')) " +
-            // 3. 부서 ID 파라미터 CAST 추가
+            "AND (CAST(:category AS string) IS NULL OR dc.documentName = CAST(:category AS string)) " +
+            // 핵심 수정: LIKE 절 내부의 파라미터까지 CAST로 감싸야 합니다.
+            "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', CAST(:keyword AS string), '%')) " +
             "AND (CAST(:departmentId AS string) IS NULL OR d.departmentId = :departmentId)",
             countQuery = "SELECT COUNT(a) FROM ApprovaEntity a " +
                     "LEFT JOIN a.userWriter u " +
@@ -55,8 +53,8 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
                     "LEFT JOIN a.line dc " +
                     "WHERE (CAST(:startDate AS string) IS NULL OR a.approvaDate >= :startDate) " +
                     "AND (CAST(:finishDate AS string) IS NULL OR a.approvaDate <= :finishDate) " +
-                    "AND (CAST(:category AS string) IS NULL OR dc.documentName = :category) " +
-                    "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%')) " +
+                    "AND (CAST(:category AS string) IS NULL OR dc.documentName = CAST(:category AS string)) " +
+                    "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', CAST(:keyword AS string), '%')) " +
                     "AND (CAST(:departmentId AS string) IS NULL OR d.departmentId = :departmentId)")
     Page<ApprovaEntity> findApprovalList(
             @Param("startDate") LocalDateTime startDate,
