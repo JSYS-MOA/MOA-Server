@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/hr/attendances/calendar")
+@RequestMapping("/api/hr/attendances/calendar-data")
 @RequiredArgsConstructor
 public class HRCalendarController {
     private final HRCalendarService service;
