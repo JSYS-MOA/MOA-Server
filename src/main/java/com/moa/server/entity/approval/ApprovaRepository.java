@@ -44,7 +44,8 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
             "WHERE (:startDate IS NULL OR a.approvaDate >= :startDate) " +
             "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
             "AND (:category IS NULL OR dc.documentName = :category) " +
-            "AND (:keyword IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%')) " +
+            // 이 부분이 핵심입니다. CAST(:keyword AS string) 추가
+            "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', CAST(:keyword AS string), '%')) " +
             "AND (:departmentId IS NULL OR d.departmentId = :departmentId)",
             countQuery = "SELECT COUNT(a) FROM ApprovaEntity a " +
                     "LEFT JOIN a.userWriter u " +
@@ -53,7 +54,7 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
                     "WHERE (:startDate IS NULL OR a.approvaDate >= :startDate) " +
                     "AND (:finishDate IS NULL OR a.approvaDate <= :finishDate) " +
                     "AND (:category IS NULL OR dc.documentName = :category) " +
-                    "AND (:keyword IS NULL OR u.userName LIKE CONCAT('%', :keyword, '%')) " +
+                    "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', CAST(:keyword AS string), '%')) " +
                     "AND (:departmentId IS NULL OR d.departmentId = :departmentId)")
     Page<ApprovaEntity> findApprovalList(
             @Param("startDate") LocalDateTime startDate,

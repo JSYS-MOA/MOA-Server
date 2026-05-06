@@ -28,8 +28,6 @@ public class ApprovalWaitService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("approvaId").descending());
 
-
-        // 1. 날짜 파싱 (빈 문자열 "" 인 경우 null로 치환하여 에러 방지)
         LocalDateTime startDateTime = null;
         if (filterDTO.getStartDate() != null && !filterDTO.getStartDate().trim().isEmpty()) {
             try {
