@@ -38,7 +38,7 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
 
 
     @Query(value = "SELECT a FROM ApprovaEntity a " +
-            "JOIN FETCH a.userWriter u " +
+            "LEFT JOIN FETCH a.userWriter u " +
             "LEFT JOIN FETCH u.department d " +
             "LEFT JOIN FETCH a.line dc " +
             "WHERE (CAST(:startDate AS string) IS NULL OR a.approvaDate >= :startDate) " +
@@ -47,7 +47,7 @@ public interface ApprovaRepository extends JpaRepository<ApprovaEntity, Integer>
             "AND (CAST(:keyword AS string) IS NULL OR u.userName LIKE CONCAT('%', CAST(:keyword AS string), '%')) " +
             "AND (:departmentId IS NULL OR d.departmentId = :departmentId)",
             countQuery = "SELECT COUNT(a) FROM ApprovaEntity a " +
-                    "JOIN a.userWriter u " +
+                    "LEFT JOIN a.userWriter u " +
                     "LEFT JOIN u.department d " +
                     "LEFT JOIN a.line dc " +
                     "WHERE (CAST(:startDate AS string) IS NULL OR a.approvaDate >= :startDate) " +
