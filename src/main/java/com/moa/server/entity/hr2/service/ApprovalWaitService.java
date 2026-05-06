@@ -28,6 +28,7 @@ public class ApprovalWaitService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("approvaId").descending());
 
+
         // 1. 날짜 파싱 (빈 문자열 "" 인 경우 null로 치환하여 에러 방지)
         LocalDateTime startDateTime = null;
         if (filterDTO.getStartDate() != null && !filterDTO.getStartDate().trim().isEmpty()) {
@@ -54,7 +55,15 @@ public class ApprovalWaitService {
         String keyword = (filterDTO.getKeyword() != null && !filterDTO.getKeyword().trim().isEmpty())
                 ? filterDTO.getKeyword() : null;
 
+        // 서비스 레이어의 getList 메서드 내부
         Integer departmentId = filterDTO.getDepartmentId();
+
+        // 추가: 전체 조회(id가 0이거나 null일 때)를 위해 null로 보정
+            if (departmentId == null || departmentId == 0) {
+                departmentId = null;
+            }
+
+        System.out.println("최종 쿼리에 사용될 부서ID: " + departmentId);
 
         // 3. 레포지토리 호출
         return repository.findApprovalList(
