@@ -25,82 +25,31 @@ public class ApprovalWaitService {
 
     @Transactional
     public Page<ApprovalWaitDTO> getList(int page, int size, FilterDTO filterDTO) {
-
         Pageable pageable = PageRequest.of(page, size, Sort.by("approvaId").descending());
+        LocalDate start = (filterDTO.getStartDate() != null && !filterDTO.getStartDate().isEmpty())
+                ? LocalDate.parse(filterDTO.getStartDate())
+                : null;
 
-        LocalDateTime startDateTime = null;
-        if (filterDTO.getStartDate() != null && !filterDTO.getStartDate().trim().isEmpty()) {
-            try {
-                startDateTime = LocalDate.parse(filterDTO.getStartDate()).atStartOfDay();
-            } catch (Exception e) {
-                System.out.println("시작 날짜 파싱 실패: " + filterDTO.getStartDate());
-            }
-        }
-
-        LocalDateTime finishDateTime = null;
-        if (filterDTO.getFinishDate() != null && !filterDTO.getFinishDate().trim().isEmpty()) {
-            try {
-                finishDateTime = LocalDate.parse(filterDTO.getFinishDate()).atTime(23, 59, 59);
-            } catch (Exception e) {
-                System.out.println("종료 날짜 파싱 실패: " + filterDTO.getFinishDate());
-            }
-        }
-
-        // 2. 나머지 문자열 파라미터 처리 (빈 문자열이면 null로 처리해서 쿼리 조건 무시)
-        String category = (filterDTO.getCategory() != null && !filterDTO.getCategory().trim().isEmpty())
+        LocalDate finish = (filterDTO.getFinishDate() != null && !filterDTO.getFinishDate().isEmpty())
+                ? LocalDate.parse(filterDTO.getFinishDate())
+                : null;
+        String category = (filterDTO.getCategory() != null && !filterDTO.getCategory().isEmpty())
                 ? filterDTO.getCategory() : null;
 
-        String keyword = (filterDTO.getKeyword() != null && !filterDTO.getKeyword().trim().isEmpty())
+        String keyword = (filterDTO.getKeyword() != null && !filterDTO.getKeyword().isEmpty())
                 ? filterDTO.getKeyword() : null;
 
-        // 서비스 레이어의 getList 메서드 내부
         Integer departmentId = filterDTO.getDepartmentId();
 
-        // 추가: 전체 조회(id가 0이거나 null일 때)를 위해 null로 보정
-            if (departmentId == null || departmentId == 0) {
-                departmentId = null;
-            }
-
-        System.out.println("최종 쿼리에 사용될 부서ID: " + departmentId);
-
-        // 3. 레포지토리 호출
+        System.out.println("백엔드 전달 부서명: " + departmentId);
         return repository.findApprovalList(
-                        startDateTime,
-                        finishDateTime,
+                        start != null ? start.atStartOfDay() : null,
+                        finish != null ? finish.atTime(23, 59, 59) : null,
                         category,
                         keyword,
                         departmentId,
                         pageable)
                 .map(ApprovalWaitDTO::fromEntity);
-
-
-
-//        Pageable pageable = PageRequest.of(page, size, Sort.by("approvaId").descending());
-//
-//        LocalDate start = (filterDTO.getStartDate() != null && !filterDTO.getStartDate().isEmpty())
-//                ? LocalDate.parse(filterDTO.getStartDate())
-//                : null;
-//
-//        LocalDate finish = (filterDTO.getFinishDate() != null && !filterDTO.getFinishDate().isEmpty())
-//                ? LocalDate.parse(filterDTO.getFinishDate())
-//                : null;
-//        String category = (filterDTO.getCategory() != null && !filterDTO.getCategory().isEmpty())
-//                ? filterDTO.getCategory() : null;
-//
-//        String keyword = (filterDTO.getKeyword() != null && !filterDTO.getKeyword().isEmpty())
-//                ? filterDTO.getKeyword() : null;
-//
-//        Integer departmentId = filterDTO.getDepartmentId();
-//
-//        System.out.println("백엔드 전달 부서명: " + departmentId);
-//        return repository.findApprovalList(
-//                        start != null ? start.atStartOfDay() : null,
-//                        finish != null ? finish.atTime(23, 59, 59) : null,
-//                        category,
-//                        keyword,
-//                        departmentId,
-//                        pageable)
-//                .map(ApprovalWaitDTO::fromEntity);
     }
 
     @Transactional // 리턴 안 해도 값이 넘어감

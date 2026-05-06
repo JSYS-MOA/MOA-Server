@@ -21,26 +21,21 @@ public class ApprovalWaitDTO {
     private Integer departmentId;
 
     public static ApprovalWaitDTO fromEntity(ApprovaEntity entity) {
+        if (entity == null) return null;
 
-        // 1. ID를 기본값으로 설정 (String 변환)
+        // 1. 부서 ID 안전하게 가져오기
         Integer deptIdStr = 0;
-
         if (entity.getUserWriter() != null && entity.getUserWriter().getDepartment() != null) {
-            // 2. departmentId를 가져와서 문자열로 저장
-            deptIdStr = (entity.getUserWriter().getDepartment().getDepartmentId());
+            deptIdStr = entity.getUserWriter().getDepartment().getDepartmentId();
         }
 
         return ApprovalWaitDTO.builder()
                 .approvaId(entity.getApprovaId())
-                .approvaDate(entity.getApprovaDate().toString())
                 // 날짜 null 체크 추가 (데이터 꼬임 대비)
                 .approvaDate(entity.getApprovaDate() != null ? entity.getApprovaDate().toString() : "")
                 .approvaTitle(entity.getApprovaTitle())
-                .writer(entity.getUserWriter().getUserName()) // User 조인 결과
-                .documentName(entity.getLine().getDocumentName())
                 .writer(entity.getUserWriter() != null ? entity.getUserWriter().getUserName() : "알 수 없음")
                 .approvaState(entity.getApprovaStatus())
-                .departmentName(entity.getDepartmentName())
                 .documentName(entity.getLine() != null ? entity.getLine().getDocumentName() : "삭제된 양식")
                 .departmentId(deptIdStr)
                 .memo("")
