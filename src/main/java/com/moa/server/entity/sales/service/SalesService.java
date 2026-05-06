@@ -67,15 +67,19 @@ public class SalesService {
         return TransactionResponseDTO.builder()
                 .transactionId(t.getTransactionId())
                 .vendorId(t.getVendorId())
-                .vendorCode(t.getVendor().getVendorCord())
-                .vendorName(t.getVendor().getVendorName())
+                .vendorCode(t.getVendor() != null ? t.getVendor().getVendorCord() : "코드없음")
+                .vendorName(t.getVendor() != null ? t.getVendor().getVendorName() : "거래처없음")
+
                 .orderformId(t.getOrderformId())
                 .salaryLedgerId(t.getSalaryLedgerId())
                 .transactionNum(t.getTransactionNum())
                 .transactionType(t.getTransactionType())
                 .transactionPrice(t.getTransactionPrice())
                 .transactionMemo(t.getTransactionMemo())
-                .createdAt(t.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+
+                .createdAt(t.getCreatedAt() != null
+                        ? t.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                        : "")
                 .build();
     }
 

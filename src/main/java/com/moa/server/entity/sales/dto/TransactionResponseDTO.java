@@ -21,4 +21,6 @@ public class TransactionResponseDTO {
     private String transactionMemo;
     private String createdAt;
 
+
+
 }
