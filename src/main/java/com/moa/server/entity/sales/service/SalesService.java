@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -78,11 +80,15 @@ public class SalesService {
     }
 
     //전체조회
-    public List<TransactionResponseDTO> getTransactions() {
-        return transactionRepository.findAllByOrderByTransactionIdDesc()
-                .stream()
-                .filter(t -> t.getTransactionType().equals("일반전표"))
-                .map(this::toDTO).toList();
+    public Page<TransactionResponseDTO> getTransactions( Pageable pageable ) {
+
+        return transactionRepository.findAllByTransactionTypeOrderByTransactionIdDesc("일반전표", pageable)
+                .map(this::toDTO);
+
+//        return transactionRepository.findAllByOrderByTransactionIdDesc()
+//                .stream()
+//                .filter(t -> t.getTransactionType().equals("일반전표"))
+//                .map(this::toDTO).toList();
     }
 
     //상세조회
