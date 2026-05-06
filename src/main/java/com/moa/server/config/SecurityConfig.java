@@ -14,6 +14,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -40,6 +41,7 @@ public class SecurityConfig {
                         .sessionFixation().none() // 테스트용으로 세션 유지를 강제해봄
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // 추가
                         .requestMatchers("/api/login", "/api/user/*").permitAll() // 로그인 주소는 누구나 접근 허용
                         .anyRequest().permitAll() // 일단 모든 요청 허용 (테스트 완료 후 수정 권장)
                 );
@@ -62,7 +64,8 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
-        configuration.setExposedHeaders(List.of("Set-Cookie"));
+        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization"));
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
