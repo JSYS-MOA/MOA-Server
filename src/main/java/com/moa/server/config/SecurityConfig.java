@@ -26,7 +26,6 @@ public class SecurityConfig {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
         serializer.setSameSite("None");
         serializer.setUseSecureCookie(true); // HTTPS에서만 동작
-        // 브라우저가 쿠키를 '남'이라고 생각하지 않도록 경로 설정
         serializer.setCookiePath("/");
         return serializer;
     }
